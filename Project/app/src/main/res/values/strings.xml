@@ -3,4 +3,14 @@
     <string name="title_recipe">Recipe</string>
     <string name="title_fridge">Fridge</string>
     <string name="title_calendar">Calendar</string>
+
+    <string name="ingredient_insert">Add Ingredient</string>
+    <string name="category">Category</string>
+    <string name="name">Name</string>
+    <string name="quantity_weight">Quantity/Weight</string>
+    <string name="quantity">Quantity</string>
+    <string name="weight">Weight</string>
+    <string name="expiration">Expiration</string>
+    <string name="button_confirm">Confirm</string>
+    <string name="button_cancel">Cancel</string>
 </resources>

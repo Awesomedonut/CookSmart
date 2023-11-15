@@ -13,4 +13,12 @@
     <string name="button_confirm">Confirm</string>
     <string name="button_cancel">Cancel</string>
     <string name="title_add_ingredient">Add Ingredient</string>
+    <string name="change_date">Change date</string>
+    <string name="example_quantity">Ex: 2, 0.2 kg, 113 g, 500 ml, 1 cup</string>
+    <string name="example_name">Ex: Lemon, Chicken Breast, Chia Seed</string>
+    <string name="meat_seafood">Meat/Seafood</string>
+    <string name="_2023_sep_02">2023 SEP 02</string>
+    <string name="chicken_breast">Chicken breast</string>
+    <string name="_1_kg">1 kg</string>
+    <string name="date_not_set">Date not set!</string>
 </resources>

@@ -5,7 +5,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IngredientDao {
@@ -13,7 +12,7 @@ interface IngredientDao {
     suspend fun insertIngredient(entry: Ingredient)
 
     @Query("SELECT * FROM ingredient_table")
-    fun getAllIngredients(): Flow<List<Ingredient>>
+    fun getAllIngredients(): LiveData<List<Ingredient>>
 
     @Query("SELECT name FROM ingredient_table")
     fun getIngredientNames(): LiveData<List<String>>

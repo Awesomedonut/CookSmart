@@ -15,11 +15,24 @@
         android:id="@+id/navigation_fridge"
         android:name="com.example.cooksmart.ui.fridge.FridgeFragment"
         android:label="@string/title_fridge"
-        tools:layout="@layout/fragment_fridge" />
+        tools:layout="@layout/fragment_fridge" >
+        <action
+            android:id="@+id/action_navigation_fridge_to_fridgeInsert2"
+            app:destination="@id/fridgeInsert2" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_calendar"
         android:name="com.example.cooksmart.ui.calendar.CalendarFragment"
         android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/fridgeInsert2"
+        android:name="com.example.cooksmart.ui.fridge.FridgeInsert"
+        android:label="@string/title_add_ingredient" >
+        <action
+            android:id="@+id/action_fridgeInsert2_to_navigation_fridge"
+            app:destination="@id/navigation_fridge" />
+    </fragment>
+
 </navigation>

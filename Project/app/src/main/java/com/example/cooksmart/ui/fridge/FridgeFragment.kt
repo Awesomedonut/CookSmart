@@ -10,6 +10,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.databinding.FragmentFridgeBinding
 import com.example.cooksmart.ui.structs.CategoryType
@@ -22,7 +24,6 @@ class FridgeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,14 +31,8 @@ class FridgeFragment : Fragment() {
     ): View {
         val layout = inflater.inflate(R.layout.fragment_fridge,container,false)
 
-        _binding = FragmentFridgeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
         layout.findViewById<Button>(R.id.ingredient_add).setOnClickListener{
-            Log.d("addIn","Add Ingerdient\n")
-            val intent = Intent(activity,FridgeInsert::class.java)
-            activity?.startActivity(intent)
-            true
+            findNavController().navigate(R.id.action_navigation_fridge_to_fridgeInsert2)
         }
 
         return layout
@@ -47,6 +42,4 @@ class FridgeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

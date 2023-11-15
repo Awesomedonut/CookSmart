@@ -12,12 +12,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ingredient_insert"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/category"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -41,85 +35,32 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/quantity_weight"
+            android:text="@string/quantity"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/measurement">
-
-            <RadioButton
-                android:id="@+id/button_quantity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/quantity" />
-
-            <RadioButton
-                android:id="@+id/button_weight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/weight" />
-
-        </RadioGroup>
-
         <EditText
-            android:id="@+id/quantity_weight"
+            android:id="@+id/quantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="what is the Quantity/weight?" />
+            android:hint="Ex: 2, 0.2 kg, 113 g, 500 ml, 1 cup" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/expiration"
+            android:text="@string/best_before"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <EditText
-            android:id="@+id/expiration"
+            android:id="@+id/best_before"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="what is the expire date?" />
+            android:hint="What is the best before date?" />
 
-        <LinearLayout
+        <Button
+            android:id="@+id/button_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
-
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="match_parent" />
-
-            <Button
-                android:id="@+id/button_confirm"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="0dp"
-                android:layout_weight="1"
-                android:backgroundTint="@android:color/darker_gray"
-                android:text="@string/button_confirm"
-                android:onClick="onConfirmClick"/>
-
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="match_parent" />
-
-            <Button
-                android:id="@+id/button_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="@android:color/darker_gray"
-                android:text="@string/button_cancel"
-                android:onClick="onCancelClick"/>
-
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
+            android:backgroundTint="@android:color/darker_gray"
+            android:layout_gravity="center"
+            android:text="@string/button_confirm" />
     </LinearLayout>
 </ScrollView>

@@ -7,10 +7,10 @@
     <string name="ingredient_insert">Add Ingredient</string>
     <string name="category">Category</string>
     <string name="name">Name</string>
-    <string name="quantity_weight">Quantity/Weight</string>
     <string name="quantity">Quantity</string>
     <string name="weight">Weight</string>
-    <string name="expiration">Expiration</string>
+    <string name="best_before">Best Before Date</string>
     <string name="button_confirm">Confirm</string>
     <string name="button_cancel">Cancel</string>
+    <string name="title_add_ingredient">Add Ingredient</string>
 </resources>

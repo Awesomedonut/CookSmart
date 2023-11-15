@@ -28,7 +28,8 @@
 
         <EditText
             android:id="@+id/name_ingredient"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
+            android:importantForAutofill="no"
             android:layout_height="48dp"
             android:inputType="text"
             android:hint="@string/example_name" />
@@ -41,8 +42,9 @@
 
         <EditText
             android:id="@+id/quantity"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:hint="@string/example_quantity" />
         <TextView

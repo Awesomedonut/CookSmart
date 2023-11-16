@@ -28,6 +28,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_URL", localProperties["API_URL"] as String)
+        buildConfigField("String", "OPEN_AI_API", localProperties["OPEN_AI_API"] as String)
+
     }
 
     buildTypes {
@@ -53,6 +55,10 @@ android {
 }
 
 dependencies {
+    //https://github.com/aallam/openai-kotlin/tree/main
+    implementation ("com.aallam.openai:openai-client:3.5.1")
+    //https://ktor.io/docs/http-client-engines.html
+    implementation ("io.ktor:ktor-client-cio:2.3.6")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")

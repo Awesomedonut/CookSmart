@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">CookSmart</string>
-    <string name="title_recipe">Recipe</string>
-    <string name="title_fridge">Fridge</string>
+    <string name="title_recipe">Recipes</string>
+    <string name="title_ingredients">Ingredients</string>
     <string name="title_calendar">Calendar</string>
 
     <string name="ingredient_insert">Add Ingredient</string>

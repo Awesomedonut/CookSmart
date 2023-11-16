@@ -91,10 +91,10 @@ class FridgeInsert : Fragment() {
         if (!isNotValidInput(name, quantity)) {
             val ingredient = Ingredient(0, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.insertIngredient(ingredient)
-            Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_fridgeInsert2_to_navigation_fridge)
         } else {
-            Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }
     }
 

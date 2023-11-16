@@ -43,7 +43,6 @@ class IngredientUpdate : Fragment() {
         val deleteButton = view.findViewById<Button>(R.id.update_button_delete)
         val editDate = view.findViewById<Button>(R.id.update_best_before_date_picker)
 
-
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
 
         // Setup spinner
@@ -58,8 +57,12 @@ class IngredientUpdate : Fragment() {
         )
         categoriesSpinner.adapter = categoriesAdapter
 
-        // Set date picker to the button
+
+        // Get the previously set date and set to calendar object
+        val currentBestBefore = args.currentIngredient.bestBefore
         selectedDate = Calendar.getInstance()
+        selectedDate.timeInMillis = currentBestBefore
+        // Set date picker to the button
         editDate.setOnClickListener {
             datePickerDialog()
         }
@@ -72,7 +75,7 @@ class IngredientUpdate : Fragment() {
             deleteIngredient()
         }
 
-        // Populate fields with the saved values
+        // Populate fields with the saved values from args
         val position = categoryStringToInt(args.currentIngredient.category)
         view.findViewById<Spinner>(R.id.update_category).setSelection(position)
         view.findViewById<EditText>(R.id.update_name_ingredient).setText(args.currentIngredient.name)
@@ -84,19 +87,24 @@ class IngredientUpdate : Fragment() {
 
         return view
     }
+
+    /**
+     * Updates the selected ingredient with the filled out fields
+     */
     private fun updateIngredient() {
         val category = view.findViewById<Spinner>(R.id.update_category).selectedItem.toString()
         val name = view.findViewById<EditText>(R.id.update_name_ingredient).text.toString()
         val quantity = view.findViewById<EditText>(R.id.update_quantity).text.toString()
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
+        // Checks if the fields are filled, if not, don't do anything, otherwise, update the ingredient in the database
         if (!isNotValidInput(name, quantity)) {
             val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.updateIngredient(updatedIngredient)
-            Toast.makeText(requireContext(), "Ingredient updated!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Ingredient updated!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_ingredientUpdate_to_navigation_fridge)
         } else {
-            Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -108,14 +116,7 @@ class IngredientUpdate : Fragment() {
         return (name == "" || quantity == "")
     }
     private fun datePickerDialog() {
-        // Get the previously set date and set the calendar dialog to it on default
-        val currentBestBefore = args.currentIngredient.bestBefore
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = currentBestBefore
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
+        // Set date object as previously set date and update if it is changed
         val datePicker = DatePickerDialog(
             requireContext(),
             { _, year, month, day ->
@@ -124,9 +125,9 @@ class IngredientUpdate : Fragment() {
                 selectedDate.set(Calendar.DAY_OF_MONTH, day)
                 updateBestBeforeText()
             },
-            year,
-            month,
-            day
+            selectedDate.get(Calendar.YEAR),
+            selectedDate.get(Calendar.MONTH),
+            selectedDate.get(Calendar.DAY_OF_MONTH),
         )
         datePicker.show()
     }
@@ -145,6 +146,7 @@ class IngredientUpdate : Fragment() {
         builder.setPositiveButton("Yes") { _, _ ->
             ingredientViewModel.deleteIngredient(args.currentIngredient)
             Toast.makeText(requireContext(), "${args.currentIngredient.name} has been removed!", Toast.LENGTH_SHORT).show()
+            // After deleting, go back to ingredients list fragment
             findNavController().navigate(R.id.action_ingredientUpdate_to_navigation_fridge)
         }
         builder.setNegativeButton("No") { _, _ -> }

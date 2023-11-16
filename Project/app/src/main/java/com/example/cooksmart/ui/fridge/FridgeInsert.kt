@@ -1,43 +1,113 @@
 package com.example.cooksmart.ui.fridge
 
-import android.content.Intent
+import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Spinner
 import android.widget.SpinnerAdapter
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
+import com.example.cooksmart.database.Ingredient
+import com.example.cooksmart.database.IngredientViewModel
 import com.example.cooksmart.ui.structs.CategoryType
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
-class FridgeInsert : AppCompatActivity() {
-    lateinit var categoriesSpinner: Spinner
-    lateinit var categoriesAdapter: SpinnerAdapter
+class FridgeInsert : Fragment() {
+    private lateinit var categoriesSpinner: Spinner
+    private lateinit var categoriesAdapter: SpinnerAdapter
+    private lateinit var ingredientViewModel: IngredientViewModel
+    private lateinit var view: View
+    private lateinit var selectedDate: Calendar
 
-    override fun onCreate(savedInstanceState:Bundle?){
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fridge_insert)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fridge_insert, container, false)
+        val confirmButton = view.findViewById<Button>(R.id.button_confirm)
+        val editDate = view.findViewById<Button>(R.id.best_before_date_picker)
 
-        // Assuming your Spinner is defined in your_activity_layout
-        categoriesSpinner = findViewById(R.id.category)
+        ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
+
+        // Assuming your Spinner is defined in fridge_insert layout
+        categoriesSpinner = view.findViewById(R.id.category)
 
         // Set up the Spinner adapter
         categoriesAdapter = ArrayAdapter(
-            this,
+            requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
             CategoryType.values().map { it.asString }
         )
         categoriesSpinner.adapter = categoriesAdapter
 
-    }
-    fun onConfirmClick(){
-        val intent = Intent(this,FridgeFragment::class.java)
-        startActivity(intent)
-    }
-    fun onCancelClick(){
-        val intent = Intent(this,FridgeFragment::class.java)
-        startActivity(intent)
+        // Set date picker to the button
+        selectedDate = Calendar.getInstance()
+        editDate.setOnClickListener {
+            datePickerDialog()
+        }
+
+        confirmButton.setOnClickListener {
+            insertIngredient()
+        }
+
+        return view
     }
 
+    private fun datePickerDialog() {
+        val datePicker = DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, month)
+                selectedDate.set(Calendar.DAY_OF_MONTH, day)
+                updateBestBeforeText()
+            },
+            selectedDate.get(Calendar.YEAR),
+            selectedDate.get(Calendar.MONTH),
+            selectedDate.get(Calendar.DAY_OF_MONTH)
+        )
+        datePicker.show()
+    }
+
+    private fun insertIngredient() {
+        val category = view.findViewById<Spinner>(R.id.category).selectedItem.toString()
+        val name = view.findViewById<EditText>(R.id.name_ingredient).text.toString()
+        val quantity = view.findViewById<EditText>(R.id.quantity).text.toString()
+        val currentDate = System.currentTimeMillis()
+        val bestBefore = selectedDate.timeInMillis
+//        println("cat: $category, name: $name, quantity: $quantity, best: $bestBefore, curDate: $currentDate")
+        if (isValidInput(name, quantity)) {
+            val ingredient = Ingredient(0, name, category, quantity,currentDate, bestBefore)
+            ingredientViewModel.insertIngredient(ingredient)
+            Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_LONG).show()
+            findNavController().navigate(R.id.action_fridgeInsert2_to_navigation_fridge)
+        } else {
+            Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun isValidInput(name: String, quantity: String): Boolean {
+        // Returns true if fields are filled
+        return !(name == "" && quantity == "")
+    }
+
+    private fun updateBestBeforeText() {
+        // SimpleDateFormat from https://developer.android.com/reference/kotlin/android/icu/text/SimpleDateFormat
+        val bestBeforeText = view.findViewById<TextView>(R.id.date_input_current)
+        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
+        val formattedDate = dateFormat.format(selectedDate.time)
+        bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
+    }
 }

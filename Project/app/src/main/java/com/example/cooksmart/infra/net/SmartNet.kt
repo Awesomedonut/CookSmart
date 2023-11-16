@@ -9,10 +9,10 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.IOException
 import org.json.JSONObject
-
+import com.example.cooksmart.BuildConfig
 class SmartNet(private val client: OkHttpClient) {
     fun makeCall(endpoint: String, question: String, onResponse: (String) -> Unit) {
-        val fullUrl = Companion.API_URL + endpoint
+        val fullUrl = BuildConfig.API_URL + endpoint
         val json = JSONObject().apply { put("question", question) }
         val requestBody = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
 
@@ -38,10 +38,5 @@ class SmartNet(private val client: OkHttpClient) {
                 }
             }
         })
-    }
-
-    //TODO:refactor this
-    companion object {
-        const val API_URL = "https://54.183.153.17:5050/"
     }
 }

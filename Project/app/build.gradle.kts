@@ -1,20 +1,24 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
 }
-
+android.buildFeatures.buildConfig=true
 android {
     namespace = "com.example.cooksmart"
     compileSdk = 34
+//    val apikeyPropertiesFile = rootProject.file("apikey.properties")
+//    val apikeyProperties = Properties()
+//    apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
+    val localPropertiesFile = rootProject.file("local.properties")
+    val localProperties = Properties()
+    if (localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
 
-//    // New segment to load local.properties and define BuildConfig field
-//    def localPropertiesFile = rootProject.file('local.properties')
-//    def localProperties = new Properties()
-//    if (localPropertiesFile.exists()) {
-//        localProperties.load(new FileInputStream(localPropertiesFile))
-//    }
-//
     defaultConfig {
         applicationId = "com.example.cooksmart"
         minSdk = 24
@@ -23,7 +27,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//        buildConfigField "String", "API_URL", "\"${localProperties['API_URL']}\""
+        buildConfigField("String", "API_URL", localProperties["API_URL"] as String)
     }
 
     buildTypes {
@@ -46,12 +50,9 @@ android {
         viewBinding = true
     }
 
-
-
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")

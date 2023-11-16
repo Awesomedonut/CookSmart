@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_navigation_fridge_to_fridgeInsert2"
             app:destination="@id/fridgeInsert" />
+        <action
+            android:id="@+id/action_navigation_fridge_to_ingredientUpdate"
+            app:destination="@id/ingredientUpdate" />
     </fragment>
 
     <fragment
@@ -32,6 +35,14 @@
         android:label="@string/title_add_ingredient" >
         <action
             android:id="@+id/action_fridgeInsert2_to_navigation_fridge"
+            app:destination="@id/navigation_fridge" />
+    </fragment>
+    <fragment
+        android:id="@+id/ingredientUpdate"
+        android:name="com.example.cooksmart.ui.fridge.IngredientUpdate"
+        android:label="Update" >
+        <action
+            android:id="@+id/action_ingredientUpdate_to_navigation_fridge"
             app:destination="@id/navigation_fridge" />
     </fragment>
 

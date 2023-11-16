@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_recipe">
+    app:startDestination="@id/navigation_fridge">
 
     <fragment
         android:id="@+id/navigation_recipe"
@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/navigation_fridge"
         android:name="com.example.cooksmart.ui.fridge.FridgeFragment"
-        android:label="@string/title_fridge"
+        android:label="@string/title_ingredients"
         tools:layout="@layout/fragment_fridge" >
         <action
             android:id="@+id/action_navigation_fridge_to_fridgeInsert2"

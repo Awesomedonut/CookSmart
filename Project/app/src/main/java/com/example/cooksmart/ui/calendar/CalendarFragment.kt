@@ -1,13 +1,17 @@
 package com.example.cooksmart.ui.calendar
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.databinding.FragmentCalendarBinding
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 class CalendarFragment : Fragment() {
 
@@ -34,5 +38,12 @@ class CalendarFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun daysExpiry(expiryDate : LocalDate): Long {
+        val currentDate = LocalDate.now()
+        val days = ChronoUnit.DAYS.between(currentDate, expiryDate)
+        return days
     }
 }

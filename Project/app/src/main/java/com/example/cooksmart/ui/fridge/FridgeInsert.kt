@@ -35,7 +35,7 @@ class FridgeInsert : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fridge_insert, container, false)
+        view = inflater.inflate(R.layout.fragment_ingredient_insert, container, false)
         val confirmButton = view.findViewById<Button>(R.id.button_confirm)
         val editDate = view.findViewById<Button>(R.id.best_before_date_picker)
 

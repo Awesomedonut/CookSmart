@@ -18,7 +18,7 @@
         tools:layout="@layout/fragment_fridge" >
         <action
             android:id="@+id/action_navigation_fridge_to_fridgeInsert2"
-            app:destination="@id/fridgeInsert2" />
+            app:destination="@id/fridgeInsert" />
     </fragment>
 
     <fragment
@@ -27,7 +27,7 @@
         android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" />
     <fragment
-        android:id="@+id/fridgeInsert2"
+        android:id="@+id/fridgeInsert"
         android:name="com.example.cooksmart.ui.fridge.FridgeInsert"
         android:label="@string/title_add_ingredient" >
         <action

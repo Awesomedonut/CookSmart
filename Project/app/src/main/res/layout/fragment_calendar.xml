@@ -23,18 +23,17 @@
             android:layout_margin="8dp"
             android:text="Date Placeholder"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
-        <TextView
-            android:id="@+id/tvItemsExpiring"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvIngredients"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvDateSelected"
-            android:layout_margin="8dp"
-            android:text="Items Placeholder"/>
+            android:layout_margin="8dp" />
         <TextView
             android:id="@+id/tvDayPlan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvItemsExpiring"
+            android:layout_below="@+id/rvIngredients"
             android:layout_margin="8dp"
             android:text="Plan Placeholder"/>
         <TextView

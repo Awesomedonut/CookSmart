@@ -44,6 +44,9 @@
         <action
             android:id="@+id/action_ingredientUpdate_to_navigation_fridge"
             app:destination="@id/navigation_fridge" />
+        <argument
+            android:name="currentIngredient"
+            app:argType="com.example.cooksmart.database.Ingredient" />
     </fragment>
 
 </navigation>

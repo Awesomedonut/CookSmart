@@ -88,8 +88,8 @@ class FridgeInsert : Fragment() {
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
 //        println("cat: $category, name: $name, quantity: $quantity, best: $bestBefore, curDate: $currentDate")
-        if (isValidInput(name, quantity)) {
-            val ingredient = Ingredient(0, name, category, quantity,currentDate, bestBefore)
+        if (!isNotValidInput(name, quantity)) {
+            val ingredient = Ingredient(0, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.insertIngredient(ingredient)
             Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_LONG).show()
             findNavController().navigate(R.id.action_fridgeInsert2_to_navigation_fridge)
@@ -98,9 +98,12 @@ class FridgeInsert : Fragment() {
         }
     }
 
-    private fun isValidInput(name: String, quantity: String): Boolean {
-        // Returns true if fields are filled
-        return !(name == "" && quantity == "")
+    /**
+     * Checks if name or quantity fields are empty
+     */
+    private fun isNotValidInput(name: String, quantity: String): Boolean {
+        // Returns true if fields are empty
+        return (name == "" || quantity == "")
     }
 
     private fun updateBestBeforeText() {

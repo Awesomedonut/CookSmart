@@ -8,4 +8,8 @@ class IngredientRepository(private val ingredientDao: IngredientDao) {
     suspend fun insertIngredient(ingredient: Ingredient) {
         ingredientDao.insertIngredient(ingredient)
     }
+
+    suspend fun updateIngredient(ingredient: Ingredient) {
+        ingredientDao.updateIngredient(ingredient)
+    }
 }

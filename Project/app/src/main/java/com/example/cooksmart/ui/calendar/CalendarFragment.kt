@@ -9,8 +9,11 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.cooksmart.database.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 class CalendarFragment : Fragment() {
@@ -20,7 +23,7 @@ class CalendarFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
+    private lateinit var ingredientViewModel: IngredientViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,6 +34,10 @@ class CalendarFragment : Fragment() {
 
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
+        ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
+
+        }
 
         return root
     }
@@ -41,9 +48,16 @@ class CalendarFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun daysExpiry(expiryDate : LocalDate): Long {
+    fun daysExpiry(expiryDateLong : Long): Long {
+        val expiryDate = getDate(expiryDateLong)
         val currentDate = LocalDate.now()
         val days = ChronoUnit.DAYS.between(currentDate, expiryDate)
         return days
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDate(dateMilli : Long): LocalDate {
+        val date = Instant.ofEpochMilli(dateMilli)
+        return date.atZone(ZoneId.systemDefault()).toLocalDate()
     }
 }

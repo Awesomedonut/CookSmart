@@ -12,4 +12,12 @@ class IngredientRepository(private val ingredientDao: IngredientDao) {
     suspend fun updateIngredient(ingredient: Ingredient) {
         ingredientDao.updateIngredient(ingredient)
     }
+
+    suspend fun deleteIngredient(ingredient: Ingredient) {
+        ingredientDao.deleteIngredient(ingredient)
+    }
+
+    suspend fun deleteAllIngredients() {
+        ingredientDao.deleteAllIngredients()
+    }
 }

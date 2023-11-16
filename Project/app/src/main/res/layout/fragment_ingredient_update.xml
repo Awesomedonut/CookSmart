@@ -68,6 +68,7 @@
                 android:id="@+id/update_best_before_date_picker"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/darker_gray"
                 android:layout_weight="1"
                 android:hint="@string/change_date" />
         </LinearLayout>
@@ -75,14 +76,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom">
-
+            <Button
+                android:id="@+id/update_button_delete"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/baseline_delete_24"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:text="@string/delete"
+                android:textStyle="bold" />
+            <Space
+                android:layout_width="40dp"
+                android:layout_height="match_parent"/>
             <Button
                 android:id="@+id/update_button_confirm"
-                android:layout_width="500dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/darker_gray"
                 android:text="@string/update"
                 android:textStyle="bold" />
         </LinearLayout>

@@ -2,6 +2,7 @@ package com.example.cooksmart.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -21,6 +22,9 @@ interface IngredientDao {
     @Update
     suspend fun updateIngredient(ingredient: Ingredient)
 
-    @Query("DELETE FROM ingredient_table WHERE id = :key")
-    suspend fun deleteEntry(key: Long)
+    @Delete
+    suspend fun deleteIngredient(ingredient: Ingredient)
+
+    @Query("DELETE FROM ingredient_table")
+    suspend fun deleteAllIngredients()
 }

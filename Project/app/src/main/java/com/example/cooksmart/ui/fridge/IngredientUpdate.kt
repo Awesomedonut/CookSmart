@@ -13,6 +13,7 @@ import android.widget.Spinner
 import android.widget.SpinnerAdapter
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -37,8 +38,11 @@ class IngredientUpdate : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_ingredient_update, container, false)
+
         val confirmButton = view.findViewById<Button>(R.id.update_button_confirm)
+        val deleteButton = view.findViewById<Button>(R.id.update_button_delete)
         val editDate = view.findViewById<Button>(R.id.update_best_before_date_picker)
+
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
 
@@ -62,6 +66,10 @@ class IngredientUpdate : Fragment() {
 
         confirmButton.setOnClickListener {
             updateIngredient()
+        }
+
+        deleteButton.setOnClickListener {
+            deleteIngredient()
         }
 
         // Populate fields with the saved values
@@ -129,6 +137,20 @@ class IngredientUpdate : Fragment() {
         val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
         val formattedDate = dateFormat.format(selectedDate.time)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
+    }
+
+    private fun deleteIngredient() {
+        // Show alert dialog to confirm deletion or not
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes") { _, _ ->
+            ingredientViewModel.deleteIngredient(args.currentIngredient)
+            Toast.makeText(requireContext(), "${args.currentIngredient.name} has been removed!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_ingredientUpdate_to_navigation_fridge)
+        }
+        builder.setNegativeButton("No") { _, _ -> }
+        builder.setTitle("Delete ingredient?")
+        builder.setMessage("Are you sure you want to delete ${args.currentIngredient.name} from your ingredients?")
+        builder.create().show()
     }
 }
 private fun categoryStringToInt(string: String): Int {

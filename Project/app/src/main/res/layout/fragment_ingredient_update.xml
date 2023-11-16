@@ -81,7 +81,6 @@
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
-                android:drawableStart="@drawable/baseline_delete_24"
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:text="@string/delete"
                 android:textStyle="bold" />

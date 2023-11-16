@@ -21,12 +21,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.aallam.openai.api.chat.ChatCompletion
+import com.aallam.openai.api.chat.ChatCompletionRequest
+import com.aallam.openai.api.chat.ChatMessage
+import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.http.Timeout
+import com.aallam.openai.api.model.ModelId
+import com.aallam.openai.client.OpenAI
 import com.bumptech.glide.Glide
+import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.infra.net.SmartNet
 import com.example.cooksmart.infra.net.UnsafeHttpClient
+import com.example.cooksmart.infra.services.OpenAIProvider
 import com.example.cooksmart.utils.DataFetcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -39,6 +52,7 @@ import java.util.Locale
 import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.*
+import kotlin.time.Duration.Companion.seconds
 
 class RecipeFragment : Fragment() {
 
@@ -56,6 +70,14 @@ class RecipeFragment : Fragment() {
         val viewModelFactory = RecipeViewModelFactory(fetcher)
         viewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
 
+//        val openAI = OpenAIProvider.instance
+//        val textService = TextService(openAI)
+//        // Use CoroutineScope to launch chat function
+//        val coroutineScope = CoroutineScope(Dispatchers.Main)
+//        textService.get(coroutineScope)
+        //
+//        val coroutineScope = CoroutineScope(Dispatchers.Main)
+//        chat(openAI, coroutineScope)
         setupUI()
         setupObservers()
         return binding.root

@@ -29,7 +29,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_URL", localProperties["API_URL"] as String)
         buildConfigField("String", "OPEN_AI_API", localProperties["OPEN_AI_API"] as String)
-
     }
 
     buildTypes {
@@ -51,7 +50,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-
 }
 
 dependencies {
@@ -88,5 +86,4 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx: $lifecycle_version")
-
 }

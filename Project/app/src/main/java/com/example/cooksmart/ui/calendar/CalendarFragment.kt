@@ -50,6 +50,10 @@ class CalendarFragment : Fragment() {
 
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
+        ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
+
+        }
 
         val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
         val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())

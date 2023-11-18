@@ -1,4 +1,7 @@
 package com.example.cooksmart.infra.services
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -11,7 +14,7 @@ class VisionService(private val apiKey: String) {
     private val client = OkHttpClient()
     private val mediaType = "application/json; charset=utf-8".toMediaType()
 
-    fun analyzeImage(imageUrl: String): String {
+    suspend fun analyzeImage(imageUrl: String): String = withContext(Dispatchers.IO) {
         val json = buildJsonRequest(imageUrl)
         val body = json.toString().toRequestBody(mediaType)
 
@@ -21,14 +24,31 @@ class VisionService(private val apiKey: String) {
             .addHeader("Authorization", "Bearer $apiKey")
             .addHeader("Content-Type", "application/json")
             .build()
-
+        Log.d("Vision", "............")
         client.newCall(request).execute().use { response ->
+            println(response)
             if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
             val responseBody = response.body?.string()
-            return JSONObject(responseBody ?: "").toString(4) // Return the formatted response
+            if (responseBody != null) {
+                Log.d("Vision", responseBody)
+            } else {
+                Log.d("Vision", "empty response")
+            }
+            val jsonResponse = JSONObject(responseBody ?: "")
+
+            // Extracting the specific part of the response
+            val choices = jsonResponse.getJSONArray("choices")
+            if (choices.length() > 0) {
+                val firstChoice = choices.getJSONObject(0)
+                return@withContext firstChoice.toString(4) // Return the formatted first choice
+            }
+
+            return@withContext "No choices available in the response"
         }
     }
+
+
 
     private fun buildJsonRequest(imageUrl: String): JSONObject {
         return JSONObject().apply {

@@ -35,7 +35,7 @@ class FridgeInsert : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fridge_insert, container, false)
+        view = inflater.inflate(R.layout.fragment_ingredient_insert, container, false)
         val confirmButton = view.findViewById<Button>(R.id.button_confirm)
         val editDate = view.findViewById<Button>(R.id.best_before_date_picker)
 
@@ -88,19 +88,22 @@ class FridgeInsert : Fragment() {
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
 //        println("cat: $category, name: $name, quantity: $quantity, best: $bestBefore, curDate: $currentDate")
-        if (isValidInput(name, quantity)) {
-            val ingredient = Ingredient(0, name, category, quantity,currentDate, bestBefore)
+        if (!isNotValidInput(name, quantity)) {
+            val ingredient = Ingredient(0, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.insertIngredient(ingredient)
-            Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_fridgeInsert2_to_navigation_fridge)
         } else {
-            Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun isValidInput(name: String, quantity: String): Boolean {
-        // Returns true if fields are filled
-        return !(name == "" && quantity == "")
+    /**
+     * Checks if name or quantity fields are empty
+     */
+    private fun isNotValidInput(name: String, quantity: String): Boolean {
+        // Returns true if fields are empty
+        return (name == "" || quantity == "")
     }
 
     private fun updateBestBeforeText() {

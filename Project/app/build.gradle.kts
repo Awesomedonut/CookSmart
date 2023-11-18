@@ -30,6 +30,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_URL", localProperties["API_URL"] as String)
+        buildConfigField("String", "AUDIO_URL", localProperties["AUDIO_URL"] as String)
         buildConfigField("String", "OPEN_AI_API", localProperties["OPEN_AI_API"] as String)
     }
 

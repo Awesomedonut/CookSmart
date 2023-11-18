@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.cooksmart.infra.net.SmartNet
 
 class DataFetcher(private val smartNet: SmartNet) {
-
+    //TODO:refactor these functions
     fun fetchRecipeText(question: String, responseState: MutableLiveData<String>) {
         smartNet.makeCall("get_answer", question) {
             responseState.postValue(it)
@@ -14,6 +14,12 @@ class DataFetcher(private val smartNet: SmartNet) {
     fun fetchImageUrl(question: String, imageUrlState: MutableLiveData<String>) {
         smartNet.makeCall("get_images", question) {
             imageUrlState.postValue(it)
+        }
+    }
+
+    fun fetchAudio(question: String, audioUrlState: MutableLiveData<String>) {
+        smartNet.makeCall("get_audios", question) {
+            audioUrlState.postValue(it)
         }
     }
 }

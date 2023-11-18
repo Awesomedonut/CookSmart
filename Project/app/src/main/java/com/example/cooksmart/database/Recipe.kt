@@ -9,5 +9,6 @@ data class Recipe (
     var id: Long,
     var name: String,
     var ingredients: String,
-    var instructions: String
+    var instructions: String,
+    var isFavorite: Boolean = false
 )

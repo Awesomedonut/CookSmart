@@ -5,9 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.example.cooksmart.infra.net.SmartNet
 import com.example.cooksmart.infra.services.OpenAIProvider
 import com.example.cooksmart.infra.services.TextService
+import com.example.cooksmart.models.WavAudio
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+//import com.google.gson.Gson
 
 class DataFetcher(private val smartNet: SmartNet) {
 
@@ -35,9 +38,9 @@ class DataFetcher(private val smartNet: SmartNet) {
 ////            textService.get(coroutineScope, question)
 ////            responseState.postValue(answer)
 //        } else
-            smartNet.makeCall("get_answer", question) {
-                responseState.postValue(it)
-            }
+//            smartNet.makeCall("get_answer", question) {
+//                responseState.postValue(it)
+//            }
     }
 
     fun fetchImageUrl(question: String, imageUrlState: MutableLiveData<String>) {
@@ -45,15 +48,17 @@ class DataFetcher(private val smartNet: SmartNet) {
 //
 //        } else
 
-            smartNet.makeCall("get_images", question) {
-                imageUrlState.postValue(it)
-            }
+//            smartNet.makeCall("get_images", question) {
+//                imageUrlState.postValue(it)
+//            }
     }
 //    }
 
-//    fun fetchAudio(question: String, audioUrlState: MutableLiveData<String>) {
-//        smartNet.makeCall("get_audios", question) {
-//            audioUrlState.postValue(it)
-//        }
-//    }
+    fun fetchAudio(question: String, audioUrlState: MutableLiveData<String>) {
+        smartNet.makeCall("chat/audio", question) { jsonResponse ->
+            val gson = Gson()
+            val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
+            audioUrlState.postValue(audio.wavFileUrl)
+        }
+    }
 }

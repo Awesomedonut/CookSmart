@@ -13,12 +13,15 @@ import kotlinx.coroutines.launch
 
 class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     private val _response = MutableLiveData<String>()
-    private val _responseDishSummary = MutableLiveData<String>()
-
     val response: LiveData<String> get() = _response
 
     private val _imageUrl = MutableLiveData<String>()
     val imageUrl: LiveData<String> get() = _imageUrl
+
+    private val _responseAudio = MutableLiveData<String>()
+    val responseAudio: LiveData<String> get() = _responseAudio
+
+    private val _responseDishSummary = MutableLiveData<String>()
 
     private fun fetchImageUrl(question: String) {
 
@@ -51,6 +54,16 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
         Log.d("RecipeViewModel", "fetch....")
         fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
     }
+
+    fun fetchAudioUrl(text: String){
+        Log.d("RecipeViewModel", "fetchAudioUrl....")
+        viewModelScope.launch {
+            fetcher.fetchAudio(text, _responseAudio)
+            //fetcher.fetchRecipeText(question, _response)
+        }
+//        fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
+    }
+
     fun processSpokenText(spokenText: String) {
         postQuestion(spokenText)
         //_response.value?.let { }

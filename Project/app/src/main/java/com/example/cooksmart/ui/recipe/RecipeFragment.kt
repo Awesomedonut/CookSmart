@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.databinding.FragmentRecipeBinding
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.widget.Toast
@@ -91,7 +93,40 @@ class RecipeFragment : Fragment() {
         viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             Glide.with(this).load(imageUrl).into(binding.responseImage)
         }
+        viewModel.fetchAudioUrl("hello how are you doing? Alex")
+        viewModel.responseAudio.observe(viewLifecycleOwner) { it ->
+            Log.d("Rec:::", it)
+            playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + it)
+        }
     }
+
+    private fun playAudio(audioUrl: String) {
+        try {
+            val mediaPlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+                setDataSource(audioUrl)
+                prepareAsync() // might take long! (for buffering, etc)
+            }
+
+            mediaPlayer.setOnPreparedListener {
+                it.start()
+            }
+
+            mediaPlayer.setOnCompletionListener {
+                // Release the media player once playback is completed
+                it.release()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Handle exceptions
+        }
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

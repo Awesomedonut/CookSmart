@@ -9,7 +9,7 @@ class RecipeRepository(private val recipeDao: RecipeDao) {
         recipeDao.insertRecipe(recipe)
     }
 
-//    fun getAllRecipes(): LiveData<List<Recipe>> {
-//        return recipeDao.getAllRecipes()
-//    }
+    fun getRecipeById(recipeId: Long): LiveData<Recipe> {
+        return recipeDao.getRecipeById(recipeId)
+    }
 }

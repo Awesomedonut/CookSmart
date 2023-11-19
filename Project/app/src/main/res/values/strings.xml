@@ -21,4 +21,6 @@
     <string name="chicken_breast">Chicken breast</string>
     <string name="_1_kg">1 kg</string>
     <string name="date_not_set">Date not set!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

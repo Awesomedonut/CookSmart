@@ -26,7 +26,7 @@ class TextService(private val openAI: OpenAI) {
                 model = ModelId("gpt-4-1106-preview"),
                 messages = listOf(
 //                    ChatMessage(role = ChatRole.System, content = "You are a SFU student."),
-                    ChatMessage(role = ChatRole.User, content = question)
+                    ChatMessage(role = ChatRole.User, content = "Please create a recipe along with cooking instructions based on the ingredients provided: $question")
                 )
             )
             openAI.chatCompletions(chatCompletionRequest)

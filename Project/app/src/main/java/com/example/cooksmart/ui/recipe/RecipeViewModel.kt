@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 
 class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     private val _response = MutableLiveData<String>()
+    private val _responseDishSummary = MutableLiveData<String>()
+
     val response: LiveData<String> get() = _response
 
     private val _imageUrl = MutableLiveData<String>()
@@ -33,13 +35,21 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     }
     private fun postQuestion(question: String) {
         viewModelScope.launch {
-            fetcher.startStreaming(this,question, _response, ::fetchImageUrl)
+            fetcher.startStreaming(this,question, _response, ::summarizeDish)
             //fetcher.fetchRecipeText(question, _response)
         }
     }
+    private fun summarizeDish(){
+        Log.d("RecipeViewModel", "summarizeDish....")
+        viewModelScope.launch {
+            fetcher.startStreaming(this, "describe the finished food using no more than two sentences: $_response",_responseDishSummary, ::fetchImageUrl)
+            //fetcher.fetchRecipeText(question, _response)
+        }
+//        fetchImageUrl("Give me a beautiful dish presentation following this recipe:$")
+    }
     private fun fetchImageUrl(){
         Log.d("RecipeViewModel", "fetch....")
-        fetchImageUrl("Give me a beautiful dish presentation method to follow after I use this recipe:$_response")
+        fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
     }
     fun processSpokenText(spokenText: String) {
         postQuestion(spokenText)

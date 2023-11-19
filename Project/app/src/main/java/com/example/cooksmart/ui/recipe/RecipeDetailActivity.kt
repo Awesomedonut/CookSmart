@@ -48,7 +48,6 @@ class RecipeDetailActivity : AppCompatActivity() {
                 }
             //}
         } else {
-            // Handle error, invalid recipeId
             Toast.makeText(this, "Invalid Recipe ID", Toast.LENGTH_SHORT).show()
             finish() // Close the activity if the recipe ID is invalid
         }

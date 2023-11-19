@@ -16,13 +16,14 @@ import kotlinx.coroutines.launch
 
 class TextService(private val openAI: OpenAI) {
 
+    private var fullText: String = ""
 //    private val messages = mutableListOf<ChatMessage>()
 //    private val responseStateFlow = MutableStateFlow("")
     fun startStream(coroutineScope: CoroutineScope, question: String, responseState: MutableLiveData<String>, callback: () -> Unit) {
         coroutineScope.launch(Dispatchers.IO) {
-            println("\n>️ Streaming chat completions...")
+            println("\n>️ Streaming chat completions...: $question")
             val chatCompletionRequest = ChatCompletionRequest(
-                model = ModelId("gpt-4-turbo"),
+                model = ModelId("gpt-4-1106-preview"),
                 messages = listOf(
 //                    ChatMessage(role = ChatRole.System, content = "You are a SFU student."),
                     ChatMessage(role = ChatRole.User, content = question)
@@ -32,11 +33,15 @@ class TextService(private val openAI: OpenAI) {
                 .onEach { response ->
                     val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
                     println(text)
-                    responseState.postValue(responseState.value.orEmpty() + text)
+                    fullText += text
+                    responseState.postValue(fullText)
                 }
                 .onCompletion { callback() }
                 .launchIn(coroutineScope)
         }
+    }
+    fun resetText() {
+        fullText = ""
     }
     fun get(coroutineScope: CoroutineScope) {
         coroutineScope.launch {

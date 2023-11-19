@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.recipe
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,12 +23,16 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
 
     private fun postQuestion(question: String) {
         viewModelScope.launch {
-            fetcher.fetchRecipeText(question, _response)
+            fetcher.startStreaming(this,question, _response, ::fetchImageUrl)
+            //fetcher.fetchRecipeText(question, _response)
         }
     }
-
+    private fun fetchImageUrl(){
+        Log.d("RecipeViewModel", "fetch....")
+        fetchImageUrl("Give me a beautiful dish presentation method to follow after I use this recipe:$_response")
+    }
     fun processSpokenText(spokenText: String) {
-        fetchImageUrl(spokenText)
         postQuestion(spokenText)
+        //_response.value?.let { }
     }
 }

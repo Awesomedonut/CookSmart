@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aallam.openai.api.image.ImageURL
-import com.example.cooksmart.ui.recipe.ImageService
+import com.example.cooksmart.infra.services.ImageService
 import kotlinx.coroutines.launch
 
 class ImageViewModel (private val imageService: ImageService) : ViewModel() {

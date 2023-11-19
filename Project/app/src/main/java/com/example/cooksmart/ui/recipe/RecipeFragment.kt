@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.databinding.FragmentRecipeBinding
@@ -14,47 +12,19 @@ import android.content.Intent
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import com.aallam.openai.api.chat.ChatCompletion
-import com.aallam.openai.api.chat.ChatCompletionRequest
-import com.aallam.openai.api.chat.ChatMessage
-import com.aallam.openai.api.chat.ChatRole
-import com.aallam.openai.api.http.Timeout
-import com.aallam.openai.api.model.ModelId
-import com.aallam.openai.client.OpenAI
 import com.bumptech.glide.Glide
 import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.infra.net.SmartNet
 import com.example.cooksmart.infra.net.UnsafeHttpClient
 import com.example.cooksmart.infra.services.OpenAIProvider
+import com.example.cooksmart.infra.services.TextService
 import com.example.cooksmart.infra.services.VisionService
 import com.example.cooksmart.utils.DataFetcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import java.io.IOException
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
 import java.util.Locale
-import java.util.Objects
-import java.util.concurrent.TimeUnit
-import javax.net.ssl.*
-import kotlin.time.Duration.Companion.seconds
 
 class RecipeFragment : Fragment() {
 

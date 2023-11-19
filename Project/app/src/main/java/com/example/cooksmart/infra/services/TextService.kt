@@ -1,5 +1,6 @@
 package com.example.cooksmart.infra.services
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
@@ -17,32 +18,64 @@ import kotlinx.coroutines.launch
 class TextService(private val openAI: OpenAI) {
 
     private var fullText: String = ""
-//    private val messages = mutableListOf<ChatMessage>()
+    private var audioText: String = ""
+    private var introCompleted: Boolean = false
+
+    //    private val messages = mutableListOf<ChatMessage>()
 //    private val responseStateFlow = MutableStateFlow("")
-    fun startStream(coroutineScope: CoroutineScope, question: String, responseState: MutableLiveData<String>, callback: () -> Unit) {
+    fun startStream(
+        coroutineScope: CoroutineScope,
+        question: String,
+        responseState: MutableLiveData<String>,
+        onAudioTextReady: (text: String) -> Unit,
+        onCompleted: () -> Unit
+    ) {
         coroutineScope.launch(Dispatchers.IO) {
             println("\n>️ Streaming chat completions...: $question")
             val chatCompletionRequest = ChatCompletionRequest(
                 model = ModelId("gpt-4-1106-preview"),
                 messages = listOf(
 //                    ChatMessage(role = ChatRole.System, content = "You are a SFU student."),
-                    ChatMessage(role = ChatRole.User, content = "Please create a recipe along with cooking instructions based on the ingredients provided: $question")
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = "Please create a recipe along with cooking instructions based on the ingredients provided, don't use special characters like #, *, I need to read it: $question"
+                    )
                 )
             )
             openAI.chatCompletions(chatCompletionRequest)
                 .onEach { response ->
                     val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
-                    println(text)
+//                    println(text)
                     fullText += text
+                    if (fullText.contains("\n") && !introCompleted) {
+                        val firstNewLineIndex = fullText.indexOf("\n")
+                        audioText = fullText.substring(0, firstNewLineIndex)
+                        onAudioTextReady(audioText)
+                        introCompleted = true
+                        Log.d("TextService", "sending the first p of audio ")
+                    }
                     responseState.postValue(fullText)
                 }
-                .onCompletion { callback() }
+                .onCompletion {
+                    if (introCompleted) {
+                        val firstNewLineIndex = fullText.indexOf("\n")
+                        var summary = fullText.substring(firstNewLineIndex + 1)
+                        onAudioTextReady(summary)
+                    }else{
+                        onAudioTextReady(fullText)
+                    }
+                    onCompleted()
+                }
                 .launchIn(coroutineScope)
         }
     }
+
     fun resetText() {
         fullText = ""
+        audioText = ""
+        introCompleted = false
     }
+
     fun get(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             println("\n> Create chat completions...")

@@ -17,10 +17,10 @@ class DataFetcher(private val smartNet: SmartNet) {
 //    private val responseState = MutableLiveData<String>()
 //    val response: LiveData<String> = responseState
 
-    fun startStreaming(coroutineScope: CoroutineScope, question: String, responseState: MutableLiveData<String>, callback: () -> Unit) {
+    fun startStreaming(coroutineScope: CoroutineScope, question: String, responseState: MutableLiveData<String>, onAudioTextReady: (text: String) -> Unit, onCompleted: () -> Unit) {
         val openAI = OpenAIProvider.instance
         val textService = TextService(openAI)
-        textService.startStream(coroutineScope, question, responseState, callback)
+        textService.startStream(coroutineScope, question, responseState, onAudioTextReady,onCompleted)
     }
 
 //    fun sendQuestion(question: String, coroutineScope: CoroutineScope) {
@@ -54,11 +54,11 @@ class DataFetcher(private val smartNet: SmartNet) {
     }
 //    }
 
-    fun fetchAudio(question: String, audioUrlState: MutableLiveData<String>) {
+    fun fetchAudio(question: String, onAudioUrlReady: (text: String) -> Unit) {
         smartNet.makeCall("chat/audio", question) { jsonResponse ->
             val gson = Gson()
             val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
-            audioUrlState.postValue(audio.wavFileUrl)
+            onAudioUrlReady(audio.wavFileUrl)
         }
     }
 }

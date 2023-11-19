@@ -22,7 +22,7 @@ class TextService(private val openAI: OpenAI) {
         coroutineScope.launch(Dispatchers.IO) {
             println("\n>️ Streaming chat completions...")
             val chatCompletionRequest = ChatCompletionRequest(
-                model = ModelId("gpt-3.5-turbo"),
+                model = ModelId("gpt-4-turbo"),
                 messages = listOf(
 //                    ChatMessage(role = ChatRole.System, content = "You are a SFU student."),
                     ChatMessage(role = ChatRole.User, content = question)

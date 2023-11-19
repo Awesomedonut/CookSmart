@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cooksmart.infra.services.ImageService
+import com.example.cooksmart.infra.services.OpenAIProvider
+import com.example.cooksmart.infra.services.TextService
 import com.example.cooksmart.utils.DataFetcher
 import kotlinx.coroutines.launch
 
@@ -16,11 +19,18 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     val imageUrl: LiveData<String> get() = _imageUrl
 
     private fun fetchImageUrl(question: String) {
-        viewModelScope.launch {
-            fetcher.fetchImageUrl(question, _imageUrl)
-        }
-    }
 
+        val openAI = OpenAIProvider.instance
+        val imageService = ImageService(openAI)
+        imageService.fetchImage(viewModelScope, question, _imageUrl, ::loadImage)
+
+//        viewModelScope.launch {
+//            fetcher.fetchImageUrl(question, _imageUrl)
+//        }
+    }
+    private fun loadImage(){
+
+    }
     private fun postQuestion(question: String) {
         viewModelScope.launch {
             fetcher.startStreaming(this,question, _response, ::fetchImageUrl)

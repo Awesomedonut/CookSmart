@@ -26,6 +26,10 @@ class RecipeDetailActivity : AppCompatActivity() {
         title = findViewById(R.id.recipeName)
 
         val recipeId = intent.getLongExtra("recipeID", -1)
+        val recipeName = intent.getStringExtra("recipeName")
+        val recipeIngredients = intent.getStringExtra("recipeIngredients")
+        val recipeInstructions = intent.getStringExtra("recipeInstructions")
+
 
         if (recipeId.toInt() != -1) {
             viewModel = ViewModelProvider(this).get(RecipeDetailViewModel::class.java)
@@ -34,9 +38,9 @@ class RecipeDetailActivity : AppCompatActivity() {
             viewModel.getRecipeById(recipeId).observe(this) { recipe ->
                 if (recipe != null) {
                     // Update UI with recipe details
-                    title.text = recipe.name
-                    instructions.text = recipe.instructions
-                    ingredients.text = recipe.ingredients
+                    title.text = recipeName
+                    instructions.text = recipeIngredients
+                    ingredients.text = recipeInstructions
                 } else {
                     // Handle error, recipe not found
                     Toast.makeText(this, "Recipe not found", Toast.LENGTH_SHORT).show()

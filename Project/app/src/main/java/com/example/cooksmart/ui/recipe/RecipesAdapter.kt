@@ -37,9 +37,12 @@ class RecipesAdapter(private val context: Context, private val data: List<Recipe
         recipeListTitle.text = recipe.name
 
         view.setOnClickListener {
+            // Handle item click, start RecipeDetailActivity with intent
             val intent = Intent(context, RecipeDetailActivity::class.java)
             intent.putExtra("recipeID", recipe.id)
-            println(recipe.id)
+            intent.putExtra("recipeName", recipe.name)
+            intent.putExtra("recipeIngredients", recipe.ingredients)
+            intent.putExtra("recipeInstructions", recipe.instructions)
             context.startActivity(intent)
         }
 

@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.recipe
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
-import com.example.cooksmart.database.RecipeDao
 import com.example.cooksmart.databinding.FragmentRecipeBinding
 
 class RecipesFragment : Fragment() {
@@ -25,7 +25,16 @@ class RecipesFragment : Fragment() {
     private lateinit var listView: ListView
     private lateinit var adapter: RecipesAdapter
     private val recipeList = mutableListOf<Recipe>()
-    private var hasInserted:Boolean = false
+
+    private var hasInserted: Boolean
+        get() = requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getBoolean("hasInserted", false)
+        set(value) {
+            requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean("hasInserted", value)
+                .apply()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +74,9 @@ class RecipesFragment : Fragment() {
             // Handle item click, start RecipeDetailActivity with intent
             val intent = Intent(requireContext(), RecipeDetailActivity::class.java)
             intent.putExtra("recipeID", clickedRecipe.id)
+            intent.putExtra("recipeName", clickedRecipe.name)
+            intent.putExtra("recipeIngredients", clickedRecipe.ingredients)
+            intent.putExtra("recipeInstructions", clickedRecipe.instructions)
             startActivity(intent)
         }
 
@@ -82,23 +94,6 @@ class RecipesFragment : Fragment() {
             recipesViewModel.insertRecipe(recipe)
         }
     }
-
-//    private fun getData() {
-//        listView.layoutManager = LinearLayoutManager(requireContext())
-//        val list: MutableList<Recipe> = ArrayList<Recipe>()
-//        list.add(Recipe(1, "What", "क्या"))
-//        list.add(Recipe(2, "How", "कैसे"))
-//        list.add(Recipe(3, "Where", "कहाँ"))
-//        list.add(Recipe(4, "When", "कब"))
-//        list.add(Recipe(5, "Who", "कौन"))
-//        list.add(Recipe(6, "Why", "क्यों"))
-//        list.add(Recipe(7, "Which", "कौन सा"))
-//        list.add(Recipe(8, "Hello", "नमस्ते"))
-//        list.add(Recipe(9, "Goodbye", "अलविदा"))
-//        list.add(Recipe(10, "Thank you", "धन्यवाद"))
-//        val adapter = RecipesAdapter(list, RecipeDao)
-//        recyclerView.adapter = adapter
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

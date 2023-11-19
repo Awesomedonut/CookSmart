@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.calendar
 
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -30,6 +32,9 @@ import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 
+private const val COOK_SMART = "CookSmart"
+private const val SELECTED_DATE = "SELECTED DATE"
+
 class CalendarFragment : Fragment() {
 
     private var _binding: FragmentCalendarBinding? = null
@@ -40,21 +45,33 @@ class CalendarFragment : Fragment() {
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var ingredientList : ArrayList<Ingredient>
     val selectedDate = Calendar.getInstance()
+
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(CalendarViewModel::class.java)
-
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        val ingredientListView : ListView = root.findViewById(R.id.lvIngredients)
+        ingredientList = ArrayList()
+        val ingredientAdapter =
+            CalendarListAdapter(requireContext().applicationContext, ingredientList)
+        ingredientListView.adapter = ingredientAdapter
+
+        sharedPreferences = requireContext().getSharedPreferences(
+            COOK_SMART, AppCompatActivity.MODE_PRIVATE
+        )
+
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
         ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
-
+            ingredientAdapter.replace(ingredient.sortedBy { it.bestBefore })
+            ingredientAdapter.notifyDataSetChanged()
         }
 
+        // Initialize tvDate
         val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
         val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
         val tvDate : TextView = root.findViewById(R.id.tvDateSelected)
@@ -63,16 +80,12 @@ class CalendarFragment : Fragment() {
         val calendar : CalendarView = root.findViewById(R.id.calendar)
         calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
             setDate(root, year, month, dayOfMonth)
+            val editor = sharedPreferences.edit()
+            editor.putLong(SELECTED_DATE, convertCalendartoLong(selectedDate))
+            editor.apply()
         }
 
-        val adapter = com.example.cooksmart.ui.fridge.ListAdapter()
-        val rvIngredients : RecyclerView = root.findViewById(R.id.rvIngredients)
-        rvIngredients.adapter = adapter
-        ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
-        ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
-            adapter.setData(ingredient)
 
-        }
         return root
     }
 

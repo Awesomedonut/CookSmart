@@ -23,33 +23,11 @@
             android:layout_margin="8dp"
             android:text="Date Placeholder"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvIngredients"
+        <ListView
+            android:id="@+id/lvIngredients"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="500dp"
             android:layout_below="@+id/tvDateSelected"
             android:layout_margin="8dp" />
-        <TextView
-            android:id="@+id/tvDayPlan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/rvIngredients"
-            android:layout_margin="8dp"
-            android:text="Plan Placeholder"/>
-        <TextView
-            android:id="@+id/tvNotes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvDayPlan"
-            android:layout_margin="8dp"
-            android:text="Notes"/>
-        <Button
-            android:id="@+id/btnAddCalendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvNotes"
-            android:text="Edit Plan"
-            android:layout_centerHorizontal="true"/>
-
     </RelativeLayout>
 </ScrollView>

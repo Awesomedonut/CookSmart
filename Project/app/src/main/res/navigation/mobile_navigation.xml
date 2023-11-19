@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_recipe">
+    app:startDestination="@id/navigation_fridge">
 
     <fragment
         android:id="@+id/navigation_recipe"
@@ -14,11 +14,14 @@
     <fragment
         android:id="@+id/navigation_fridge"
         android:name="com.example.cooksmart.ui.fridge.FridgeFragment"
-        android:label="@string/title_fridge"
+        android:label="@string/title_ingredients"
         tools:layout="@layout/fragment_fridge" >
         <action
             android:id="@+id/action_navigation_fridge_to_fridgeInsert2"
-            app:destination="@id/fridgeInsert2" />
+            app:destination="@id/fridgeInsert" />
+        <action
+            android:id="@+id/action_navigation_fridge_to_ingredientUpdate"
+            app:destination="@id/ingredientUpdate" />
     </fragment>
 
     <fragment
@@ -27,12 +30,23 @@
         android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" />
     <fragment
-        android:id="@+id/fridgeInsert2"
+        android:id="@+id/fridgeInsert"
         android:name="com.example.cooksmart.ui.fridge.FridgeInsert"
         android:label="@string/title_add_ingredient" >
         <action
             android:id="@+id/action_fridgeInsert2_to_navigation_fridge"
             app:destination="@id/navigation_fridge" />
+    </fragment>
+    <fragment
+        android:id="@+id/ingredientUpdate"
+        android:name="com.example.cooksmart.ui.fridge.IngredientUpdate"
+        android:label="Update" >
+        <action
+            android:id="@+id/action_ingredientUpdate_to_navigation_fridge"
+            app:destination="@id/navigation_fridge" />
+        <argument
+            android:name="currentIngredient"
+            app:argType="com.example.cooksmart.database.Ingredient" />
     </fragment>
 
 </navigation>

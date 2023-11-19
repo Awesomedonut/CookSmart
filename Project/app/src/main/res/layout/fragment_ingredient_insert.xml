@@ -68,6 +68,7 @@
                 android:id="@+id/best_before_date_picker"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/darker_gray"
                 android:layout_weight="1"
                 android:hint="@string/change_date" />
         </LinearLayout>
@@ -82,8 +83,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/darker_gray"
-                android:text="@string/title_add_ingredient"
+                android:text="@string/add"
                 android:textStyle="bold" />
         </LinearLayout>
 

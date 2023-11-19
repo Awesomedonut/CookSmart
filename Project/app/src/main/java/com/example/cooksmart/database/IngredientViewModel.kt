@@ -22,4 +22,22 @@ class IngredientViewModel(application: Application): AndroidViewModel(applicatio
             repository.insertIngredient(ingredient)
         }
     }
+
+    fun updateIngredient(ingredient: Ingredient) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateIngredient(ingredient)
+        }
+    }
+
+    fun deleteIngredient(ingredient: Ingredient) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteIngredient(ingredient)
+        }
+    }
+
+    fun deleteAllIngredients() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllIngredients()
+        }
+    }
 }

@@ -7,6 +7,54 @@
     android:layout_height="match_parent"
     tools:context=".ui.recipe.RecipeFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <!--creating a simple image view for mic-->
+            <ImageView
+                android:id="@+id/micImageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"
+                android:src="@drawable/ic_add"
+                />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:id="@+id/responseTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Response will be shown here"
+                android:textSize="18sp"
+                /> <!-- Initially set to gone -->
+
+            <ImageView
+                android:id="@+id/responseImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="image_desc"
+                /> <!-- Initially set to gone -->
+
+        </LinearLayout>
+
+    </ScrollView>
     <TextView
         android:id="@+id/text_home"
         android:layout_width="match_parent"

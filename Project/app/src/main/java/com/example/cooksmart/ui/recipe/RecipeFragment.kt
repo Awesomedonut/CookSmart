@@ -44,10 +44,10 @@ class RecipeFragment : Fragment() {
         val viewModelFactory = RecipeViewModelFactory(fetcher)
         viewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
 
-        val openAI = OpenAIProvider.instance
-        val textService = TextService(openAI)
-        // Use CoroutineScope to launch chat function
-        val coroutineScope = CoroutineScope(Dispatchers.Main)
+//        val openAI = OpenAIProvider.instance
+//        val textService = TextService(openAI)
+//        // Use CoroutineScope to launch chat function
+//        val coroutineScope = CoroutineScope(Dispatchers.Main)
 //        textService.getByImage(coroutineScope)
         //
 //        val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -94,9 +94,14 @@ class RecipeFragment : Fragment() {
             Glide.with(this).load(imageUrl).into(binding.responseImage)
         }
         viewModel.fetchAudioUrl("hello how may I help you?")
-        viewModel.responseAudio.observe(viewLifecycleOwner) { it ->
-            Log.d("Rec:::", it)
-            playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + it)
+//        viewModel.responseAudio.observe(viewLifecycleOwner) { it ->
+//            Log.d("Rec:::", it)
+//            playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + it)
+//        }
+        viewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
+            if (audioUrl.isNotEmpty()) {
+                playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + audioUrl)
+            }
         }
     }
 
@@ -118,8 +123,8 @@ class RecipeFragment : Fragment() {
             }
 
             mediaPlayer.setOnCompletionListener {
-                // Release the media player once playback is completed
                 it.release()
+                viewModel.playNextAudio()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -133,7 +138,10 @@ class RecipeFragment : Fragment() {
         if (requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == Activity.RESULT_OK && data != null) {
             val results: ArrayList<String> = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
             val spokenText = results[0]
-            viewModel.processSpokenText(spokenText)
+            if (spokenText.length > 5)
+                viewModel.processSpokenText(spokenText)
+            else
+                Toast.makeText(this@RecipeFragment.context, "Your input is too short, please try again", Toast.LENGTH_SHORT).show()
         }
     }
 

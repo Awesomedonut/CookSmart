@@ -1,5 +1,6 @@
 package com.example.cooksmart.infra.net
 
+import android.util.Log
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -12,6 +13,8 @@ import org.json.JSONObject
 import com.example.cooksmart.BuildConfig
 class SmartNet(private val client: OkHttpClient) {
     fun makeCall(endpoint: String, question: String, onResponse: (String) -> Unit) {
+        Log.d("SmartNet.makecall", "fetch....")
+
         val fullUrl = BuildConfig.API_URL + endpoint
         val json = JSONObject().apply { put("question", question) }
         val requestBody = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())

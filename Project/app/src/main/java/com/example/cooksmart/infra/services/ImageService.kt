@@ -1,19 +1,10 @@
-package com.example.cooksmart.ui.recipe
+package com.example.cooksmart.infra.services
 
-import com.aallam.openai.api.chat.ChatCompletionRequest
-import com.aallam.openai.api.chat.ChatMessage
-import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.image.ImageURL
-import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ImageService(private val openAI: OpenAI) {
@@ -23,12 +14,12 @@ class ImageService(private val openAI: OpenAI) {
             creation = ImageCreation(
                 prompt = userText,
                 n = NUMBER_OF_IMAGE,
-                size = ImageSize.is1024x1024
+                size = ImageSize.is512x512
             )
         )
     }
 
     companion object {
-        private const val NUMBER_OF_IMAGE = 2
+        private const val NUMBER_OF_IMAGE = 1
     }
 }

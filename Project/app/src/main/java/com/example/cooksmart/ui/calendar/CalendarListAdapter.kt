@@ -2,11 +2,17 @@ package com.example.cooksmart.ui.calendar
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources.Theme
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.CalendarView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.R
 import com.example.cooksmart.R.layout.adapter_calendar_list
 import com.example.cooksmart.database.Ingredient
@@ -22,7 +28,10 @@ import java.util.Locale
 
 private const val COOK_SMART = "CookSmart"
 private const val SELECTED_DATE = "SELECTED DATE"
-class CalendarListAdapter(private val context: Context, private var ingredientList : List<Ingredient>) : BaseAdapter() {
+class CalendarListAdapter(private val context: Context,
+                          private var ingredientList : List<Ingredient>,
+                          private val calendarViewModel: CalendarViewModel,
+                          private val lifecycleOwner : LifecycleOwner) : BaseAdapter() {
     private lateinit var sharedPreferences: SharedPreferences
     override fun getCount(): Int {
         return ingredientList.size
@@ -37,21 +46,35 @@ class CalendarListAdapter(private val context: Context, private var ingredientLi
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        sharedPreferences = context.getSharedPreferences(
-            COOK_SMART, AppCompatActivity.MODE_PRIVATE
-        )
-
         val view : View = View.inflate(context, adapter_calendar_list, null)
+
         if(ingredientList.isNotEmpty()){
             val tvExpiryDate : TextView = view.findViewById(R.id.tvCalendarListExpiryDate)
             val ingredient = ingredientList[position]
             val expiryDate = ingredient.bestBefore
-            val string = ingredient.name + " " + dateString(expiryDate)
-            tvExpiryDate.text = string
+            var ingredientString = ingredient.name + " " + dateString(expiryDate)
+            tvExpiryDate.text = ingredientString
 
-            val selectedDate = sharedPreferences.getLong(SELECTED_DATE, 0)
-            val expiryDays = daysExpiry(expiryDate, selectedDate)
+            calendarViewModel.getSelectedDate().observe(lifecycleOwner){
+                val selectedDate = it
+                val expiryDays = daysExpiry(expiryDate, selectedDate)
+                if(expiryDays <= 0){
+                    tvExpiryDate.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_red))
+                }
+                else if(expiryDays < 3 ){
+                    tvExpiryDate.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_yellow))
+                }
+                else{
+                    tvExpiryDate.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_green))
+                }
+
+                tvExpiryDate.setOnClickListener{
+                    Toast.makeText(context, dateString(selectedDate), Toast.LENGTH_SHORT).show()
+                }
+            }
+
         }
+
         return view
     }
 
@@ -84,5 +107,6 @@ class CalendarListAdapter(private val context: Context, private var ingredientLi
     fun replace(newList : List<Ingredient>){
         ingredientList = newList
     }
+
 
 }

@@ -32,8 +32,6 @@ import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 
-private const val COOK_SMART = "CookSmart"
-private const val SELECTED_DATE = "SELECTED DATE"
 
 class CalendarFragment : Fragment() {
 
@@ -46,7 +44,6 @@ class CalendarFragment : Fragment() {
     private lateinit var ingredientList : ArrayList<Ingredient>
     val selectedDate = Calendar.getInstance()
 
-    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,15 +52,15 @@ class CalendarFragment : Fragment() {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        val calendarViewModel : CalendarViewModel =
+            ViewModelProvider(this)[CalendarViewModel::class.java]
+
         val ingredientListView : ListView = root.findViewById(R.id.lvIngredients)
         ingredientList = ArrayList()
         val ingredientAdapter =
-            CalendarListAdapter(requireContext().applicationContext, ingredientList)
+            CalendarListAdapter(requireContext().applicationContext,
+                ingredientList, calendarViewModel, viewLifecycleOwner)
         ingredientListView.adapter = ingredientAdapter
-
-        sharedPreferences = requireContext().getSharedPreferences(
-            COOK_SMART, AppCompatActivity.MODE_PRIVATE
-        )
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
         ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
@@ -71,18 +68,17 @@ class CalendarFragment : Fragment() {
             ingredientAdapter.notifyDataSetChanged()
         }
 
-        // Initialize tvDate
+        // Initialize date variables
         val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
         val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
         val tvDate : TextView = root.findViewById(R.id.tvDateSelected)
         tvDate.text = formattedDate
+        calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
 
         val calendar : CalendarView = root.findViewById(R.id.calendar)
         calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
             setDate(root, year, month, dayOfMonth)
-            val editor = sharedPreferences.edit()
-            editor.putLong(SELECTED_DATE, convertCalendartoLong(selectedDate))
-            editor.apply()
+            calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
         }
 
 

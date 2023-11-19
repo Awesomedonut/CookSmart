@@ -93,7 +93,7 @@ class RecipeFragment : Fragment() {
         viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             Glide.with(this).load(imageUrl).into(binding.responseImage)
         }
-        viewModel.fetchAudioUrl("hello how are you doing? Alex")
+        viewModel.fetchAudioUrl("hello how may I help you?")
         viewModel.responseAudio.observe(viewLifecycleOwner) { it ->
             Log.d("Rec:::", it)
             playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + it)

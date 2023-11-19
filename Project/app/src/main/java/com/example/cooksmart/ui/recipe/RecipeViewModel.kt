@@ -44,6 +44,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     }
     private fun summarizeDish(){
         Log.d("RecipeViewModel", "summarizeDish....")
+        _response.value?.let { fetchAudioUrl(it) }
         viewModelScope.launch {
             fetcher.startStreaming(this, "describe the finished food using no more than two sentences: $_response",_responseDishSummary, ::fetchImageUrl)
             //fetcher.fetchRecipeText(question, _response)

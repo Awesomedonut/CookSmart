@@ -32,11 +32,11 @@ class RecipeDetailActivity : AppCompatActivity() {
 
 
         if (recipeId.toInt() != -1) {
-            viewModel = ViewModelProvider(this).get(RecipeDetailViewModel::class.java)
+            //viewModel = ViewModelProvider(this).get(RecipeDetailViewModel::class.java)
 
             // Observe the LiveData for the selected recipe
-            viewModel.getRecipeById(recipeId).observe(this) { recipe ->
-                if (recipe != null) {
+            //viewModel.getRecipeById(recipeId).observe(this) { recipe ->
+                if (recipeId.toInt() != null) {
                     // Update UI with recipe details
                     title.text = recipeName
                     instructions.text = recipeIngredients
@@ -46,7 +46,7 @@ class RecipeDetailActivity : AppCompatActivity() {
                     Toast.makeText(this, "Recipe not found", Toast.LENGTH_SHORT).show()
                     finish() // Close the activity if the recipe is not found
                 }
-            }
+            //}
         } else {
             // Handle error, invalid recipeId
             Toast.makeText(this, "Invalid Recipe ID", Toast.LENGTH_SHORT).show()

@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.fridge
 
+import android.database.DataSetObserver
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.example.cooksmart.database.Ingredient
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class ListAdapter: RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
+class ListAdapter: RecyclerView.Adapter<ListAdapter.MyViewHolder>(){
     private var ingredientList = emptyList<Ingredient>()
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}

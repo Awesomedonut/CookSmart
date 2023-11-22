@@ -32,17 +32,26 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
 
     private fun enqueueAudioUrl(audioUrl: String) {
         audioQueue.add(audioUrl)
-        if (audioQueue.size == 1) {
+        if (audioQueue.size > 0) {
             playNextAudio()
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        cleanupQueue()
+    }
     fun playNextAudio() {
         viewModelScope.launch(Dispatchers.Main) {
             val nextUrl = audioQueue.poll() // Retrieves and removes the head of this queue
             if (nextUrl != null) {
                 _nextAudioUrl.value = nextUrl
             }
+        }
+    }
+    fun cleanupQueue(){
+        viewModelScope.launch(Dispatchers.Main) {
+            audioQueue.clear()
         }
     }
     private fun fetchImageUrl(question: String) {

@@ -12,6 +12,7 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.speech.RecognizerIntent
+import android.util.Log
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.cooksmart.BuildConfig
@@ -42,7 +43,11 @@ class RecipeFragment : Fragment() {
 
     private fun setupUI() {
         binding.micImageView.setOnClickListener {
-            mediaPlayer.stop()
+            try{
+                if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
+                    mediaPlayer.stop()
+                }
+            }catch(e: Exception) {}
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
@@ -72,29 +77,33 @@ class RecipeFragment : Fragment() {
     }
 
     private fun playAudio(audioUrl: String) {
-        try {
-            mediaPlayer = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                setDataSource(audioUrl)
-                prepareAsync() // might take long! (for buffering, etc)
-            }
+        // Stop and release the current mediaPlayer if it's playing
+try {
+    if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
+        mediaPlayer.stop()
+        mediaPlayer.release()
+    }
+}catch (e: Exception){
 
-            mediaPlayer.setOnPreparedListener {
-                it.start()
-            }
+}
+        mediaPlayer = MediaPlayer().apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+            setDataSource(audioUrl)
+            prepareAsync()
+        }
 
-            mediaPlayer.setOnCompletionListener {
-                it.release()
-                viewModel.playNextAudio()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            // Handle exceptions
+        mediaPlayer.setOnPreparedListener {
+            it.start()
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            it.release()
+            viewModel.playNextAudio()
         }
     }
 
@@ -110,8 +119,21 @@ class RecipeFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (::mediaPlayer.isInitialized) {
+            mediaPlayer.release()
+        }
+        viewModel.cleanupQueue()
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
+        if (::mediaPlayer.isInitialized) {
+            mediaPlayer.release()
+        }
+        viewModel.cleanupQueue()
         _binding = null
     }
 }

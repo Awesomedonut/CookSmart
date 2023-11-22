@@ -1,21 +1,14 @@
 package com.example.cooksmart.utils
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.cooksmart.infra.net.SmartNet
+import com.example.cooksmart.infra.services.SmartNetService
 import com.example.cooksmart.infra.services.OpenAIProvider
 import com.example.cooksmart.infra.services.TextService
 import com.example.cooksmart.models.WavAudio
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-//import com.google.gson.Gson
 
-class DataFetcher(private val smartNet: SmartNet) {
-
-//    private val responseState = MutableLiveData<String>()
-//    val response: LiveData<String> = responseState
+class DataFetcher(private val smartNetService: SmartNetService) {
 
     fun startStreaming(coroutineScope: CoroutineScope, question: String, responseState: MutableLiveData<String>, onAudioTextReady: (text: String) -> Unit, onCompleted: () -> Unit) {
         val openAI = OpenAIProvider.instance
@@ -23,39 +16,8 @@ class DataFetcher(private val smartNet: SmartNet) {
         textService.startStream(coroutineScope, question, responseState, onAudioTextReady,onCompleted)
     }
 
-//    fun sendQuestion(question: String, coroutineScope: CoroutineScope) {
-//        textService.send(coroutineScope, question)
-//    }
-
-    //TODO:refactor these functions
-    fun fetchRecipeText(question: String, responseState: MutableLiveData<String>) {
-//        if (true) {
-//            val openAI = OpenAIProvider.instance
-//            val textService = TextService(openAI)
-//            CoroutineScope(Dispatchers.IO).launch {
-//                textService.get(this, question, responseState)
-//            }
-////            textService.get(coroutineScope, question)
-////            responseState.postValue(answer)
-//        } else
-//            smartNet.makeCall("get_answer", question) {
-//                responseState.postValue(it)
-//            }
-    }
-
-    fun fetchImageUrl(question: String, imageUrlState: MutableLiveData<String>) {
-//        if (true) {
-//
-//        } else
-
-//            smartNet.makeCall("get_images", question) {
-//                imageUrlState.postValue(it)
-//            }
-    }
-//    }
-
     fun fetchAudio(question: String, onAudioUrlReady: (text: String) -> Unit) {
-        smartNet.makeCall("chat/audio", question) { jsonResponse ->
+        smartNetService.makeCall("chat/audio", question) { jsonResponse ->
             val gson = Gson()
             val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
             onAudioUrlReady(audio.wavFileUrl)

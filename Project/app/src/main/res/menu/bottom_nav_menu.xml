@@ -11,8 +11,12 @@
         android:title="@string/title_recipe" />
 
     <item
+        android:id="@+id/navigation_all_recipes"
+        android:icon="@drawable/baseline_menu_book_24"
+        android:title="All Recipes" />
+
+    <item
         android:id="@+id/navigation_calendar"
         android:icon="@drawable/baseline_calendar_today_24"
         android:title="@string/title_calendar" />
-
 </menu>

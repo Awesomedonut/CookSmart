@@ -2,9 +2,11 @@ package com.example.cooksmart.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface RecipeDao {
@@ -14,12 +16,12 @@ interface RecipeDao {
     @Query("SELECT * FROM recipe_table")
     fun getAllRecipes(): LiveData<List<Recipe>>
 
-    @Query("SELECT name FROM recipe_table")
-    fun getRecipeNames(): LiveData<List<String>>
+    @Update
+    suspend fun updateRecipe(recipe: Recipe)
 
-    @Query("DELETE FROM recipe_table WHERE id = :key")
-    suspend fun deleteEntry(key: Long)
+    @Delete
+    suspend fun deleteRecipe(recipe: Recipe)
 
-    @Query("SELECT * FROM recipe_table WHERE id = :recipeId")
-    fun getRecipeById(recipeId: Long): LiveData<Recipe>
+    @Query("DELETE FROM recipe_table")
+    suspend fun deleteAllRecipes()
 }

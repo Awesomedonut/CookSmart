@@ -9,7 +9,15 @@ class RecipeRepository(private val recipeDao: RecipeDao) {
         recipeDao.insertRecipe(recipe)
     }
 
-    fun getRecipeById(recipeId: Long): LiveData<Recipe> {
-        return recipeDao.getRecipeById(recipeId)
+    suspend fun updateRecipe(recipe: Recipe) {
+        recipeDao.updateRecipe(recipe)
+    }
+
+    suspend fun deleteRecipe(recipe: Recipe) {
+        recipeDao.deleteRecipe(recipe)
+    }
+
+    suspend fun deleteAllRecipes() {
+        recipeDao.deleteAllRecipes()
     }
 }

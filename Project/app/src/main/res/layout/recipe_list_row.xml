@@ -3,28 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="24sp"
+    android:id="@+id/recipeRowLayout">
 
     <TextView
-        android:id="@+id/recipe_list_id"
+        android:id="@+id/list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:text="1"
+        android:text="@string/chicken_breast"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/recipe_list_title"
+        app:layout_constraintEnd_toStartOf="@+id/list_date_added"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/recipe_list_title"
+        android:id="@+id/list_date_added"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:text="Apple Pie"
+        android:text="@string/_2023_sep_02"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/recipe_list_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/list_name"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

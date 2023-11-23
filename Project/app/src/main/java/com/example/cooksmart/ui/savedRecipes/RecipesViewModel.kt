@@ -1,4 +1,4 @@
-package com.example.cooksmart.ui.recipe
+package com.example.cooksmart.ui.savedRecipes
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

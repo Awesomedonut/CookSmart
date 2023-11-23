@@ -4,13 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
     app:startDestination="@id/navigation_fridge">
-
     <fragment
         android:id="@+id/navigation_recipe"
-        android:name="com.example.cooksmart.ui.recipe.RecipesFragment"
+        android:name="com.example.cooksmart.ui.recipe.RecipeFragment"
         android:label="@string/title_recipe"
         tools:layout="@layout/fragment_recipe" />
-
     <fragment
         android:id="@+id/navigation_fridge"
         android:name="com.example.cooksmart.ui.fridge.FridgeFragment"
@@ -47,6 +45,27 @@
         <argument
             android:name="currentIngredient"
             app:argType="com.example.cooksmart.database.Ingredient" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_all_recipes"
+        android:name="com.example.cooksmart.ui.savedRecipes.AllRecipesFragment"
+        android:label="All Recipes"
+        tools:layout="@layout/fragment_all_recipes" >
+        <action
+            android:id="@+id/action_navigation_all_recipes_to_viewRecipe"
+            app:destination="@id/viewRecipe" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewRecipe"
+        android:name="com.example.cooksmart.ui.savedRecipes.ViewRecipe"
+        android:label="View Recipe"
+        tools:layout="@layout/fragment_view_recipe" >
+        <action
+            android:id="@+id/action_viewRecipe_to_navigation_all_recipes"
+            app:destination="@id/navigation_all_recipes" />
+        <argument
+            android:name="currentRecipe"
+            app:argType="com.example.cooksmart.database.Recipe" />
     </fragment>
 
 </navigation>

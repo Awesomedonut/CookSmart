@@ -16,9 +16,6 @@ interface IngredientDao {
     @Query("SELECT * FROM ingredient_table")
     fun getAllIngredients(): LiveData<List<Ingredient>>
 
-    @Query("SELECT name FROM ingredient_table")
-    fun getIngredientNames(): LiveData<List<String>>
-
     @Update
     suspend fun updateIngredient(ingredient: Ingredient)
 

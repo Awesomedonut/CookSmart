@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cooksmart.infra.services.ImageService
 import com.example.cooksmart.infra.services.OpenAIProvider
-import com.example.cooksmart.infra.services.TextService
 import com.example.cooksmart.utils.DataFetcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.LinkedList
+import java.util.Queue
 
 class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     private val _response = MutableLiveData<String>()
@@ -23,50 +25,84 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
 
     private val _responseDishSummary = MutableLiveData<String>()
 
+    private val audioQueue: Queue<String> = LinkedList()
+
+    private val _nextAudioUrl = MutableLiveData<String>()
+    val nextAudioUrl: LiveData<String> get() = _nextAudioUrl
+
+    private var isAudioPlaying = false
+
+    private fun enqueueAudioUrl(audioUrl: String) {
+        audioQueue.add(audioUrl)
+//        if (audioQueue.size > 0) {
+//            playNextAudio()
+//        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cleanupQueue()
+    }
+    fun audioCompleted() {
+        isAudioPlaying = false
+    }
+//    fun checkAndPlayAudio() {
+//        if (audioQueue.isNotEmpty()) {
+//            playNextAudio()
+//        }
+//    }
+    fun playNextAudio() {
+        viewModelScope.launch(Dispatchers.Main) {
+            if (audioQueue.isNotEmpty() && !isAudioPlaying) {
+                val nextUrl = audioQueue.poll()
+                nextUrl?.let {
+                    _nextAudioUrl.value = it
+                    isAudioPlaying = true
+                }
+            }
+        }
+    }
+
+    fun cleanupQueue(){
+        viewModelScope.launch(Dispatchers.Main) {
+            audioQueue.clear()
+        }
+    }
     private fun fetchImageUrl(question: String) {
 
         val openAI = OpenAIProvider.instance
         val imageService = ImageService(openAI)
         imageService.fetchImage(viewModelScope, question, _imageUrl, ::loadImage)
-
-//        viewModelScope.launch {
-//            fetcher.fetchImageUrl(question, _imageUrl)
-//        }
     }
     private fun loadImage(){
 
     }
     private fun postQuestion(question: String) {
         viewModelScope.launch {
-            fetcher.startStreaming(this,question, _response, ::summarizeDish)
-            //fetcher.fetchRecipeText(question, _response)
+            fetcher.startStreaming(this,question, _response, ::fetchAudioUrl, ::summarizeDish)
         }
     }
     private fun summarizeDish(){
         Log.d("RecipeViewModel", "summarizeDish....")
-        _response.value?.let { fetchAudioUrl(it) }
         viewModelScope.launch {
-            fetcher.startStreaming(this, "describe the finished food using no more than two sentences: $_response",_responseDishSummary, ::fetchImageUrl)
-            //fetcher.fetchRecipeText(question, _response)
+            fetcher.startStreaming(this, "describe the finished food using no more than two sentences: $_response",_responseDishSummary, {}, ::fetchImageUrl)
         }
-//        fetchImageUrl("Give me a beautiful dish presentation following this recipe:$")
     }
     private fun fetchImageUrl(){
         Log.d("RecipeViewModel", "fetch....")
         fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
     }
 
-    fun fetchAudioUrl(text: String){
+    fun fetchAudioUrl(text: String) {
         Log.d("RecipeViewModel", "fetchAudioUrl....")
         viewModelScope.launch {
-            fetcher.fetchAudio(text, _responseAudio)
-            //fetcher.fetchRecipeText(question, _response)
+            fetcher.fetchAudio(text) { audioUrl ->
+                enqueueAudioUrl(audioUrl)
+                playNextAudio()
+            }
         }
-//        fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
     }
-
     fun processSpokenText(spokenText: String) {
         postQuestion(spokenText)
-        //_response.value?.let { }
     }
 }

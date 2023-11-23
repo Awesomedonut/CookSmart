@@ -10,4 +10,15 @@ class CalendarViewModel : ViewModel() {
         value = "This is notifications Fragment"
     }
     val text: LiveData<String> = _text
+
+    private val selectedDate = MutableLiveData<Long>()
+
+    fun setSelectedDate(date : Long){
+        selectedDate.value = date
+    }
+
+    fun getSelectedDate() : LiveData<Long> {
+        return selectedDate
+    }
+
 }

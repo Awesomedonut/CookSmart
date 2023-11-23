@@ -9,6 +9,7 @@ import com.example.cooksmart.infra.services.ImageService
 import com.example.cooksmart.infra.services.OpenAIProvider
 import com.example.cooksmart.utils.DataFetcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.LinkedList
 import java.util.Queue
@@ -31,6 +32,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     val nextAudioUrl: LiveData<String> get() = _nextAudioUrl
 
     private var isAudioPlaying = false
+    private var lastFetchJob: Job? = null
 
     private fun enqueueAudioUrl(audioUrl: String) {
         audioQueue.add(audioUrl)
@@ -94,15 +96,28 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     }
 
     fun fetchAudioUrl(text: String) {
-        Log.d("RecipeViewModel", "fetchAudioUrl....")
+        Log.d("fetchAudioUrl", text)
         viewModelScope.launch {
-            fetcher.fetchAudio(text) { audioUrl ->
-                enqueueAudioUrl(audioUrl)
-                playNextAudio()
+            // Wait for the last job to complete if it's still active
+            lastFetchJob?.join()
+            // Start a new job for fetching audio
+            lastFetchJob = launch {
+                fetcher.fetchAudio(
+                    text.replace("#","").
+                    replace("*","")) { audioUrl ->
+                    enqueueAudioUrl(audioUrl)
+                    playNextAudio()
+                }
             }
         }
     }
     fun processSpokenText(spokenText: String) {
         postQuestion(spokenText)
+    }
+
+    fun initAudioUrl(helloText: String) {
+        if (audioQueue.isEmpty()) {
+            fetchAudioUrl(helloText)
+        }
     }
 }

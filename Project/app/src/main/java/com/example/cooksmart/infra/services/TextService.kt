@@ -9,6 +9,7 @@ import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -20,6 +21,9 @@ class TextService(private val openAI: OpenAI) {
     private var audioText: String = ""
 //    private var introCompleted: Boolean = false
     private var startIndex: Int = 0
+    private val audioTextChannel = Channel<String>(Channel.UNLIMITED)
+    private var firstAudio = true  // Counter to track the number of substrings processed
+
     fun startStream(
         coroutineScope: CoroutineScope,
         question: String,
@@ -34,7 +38,9 @@ class TextService(private val openAI: OpenAI) {
                 messages = listOf(
                     ChatMessage(
                         role = ChatRole.User,
-                        content = "Please create a recipe along with cooking instructions based on the ingredients provided, don't use special characters like #, *, I need to read it: $question"
+                        content = "Please create a recipe along with cooking instructions based " +
+                                "on the ingredients provided, don't return special characters like " +
+                                "#, *, I need to read it: $question"
                     )
                 )
             )
@@ -53,12 +59,7 @@ class TextService(private val openAI: OpenAI) {
                 }
                 .onCompletion {
                     onAudioTextReady(fullText.substring(startIndex))
-//                        val firstNewLineIndex = fullText.indexOf("\n")
-//                        var summary = fullText.substring(firstNewLineIndex + 1)
-//                        onAudioTextReady(summary)
-//                    }else{
-//                        onAudioTextReady(fullText)
-//                    }
+                    responseState.postValue(fullText)
                     resetText()
                     onCompleted()
                 }
@@ -66,20 +67,22 @@ class TextService(private val openAI: OpenAI) {
         }
     }
 
-    fun resetText() {
+    private fun resetText() {
         fullText = ""
         audioText = ""
         startIndex = 0
     }
 
-    fun get(coroutineScope: CoroutineScope) {
+    fun get(coroutineScope: CoroutineScope, prompt: String) {
         coroutineScope.launch {
             println("\n> Create chat completions...")
             val chatCompletionRequest = ChatCompletionRequest(
                 model = ModelId("gpt-3.5-turbo"),
                 messages = listOf(
-                    ChatMessage(role = ChatRole.System, content = "You are a SFU student."),
-                    ChatMessage(role = ChatRole.User, content = "Which school are you going?")
+                    ChatMessage(
+                        role = ChatRole.System,
+                        content = "You are a very helpful assistant."),
+                    ChatMessage(role = ChatRole.User, content = prompt)
                 )
             )
             val completion = openAI.chatCompletion(chatCompletionRequest)

@@ -13,6 +13,7 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.speech.RecognizerIntent
 import android.util.Log
+import android.widget.ScrollView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.cooksmart.BuildConfig
@@ -28,8 +29,13 @@ class RecipeFragment : Fragment() {
 
     private lateinit var viewModel: RecipeViewModel
     private val REQUEST_CODE_SPEECH_INPUT = 1
-    private lateinit var mediaPlayer : MediaPlayer
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    private lateinit var mediaPlayer: MediaPlayer
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
         val unsafeHttpClient = UnsafeHttpClient()
         val smartNetService = SmartNetService(unsafeHttpClient.getUnsafeOkHttpClient())
@@ -43,19 +49,24 @@ class RecipeFragment : Fragment() {
 
     private fun setupUI() {
         binding.micImageView.setOnClickListener {
-            try{
+            try {
                 if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
                     mediaPlayer.stop()
                 }
-            }catch(e: Exception) {}
+            } catch (e: Exception) {
+            }
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text")
             try {
                 startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT)
             } catch (e: Exception) {
-                Toast.makeText(this@RecipeFragment.context, " " + e.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RecipeFragment.context, " " + e.message, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -63,10 +74,12 @@ class RecipeFragment : Fragment() {
     private fun setupObservers() {
         viewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
+            binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
 
         viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             Glide.with(this).load(imageUrl).into(binding.responseImage)
+            binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
         viewModel.fetchAudioUrl("hello how may I help you?")
         viewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
@@ -78,14 +91,14 @@ class RecipeFragment : Fragment() {
 
     private fun playAudio(audioUrl: String) {
         // Stop and release the current mediaPlayer if it's playing
-try {
-    if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
-        mediaPlayer.stop()
-        mediaPlayer.release()
-    }
-}catch (e: Exception){
-
-}
+//        try {
+//            if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
+//                mediaPlayer.stop()
+//                mediaPlayer.release()
+//            }
+//        } catch (e: Exception) {
+//
+//        }
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
@@ -103,19 +116,25 @@ try {
 
         mediaPlayer.setOnCompletionListener {
             it.release()
-            viewModel.playNextAudio()
+            viewModel.audioCompleted()
+            viewModel.playNextAudio()  // Add this line
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == Activity.RESULT_OK && data != null) {
-            val results: ArrayList<String> = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
+            val results: ArrayList<String> =
+                data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
             val spokenText = results[0]
             if (spokenText.length > 5)
                 viewModel.processSpokenText(spokenText)
             else
-                Toast.makeText(this@RecipeFragment.context, "Your input is too short, please try again", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@RecipeFragment.context,
+                    "Your input is too short, please try again",
+                    Toast.LENGTH_SHORT
+                ).show()
         }
     }
 

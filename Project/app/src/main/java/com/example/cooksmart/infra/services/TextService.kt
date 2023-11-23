@@ -18,8 +18,8 @@ class TextService(private val openAI: OpenAI) {
 
     private var fullText: String = ""
     private var audioText: String = ""
-    private var introCompleted: Boolean = false
-
+//    private var introCompleted: Boolean = false
+    private var startIndex: Int = 0
     fun startStream(
         coroutineScope: CoroutineScope,
         question: String,
@@ -42,23 +42,24 @@ class TextService(private val openAI: OpenAI) {
                 .onEach { response ->
                     val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
                     fullText += text
-                    if (fullText.contains("\n") && !introCompleted) {
-                        val firstNewLineIndex = fullText.indexOf("\n")
-                        audioText = fullText.substring(0, firstNewLineIndex)
+                    val firstNewLineIndex = fullText.indexOf("\n", startIndex)
+                    if (firstNewLineIndex > 0) {
+                        audioText = fullText.substring(startIndex, firstNewLineIndex)
                         onAudioTextReady(audioText)
-                        introCompleted = true
-                        Log.d("TextService", "sending the first p of audio ")
+                        startIndex = firstNewLineIndex + 1
+                        Log.d("TextService", "Sending one paragraph of audio")
                     }
                     responseState.postValue(fullText)
                 }
                 .onCompletion {
-                    if (introCompleted) {
-                        val firstNewLineIndex = fullText.indexOf("\n")
-                        var summary = fullText.substring(firstNewLineIndex + 1)
-                        onAudioTextReady(summary)
-                    }else{
-                        onAudioTextReady(fullText)
-                    }
+                    onAudioTextReady(fullText.substring(startIndex))
+//                        val firstNewLineIndex = fullText.indexOf("\n")
+//                        var summary = fullText.substring(firstNewLineIndex + 1)
+//                        onAudioTextReady(summary)
+//                    }else{
+//                        onAudioTextReady(fullText)
+//                    }
+                    resetText()
                     onCompleted()
                 }
                 .launchIn(coroutineScope)
@@ -68,7 +69,7 @@ class TextService(private val openAI: OpenAI) {
     fun resetText() {
         fullText = ""
         audioText = ""
-        introCompleted = false
+        startIndex = 0
     }
 
     fun get(coroutineScope: CoroutineScope) {

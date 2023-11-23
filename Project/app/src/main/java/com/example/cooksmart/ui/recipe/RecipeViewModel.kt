@@ -30,25 +30,39 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     private val _nextAudioUrl = MutableLiveData<String>()
     val nextAudioUrl: LiveData<String> get() = _nextAudioUrl
 
+    private var isAudioPlaying = false
+
     private fun enqueueAudioUrl(audioUrl: String) {
         audioQueue.add(audioUrl)
-        if (audioQueue.size > 0) {
-            playNextAudio()
-        }
+//        if (audioQueue.size > 0) {
+//            playNextAudio()
+//        }
     }
 
     override fun onCleared() {
         super.onCleared()
         cleanupQueue()
     }
+    fun audioCompleted() {
+        isAudioPlaying = false
+    }
+//    fun checkAndPlayAudio() {
+//        if (audioQueue.isNotEmpty()) {
+//            playNextAudio()
+//        }
+//    }
     fun playNextAudio() {
         viewModelScope.launch(Dispatchers.Main) {
-            val nextUrl = audioQueue.poll() // Retrieves and removes the head of this queue
-            if (nextUrl != null) {
-                _nextAudioUrl.value = nextUrl
+            if (audioQueue.isNotEmpty() && !isAudioPlaying) {
+                val nextUrl = audioQueue.poll()
+                nextUrl?.let {
+                    _nextAudioUrl.value = it
+                    isAudioPlaying = true
+                }
             }
         }
     }
+
     fun cleanupQueue(){
         viewModelScope.launch(Dispatchers.Main) {
             audioQueue.clear()
@@ -79,15 +93,15 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
         fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
     }
 
-    fun fetchAudioUrl(text: String){
+    fun fetchAudioUrl(text: String) {
         Log.d("RecipeViewModel", "fetchAudioUrl....")
         viewModelScope.launch {
             fetcher.fetchAudio(text) { audioUrl ->
                 enqueueAudioUrl(audioUrl)
+                playNextAudio()
             }
         }
     }
-
     fun processSpokenText(spokenText: String) {
         postQuestion(spokenText)
     }

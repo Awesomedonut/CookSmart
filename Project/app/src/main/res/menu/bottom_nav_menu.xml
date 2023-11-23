@@ -12,8 +12,8 @@
 
     <item
         android:id="@+id/navigation_all_recipes"
-        android:icon="@drawable/baseline_menu_book_24"
-        android:title="All Recipes" />
+        android:icon="@drawable/baseline_collections_bookmark_24"
+        android:title="Saved Recipes" />
 
     <item
         android:id="@+id/navigation_calendar"

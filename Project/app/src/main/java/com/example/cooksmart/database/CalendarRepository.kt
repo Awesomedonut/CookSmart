@@ -20,4 +20,7 @@ class CalendarRepository(private val calendarDao: CalendarDao) {
     suspend fun deleteAllCalendar() {
         calendarDao.deleteAllCalendar()
     }
+    suspend fun getCalendarByDate(date : Long) : Calendar?{
+        return calendarDao.getCalendarByDate(date)
+    }
 }

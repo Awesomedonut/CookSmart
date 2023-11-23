@@ -13,7 +13,7 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
 
     init {
         val calendarDao = CalendarDatabase.getCalendarDatabase(application).calendarDao
-        repository =CalendarRepository(calendarDao)
+        repository = CalendarRepository(calendarDao)
         readAllCalendar = repository.allCalendar
     }
 
@@ -39,5 +39,9 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllCalendar()
         }
+    }
+
+    suspend fun getCalendarByDate(date : Long) : Calendar? {
+        return repository.getCalendarByDate(date)
     }
 }

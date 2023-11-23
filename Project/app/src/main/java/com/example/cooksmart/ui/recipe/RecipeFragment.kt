@@ -87,7 +87,7 @@ class RecipeFragment : Fragment() {
             Glide.with(this).load(imageUrl).into(binding.responseImage)
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
-        viewModel.fetchAudioUrl("hello how may I help you?")
+        viewModel.initAudioUrl("hello how may I help you?")
         viewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
             if (audioUrl.isNotEmpty()) {
                 playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + audioUrl)

@@ -54,6 +54,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -67,6 +71,9 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+    implementation("androidx.databinding:databinding-runtime:8.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
     testImplementation("junit:junit:4.13.2")

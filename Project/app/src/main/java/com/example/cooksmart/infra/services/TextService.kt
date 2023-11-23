@@ -48,7 +48,7 @@ class TextService(private val openAI: OpenAI) {
                 .onEach { response ->
                     val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
                     fullText += text
-                    val firstNewLineIndex = fullText.indexOf("\n", startIndex)
+                    val firstNewLineIndex = fullText.indexOf("\n\n", startIndex)
                     if (firstNewLineIndex > 0) {
                         audioText = fullText.substring(startIndex, firstNewLineIndex)
                         onAudioTextReady(audioText)

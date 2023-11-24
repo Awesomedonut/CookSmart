@@ -2,21 +2,30 @@ package com.example.cooksmart.ui.ingredient
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.util.query
 import com.example.cooksmart.R
 import com.example.cooksmart.databinding.FragmentIngredientBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import androidx.appcompat.widget.SearchView
 class IngredientFragment : Fragment() {
 
     private var _binding: FragmentIngredientBinding? = null
     private lateinit var ingredientViewModel: IngredientViewModel
+    private lateinit var adapter: IngredientListAdapter
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,9 +33,38 @@ class IngredientFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val layout = inflater.inflate(R.layout.fragment_ingredient,container,false)
+        val menuHost = requireActivity() as MenuHost
+
+        // From https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.options_menu, menu)
+                searchView = menu.findItem(R.id.ingredient_search)?.actionView as SearchView
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        if (query != null) {
+                            searchQuery(query)
+                        }
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        if (newText != null) {
+                            searchQuery(newText)
+                        }
+                        return true
+                    }
+                })
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // For handling other menu options (but we only have one)
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         // RecyclerView
-        val adapter = IngredientListAdapter()
+        adapter = IngredientListAdapter()
         val recyclerView = layout.findViewById<RecyclerView>(R.id.ingredients_list)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -46,5 +84,15 @@ class IngredientFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun searchQuery(query: String) {
+        // Search for the query with any surrounding letters
+        val searchQuery = "%$query%"
+        ingredientViewModel.searchIngredient(searchQuery).observe(viewLifecycleOwner) { list ->
+            list?.let {
+                adapter.setData(it)
+            }
+        }
     }
 }

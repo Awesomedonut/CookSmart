@@ -43,4 +43,8 @@ class IngredientViewModel(application: Application): AndroidViewModel(applicatio
             repository.deleteAllIngredients()
         }
     }
+
+    fun searchIngredient(searchQuery: String): LiveData<List<Ingredient>> {
+        return repository.searchIngredient(searchQuery)
+    }
 }

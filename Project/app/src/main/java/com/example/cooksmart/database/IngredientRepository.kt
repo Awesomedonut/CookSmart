@@ -20,4 +20,8 @@ class IngredientRepository(private val ingredientDao: IngredientDao) {
     suspend fun deleteAllIngredients() {
         ingredientDao.deleteAllIngredients()
     }
+
+    fun searchIngredient(searchQuery: String): LiveData<List<Ingredient>> {
+        return ingredientDao.searchIngredientsDatabase(searchQuery)
+    }
 }

@@ -84,32 +84,45 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     fun cleanup(){
         viewModelScope.launch(Dispatchers.Main) {
             audioQueue.clear()
-            _playerLoaded.value = false
+            //_playerLoaded.value = false
         }
     }
     private fun fetchImageUrl(question: String) {
 
         val openAI = OpenAIProvider.instance
         val imageService = ImageService(openAI)
-        imageService.fetchImage(viewModelScope, question, _imageUrl, ::loadImage)
+        imageService.fetchImage(viewModelScope,
+            "Generate a beautiful dish with these details:$question",
+            _imageUrl,
+            ::loadImage)
     }
     private fun loadImage(){
 
     }
     private fun postQuestion(question: String) {
         viewModelScope.launch {
-            fetcher.startStreaming(this,question, _response, ::fetchAudioUrl, ::summarizeDish)
+            fetcher.startStreaming(
+                this,
+                question,
+                _response,
+                ::fetchAudioUrl,
+                ::fetchImageUrl,
+                ::summarizeDish)
+            _imageUrl.value = ""
         }
     }
     private fun summarizeDish(){
         Log.d("RecipeViewModel", "summarizeDish....")
-        viewModelScope.launch {
-            fetcher.startStreaming(this, "describe the finished food using no more than two sentences: $_response",_responseDishSummary, {}, ::fetchImageUrl)
-        }
+//        viewModelScope.launch {
+//            fetcher.startStreaming(this,
+//                "summarize the finished food using no more " +
+//                        "than two sentences with these details: " +
+//                        "$text",_responseDishSummary, {}, ::fetchImageUrl)
+//        }
     }
     private fun fetchImageUrl(){
         Log.d("RecipeViewModel", "fetch....")
-        fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
+        fetchImageUrl("Generate a beautiful dish with these details:$_responseDishSummary")
     }
 
     private fun fetchAudioUrl(text: String) {

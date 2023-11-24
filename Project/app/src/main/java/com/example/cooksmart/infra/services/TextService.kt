@@ -23,13 +23,14 @@ class TextService(private val openAI: OpenAI) {
     private var startIndex: Int = 0
     private var tempIndex: Int = 0
     private val audioTextChannel = Channel<String>(Channel.UNLIMITED)
-    private var firstAudio = true  // Counter to track the number of substrings processed
+    private var audioCount = 0  // Counter to track the number of substrings processed
 
     fun startStream(
         coroutineScope: CoroutineScope,
         question: String,
         responseState: MutableLiveData<String>,
         onAudioTextReady: (text: String) -> Unit,
+        onSummaryReady: (text: String) -> Unit,
         onCompleted: () -> Unit
     ) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -40,7 +41,8 @@ class TextService(private val openAI: OpenAI) {
                     ChatMessage(
                         role = ChatRole.User,
                         content = "Please create a recipe along with cooking instructions based " +
-                                "on the ingredients provided, don't return special characters like " +
+                                "on the ingredients provided, the instructions should be less than " +
+                                "5 steps, don't return special characters like " +
                                 "#, *, I need to read it: $question"
                     )
                 )
@@ -52,11 +54,14 @@ class TextService(private val openAI: OpenAI) {
                     val firstNewLineIndex = fullText.indexOf("\n\n", tempIndex)
                     if (firstNewLineIndex > 0) {
                         audioText = fullText.substring(startIndex, firstNewLineIndex)
-                        if(firstAudio || audioText.length > 50) {
+                        if(audioCount == 0 || audioText.length > 50) {
                             onAudioTextReady(audioText)
                             startIndex = firstNewLineIndex + 1
                             tempIndex = startIndex
-                            firstAudio = false
+                            audioCount ++
+                            if(audioCount > 1){
+                                onSummaryReady(fullText)
+                            }
                         }else{
                             //force to move to the next paragraph
                             tempIndex = firstNewLineIndex + 1

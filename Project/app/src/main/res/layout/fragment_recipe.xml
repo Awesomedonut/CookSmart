@@ -27,7 +27,7 @@
                 android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="0dp"
-                android:src="@drawable/ic_add"
+                android:src="@drawable/speaker"
                 />
 
             <ProgressBar
@@ -41,7 +41,7 @@
                 android:id="@+id/responseTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Response will be shown here"
+                android:text=""
                 android:textSize="18sp"
                 /> <!-- Initially set to gone -->
 

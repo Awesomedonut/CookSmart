@@ -10,10 +10,20 @@ import kotlinx.coroutines.CoroutineScope
 
 class DataFetcher(private val smartNetService: SmartNetService) {
 
-    fun startStreaming(coroutineScope: CoroutineScope, question: String, responseState: MutableLiveData<String>, onAudioTextReady: (text: String) -> Unit, onCompleted: () -> Unit) {
+    fun startStreaming(coroutineScope: CoroutineScope,
+                       question: String,
+                       responseState: MutableLiveData<String>,
+                       onAudioTextReady: (text: String) -> Unit,
+                       onSummaryReady: (text: String) -> Unit,
+                       onCompleted: () -> Unit) {
         val openAI = OpenAIProvider.instance
         val textService = TextService(openAI)
-        textService.startStream(coroutineScope, question, responseState, onAudioTextReady,onCompleted)
+        textService.startStream(coroutineScope,
+            question,
+            responseState,
+            onAudioTextReady,
+            onSummaryReady,
+            onCompleted)
     }
 
     fun fetchAudio(question: String, onAudioUrlReady: (text: String) -> Unit) {

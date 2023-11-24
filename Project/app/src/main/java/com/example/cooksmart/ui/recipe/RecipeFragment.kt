@@ -78,12 +78,25 @@ class RecipeFragment : Fragment() {
         }
 
         viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
-            Glide.with(this).load(imageUrl).into(binding.responseImage)
-            binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+            if(imageUrl.isEmpty()){
+             binding.responseImage.isVisible = false
+            }else {
+                binding.responseImage.isVisible = true
+                Glide.with(this).load(imageUrl).into(binding.responseImage)
+                binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+            }
         }
 
         viewModel.playerLoaded.observe(viewLifecycleOwner){
             binding.progressBar.isVisible = !it
+            binding.micImageView.isVisible = it
+            if(viewModel.response.value == null || viewModel.response.value?.isEmpty() == true) {
+                if (it)
+                    binding.responseTextView.text =
+                        "Please click the speaker icon to tell me what ingredients do you have"
+                else
+                    binding.responseTextView.text = "Loading, please wait"
+            }
         }
 
         viewModel.initAudioUrl("hello how may I help you?")

@@ -10,8 +10,7 @@ import com.example.cooksmart.database.RecipeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RecipesViewModel(application: Application) : AndroidViewModel(application) {
-
+class SavedRecipeViewModel(application: Application): AndroidViewModel(application) {
     val readAllRecipes: LiveData<List<Recipe>>
     private val repository: RecipeRepository
 
@@ -24,6 +23,24 @@ class RecipesViewModel(application: Application) : AndroidViewModel(application)
     fun insertRecipe(recipe: Recipe) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertRecipe(recipe)
+        }
+    }
+
+    fun updateRecipe(recipe: Recipe) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateRecipe(recipe)
+        }
+    }
+
+    fun deleteRecipe(recipe: Recipe) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteRecipe(recipe)
+        }
+    }
+
+    fun deleteAllIngredients() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllRecipes()
         }
     }
 }

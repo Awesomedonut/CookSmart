@@ -1,9 +1,12 @@
-package com.example.cooksmart.database
+package com.example.cooksmart.ui.ingredient
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.cooksmart.database.Ingredient
+import com.example.cooksmart.database.IngredientDatabase
+import com.example.cooksmart.database.IngredientRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

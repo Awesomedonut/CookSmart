@@ -11,28 +11,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
-import com.example.cooksmart.database.RecipeViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class AllRecipesFragment : Fragment() {
-    private lateinit var recipeViewModel: RecipeViewModel
+class SavedRecipesFragment : Fragment() {
+    private lateinit var savedRecipeViewModel: SavedRecipeViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_all_recipes, container, false)
+        val view = inflater.inflate(R.layout.fragment_saved_recipes, container, false)
 
         // RecyclerView
-        val adapter = RecipeListAdapter()
+        val adapter = SavedRecipesListAdapter()
         val recyclerView = view.findViewById<RecyclerView>(R.id.recipe_list)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        recipeViewModel = ViewModelProvider(this)[RecipeViewModel::class.java]
+        savedRecipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
-        recipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
+        savedRecipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
             adapter.setData(recipe)
         }
 
@@ -51,7 +50,7 @@ class AllRecipesFragment : Fragment() {
         val instructions = "Cut chicken. Cook chicken and pasta. While pasta is cooking, heat sauce in saucepan. Mix together and serve."
         val isFavorite = true
         val recipe = Recipe(0, name ,ingredients, instructions, currentDate, isFavorite)
-        recipeViewModel.insertRecipe(recipe)
+        savedRecipeViewModel.insertRecipe(recipe)
         Toast.makeText(requireContext(), "Successfully added recipe!", Toast.LENGTH_SHORT).show()
     }
 }

@@ -1,4 +1,4 @@
-package com.example.cooksmart.ui.fridge
+package com.example.cooksmart.ui.ingredient
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -19,7 +19,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
-import com.example.cooksmart.database.IngredientViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 import com.example.cooksmart.ui.structs.CategoryType
@@ -102,7 +101,7 @@ class IngredientUpdate : Fragment() {
             val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.updateIngredient(updatedIngredient)
             Toast.makeText(requireContext(), "Ingredient updated!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_ingredientUpdate_to_navigation_fridge)
+            findNavController().navigate(R.id.action_navigation_ingredient_update_to_navigation_ingredient)
         } else {
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }
@@ -147,15 +146,15 @@ class IngredientUpdate : Fragment() {
             ingredientViewModel.deleteIngredient(args.currentIngredient)
             Toast.makeText(requireContext(), "${args.currentIngredient.name} has been removed!", Toast.LENGTH_SHORT).show()
             // After deleting, go back to ingredients list fragment
-            findNavController().navigate(R.id.action_ingredientUpdate_to_navigation_fridge)
+            findNavController().navigate(R.id.action_navigation_ingredient_update_to_navigation_ingredient)
         }
         builder.setNegativeButton("No") { _, _ -> }
         builder.setTitle("Delete ingredient?")
         builder.setMessage("Are you sure you want to delete ${args.currentIngredient.name} from your ingredients?")
         builder.create().show()
     }
-}
-private fun categoryStringToInt(string: String): Int {
-    val categoryEnum = CategoryType.fromString(string)
-    return categoryEnum.asInt
+    private fun categoryStringToInt(string: String): Int {
+        val categoryEnum = CategoryType.fromString(string)
+        return categoryEnum.asInt
+    }
 }

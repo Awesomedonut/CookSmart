@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class TextService(private val openAI: OpenAI) {
@@ -23,8 +24,8 @@ class TextService(private val openAI: OpenAI) {
     private var startIndex: Int = 0
     private var tempIndex: Int = 0
     private val audioTextChannel = Channel<String>(Channel.UNLIMITED)
-    private var audioCount = 0  // Counter to track the number of substrings processed
-
+    private var audioCount = 0
+    private var summarySent = false
     fun startStream(
         coroutineScope: CoroutineScope,
         question: String,
@@ -48,6 +49,9 @@ class TextService(private val openAI: OpenAI) {
                 )
             )
             openAI.chatCompletions(chatCompletionRequest)
+                .onStart {
+                    resetText()
+                }
                 .onEach { response ->
                     val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
                     fullText += text
@@ -59,8 +63,9 @@ class TextService(private val openAI: OpenAI) {
                             startIndex = firstNewLineIndex + 1
                             tempIndex = startIndex
                             audioCount ++
-                            if(audioCount > 1){
+                            if(audioCount > 1 && !summarySent){
                                 onSummaryReady(fullText)
+                                summarySent = true
                             }
                         }else{
                             //force to move to the next paragraph
@@ -84,6 +89,9 @@ class TextService(private val openAI: OpenAI) {
         fullText = ""
         audioText = ""
         startIndex = 0
+        tempIndex = 0
+        audioCount = 0
+        summarySent = false
     }
 
     fun get(coroutineScope: CoroutineScope, prompt: String) {

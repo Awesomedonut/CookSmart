@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/navigation_fridge">
+    app:startDestination="@id/navigation_ingredient">
     <fragment
         android:id="@+id/navigation_recipe"
         android:name="com.example.cooksmart.ui.recipe.RecipeFragment"
         android:label="@string/title_recipe"
         tools:layout="@layout/fragment_recipe" />
     <fragment
-        android:id="@+id/navigation_fridge"
-        android:name="com.example.cooksmart.ui.fridge.FridgeFragment"
+        android:id="@+id/navigation_ingredient"
+        android:name="com.example.cooksmart.ui.ingredient.IngredientFragment"
         android:label="@string/title_ingredients"
-        tools:layout="@layout/fragment_fridge" >
+        tools:layout="@layout/fragment_ingredient" >
         <action
-            android:id="@+id/action_navigation_fridge_to_fridgeInsert2"
-            app:destination="@id/fridgeInsert" />
+            android:id="@+id/action_navigation_ingredient_to_ingredient_add"
+            app:destination="@id/navigation_ingredient_add" />
         <action
-            android:id="@+id/action_navigation_fridge_to_ingredientUpdate"
-            app:destination="@id/ingredientUpdate" />
+            android:id="@+id/action_navigation_ingredient_to_ingredient_update"
+            app:destination="@id/navigation_ingredient_update" />
     </fragment>
 
     <fragment
@@ -28,41 +28,41 @@
         android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" />
     <fragment
-        android:id="@+id/fridgeInsert"
-        android:name="com.example.cooksmart.ui.fridge.FridgeInsert"
+        android:id="@+id/navigation_ingredient_add"
+        android:name="com.example.cooksmart.ui.ingredient.IngredientAdd"
         android:label="@string/title_add_ingredient" >
         <action
-            android:id="@+id/action_fridgeInsert2_to_navigation_fridge"
-            app:destination="@id/navigation_fridge" />
+            android:id="@+id/action_navigation_ingredient_add_to_navigation_ingredient"
+            app:destination="@id/navigation_ingredient" />
     </fragment>
     <fragment
-        android:id="@+id/ingredientUpdate"
-        android:name="com.example.cooksmart.ui.fridge.IngredientUpdate"
+        android:id="@+id/navigation_ingredient_update"
+        android:name="com.example.cooksmart.ui.ingredient.IngredientUpdate"
         android:label="Update" >
         <action
-            android:id="@+id/action_ingredientUpdate_to_navigation_fridge"
-            app:destination="@id/navigation_fridge" />
+            android:id="@+id/action_navigation_ingredient_update_to_navigation_ingredient"
+            app:destination="@id/navigation_ingredient" />
         <argument
             android:name="currentIngredient"
             app:argType="com.example.cooksmart.database.Ingredient" />
     </fragment>
     <fragment
-        android:id="@+id/navigation_all_recipes"
-        android:name="com.example.cooksmart.ui.savedRecipes.AllRecipesFragment"
-        android:label="All Recipes"
-        tools:layout="@layout/fragment_all_recipes" >
+        android:id="@+id/navigation_saved_recipes"
+        android:name="com.example.cooksmart.ui.savedRecipes.SavedRecipesFragment"
+        android:label="Saved Recipes"
+        tools:layout="@layout/fragment_saved_recipes" >
         <action
-            android:id="@+id/action_navigation_all_recipes_to_viewRecipe"
-            app:destination="@id/viewRecipe" />
+            android:id="@+id/action_navigation_saved_recipes_to_navigation_view_recipe"
+            app:destination="@id/navigation_view_recipe" />
     </fragment>
     <fragment
-        android:id="@+id/viewRecipe"
+        android:id="@+id/navigation_view_recipe"
         android:name="com.example.cooksmart.ui.savedRecipes.ViewRecipe"
         android:label="View Recipe"
         tools:layout="@layout/fragment_view_recipe" >
         <action
-            android:id="@+id/action_viewRecipe_to_navigation_all_recipes"
-            app:destination="@id/navigation_all_recipes" />
+            android:id="@+id/action_navigation_view_recipe_to_navigation_saved_recipes"
+            app:destination="@id/navigation_saved_recipes" />
         <argument
             android:name="currentRecipe"
             app:argType="com.example.cooksmart.database.Recipe" />

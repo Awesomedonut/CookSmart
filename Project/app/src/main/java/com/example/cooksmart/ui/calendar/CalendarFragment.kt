@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
-import com.example.cooksmart.ui.fridge.IngredientViewModel
+import com.example.cooksmart.ui.ingredient.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
 import java.text.SimpleDateFormat
 import java.time.Instant

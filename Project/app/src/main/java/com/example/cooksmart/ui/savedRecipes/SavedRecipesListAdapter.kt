@@ -12,7 +12,7 @@ import com.example.cooksmart.database.Recipe
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class RecipeListAdapter: RecyclerView.Adapter<RecipeListAdapter.MyViewHolder>(){
+class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyViewHolder>(){
     private var recipeList = emptyList<Recipe>()
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
@@ -34,7 +34,7 @@ class RecipeListAdapter: RecyclerView.Adapter<RecipeListAdapter.MyViewHolder>(){
         holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
 
         holder.itemView.findViewById<ConstraintLayout>(R.id.recipeRowLayout).setOnClickListener {
-            val action = AllRecipesFragmentDirections.actionNavigationAllRecipesToViewRecipe(currentRecipe)
+            val action = SavedRecipesFragmentDirections.actionNavigationSavedRecipesToNavigationViewRecipe(currentRecipe)
             holder.itemView.findNavController().navigate(action)
         }
     }

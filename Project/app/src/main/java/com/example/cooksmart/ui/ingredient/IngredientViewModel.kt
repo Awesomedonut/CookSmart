@@ -1,4 +1,4 @@
-package com.example.cooksmart.ui.fridge
+package com.example.cooksmart.ui.ingredient
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

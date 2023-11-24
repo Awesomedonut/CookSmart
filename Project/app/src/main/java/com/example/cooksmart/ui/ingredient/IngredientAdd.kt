@@ -1,4 +1,4 @@
-package com.example.cooksmart.ui.fridge
+package com.example.cooksmart.ui.ingredient
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class FridgeInsert : Fragment() {
+class IngredientAdd : Fragment() {
     private lateinit var categoriesSpinner: Spinner
     private lateinit var categoriesAdapter: SpinnerAdapter
     private lateinit var ingredientViewModel: IngredientViewModel
@@ -91,7 +91,7 @@ class FridgeInsert : Fragment() {
             val ingredient = Ingredient(0, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.insertIngredient(ingredient)
             Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_fridgeInsert2_to_navigation_fridge)
+            findNavController().navigate(R.id.action_navigation_ingredient_add_to_navigation_ingredient)
         } else {
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }

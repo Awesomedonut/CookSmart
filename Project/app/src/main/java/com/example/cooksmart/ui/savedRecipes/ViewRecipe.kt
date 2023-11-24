@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.cooksmart.R
-import com.example.cooksmart.ui.fridge.IngredientViewModel
 
 class ViewRecipe : Fragment() {
     private val args by navArgs<ViewRecipeArgs>()
@@ -47,7 +46,7 @@ class ViewRecipe : Fragment() {
             recipeViewModel.deleteRecipe(args.currentRecipe)
             Toast.makeText(requireContext(), "${args.currentRecipe.name} has been removed!", Toast.LENGTH_SHORT).show()
             // After deleting, go back to saved recipes fragment
-            findNavController().navigate(R.id.action_viewRecipe_to_navigation_all_recipes)
+            findNavController().navigate(R.id.action_navigation_view_recipe_to_navigation_saved_recipes)
         }
         builder.setNegativeButton("No") { _, _ -> }
         builder.setTitle("Delete recipe?")

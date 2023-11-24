@@ -14,17 +14,17 @@ import com.example.cooksmart.database.Recipe
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class AllRecipesFragment : Fragment() {
+class SavedRecipesFragment : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_all_recipes, container, false)
+        val view = inflater.inflate(R.layout.fragment_saved_recipes, container, false)
 
         // RecyclerView
-        val adapter = RecipeListAdapter()
+        val adapter = SavedRecipesListAdapter()
         val recyclerView = view.findViewById<RecyclerView>(R.id.recipe_list)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

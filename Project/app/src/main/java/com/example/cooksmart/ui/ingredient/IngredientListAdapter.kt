@@ -28,9 +28,9 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentIngredient = ingredientList[position]
         // Display the row info
-        holder.itemView.findViewById<TextView>(R.id.list_category).text = currentIngredient.category.toString()
-        holder.itemView.findViewById<TextView>(R.id.list_name).text = currentIngredient.name.toString()
-        holder.itemView.findViewById<TextView>(R.id.list_quantity).text = currentIngredient.quantity.toString()
+        holder.itemView.findViewById<TextView>(R.id.list_category).text = currentIngredient.category
+        holder.itemView.findViewById<TextView>(R.id.list_name).text = currentIngredient.name
+        holder.itemView.findViewById<TextView>(R.id.list_quantity).text = currentIngredient.quantity
         val date = currentIngredient.bestBefore
         val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
         val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())

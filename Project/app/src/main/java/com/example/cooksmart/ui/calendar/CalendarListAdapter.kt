@@ -2,17 +2,14 @@ package com.example.cooksmart.ui.calendar
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Resources.Theme
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.CalendarView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.R.layout.adapter_calendar_list
 import com.example.cooksmart.database.Ingredient
@@ -23,7 +20,6 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 private const val COOK_SMART = "CookSmart"
@@ -69,7 +65,10 @@ class CalendarListAdapter(private val context: Context,
                 }
 
                 tvExpiryDate.setOnClickListener{
-                    Toast.makeText(context, dateString(selectedDate), Toast.LENGTH_SHORT).show()
+                    val action = CalendarFragmentDirections.actionNavigationCalendarToNavigationIngredientUpdate(ingredient)
+                    view?.let {
+                        findNavController(it).navigate(action)
+                    }
                 }
             }
 

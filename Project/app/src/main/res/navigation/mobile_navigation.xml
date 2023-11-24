@@ -26,7 +26,11 @@
         android:id="@+id/navigation_calendar"
         android:name="com.example.cooksmart.ui.calendar.CalendarFragment"
         android:label="@string/title_calendar"
-        tools:layout="@layout/fragment_calendar" />
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/action_navigation_calendar_to_navigation_ingredient_update"
+            app:destination="@id/navigation_ingredient_update" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_ingredient_add"
         android:name="com.example.cooksmart.ui.ingredient.IngredientAdd"
@@ -45,6 +49,9 @@
         <argument
             android:name="currentIngredient"
             app:argType="com.example.cooksmart.database.Ingredient" />
+        <action
+            android:id="@+id/action_navigation_ingredient_update_to_navigation_calendar"
+            app:destination="@id/navigation_calendar" />
     </fragment>
     <fragment
         android:id="@+id/navigation_saved_recipes"

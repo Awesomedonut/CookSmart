@@ -5,22 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.cooksmart.R
 import com.example.cooksmart.databinding.FragmentRecipeBinding
-import com.example.cooksmart.ui.fridge.ListAdapter
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.speech.RecognizerIntent
-import android.util.Log
 import android.widget.ScrollView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.infra.services.SmartNetService
@@ -87,6 +81,11 @@ class RecipeFragment : Fragment() {
             Glide.with(this).load(imageUrl).into(binding.responseImage)
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
+
+        viewModel.playerLoaded.observe(viewLifecycleOwner){
+            binding.progressBar.isVisible = !it
+        }
+
         viewModel.initAudioUrl("hello how may I help you?")
         viewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
             if (audioUrl.isNotEmpty()) {
@@ -154,7 +153,7 @@ class RecipeFragment : Fragment() {
         if (::mediaPlayer.isInitialized) {
             mediaPlayer.release()
         }
-        viewModel.cleanupQueue()
+        viewModel.cleanup()
     }
 
 
@@ -163,7 +162,7 @@ class RecipeFragment : Fragment() {
         if (::mediaPlayer.isInitialized) {
             mediaPlayer.release()
         }
-        viewModel.cleanupQueue()
+        viewModel.cleanup()
         _binding = null
     }
 }

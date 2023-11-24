@@ -108,7 +108,7 @@ class IngredientAdd : Fragment() {
     private fun updateBestBeforeText() {
         // SimpleDateFormat from https://developer.android.com/reference/kotlin/android/icu/text/SimpleDateFormat
         val bestBeforeText = view.findViewById<TextView>(R.id.date_input_current)
-        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         val formattedDate = dateFormat.format(selectedDate.time)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
     }

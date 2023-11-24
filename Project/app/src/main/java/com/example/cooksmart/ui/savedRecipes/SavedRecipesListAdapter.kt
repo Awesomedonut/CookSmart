@@ -32,7 +32,7 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
         // Display the row info
         holder.itemView.findViewById<TextView>(R.id.list_name).text = currentRecipe.name.toString()
         val date = currentRecipe.dateAdded
-        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())
         holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
 

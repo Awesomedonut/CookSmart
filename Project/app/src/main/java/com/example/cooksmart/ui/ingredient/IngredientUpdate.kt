@@ -80,7 +80,7 @@ class IngredientUpdate : Fragment() {
         view.findViewById<EditText>(R.id.update_name_ingredient).setText(args.currentIngredient.name)
         view.findViewById<EditText>(R.id.update_quantity).setText(args.currentIngredient.quantity)
         val date = args.currentIngredient.bestBefore
-        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())
         view.findViewById<TextView>(R.id.update_date_input_current).text = formattedDate
 
@@ -134,7 +134,7 @@ class IngredientUpdate : Fragment() {
     private fun updateBestBeforeText() {
         // SimpleDateFormat from https://developer.android.com/reference/kotlin/android/icu/text/SimpleDateFormat
         val bestBeforeText = view.findViewById<TextView>(R.id.update_date_input_current)
-        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         val formattedDate = dateFormat.format(selectedDate.time)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
     }

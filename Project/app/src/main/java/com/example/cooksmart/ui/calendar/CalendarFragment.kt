@@ -59,7 +59,7 @@ class CalendarFragment : Fragment() {
         }
 
         // Initialize date variables
-        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
         val tvDate : TextView = root.findViewById(R.id.tvDateSelected)
         tvDate.text = formattedDate
@@ -103,7 +103,7 @@ class CalendarFragment : Fragment() {
 
     private fun setDate(root : View, year: Int, month: Int, dayOfMonth: Int) {
         selectedDate.set(year, month, dayOfMonth)
-        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
         val tvDate : TextView = root.findViewById(R.id.tvDateSelected)
         tvDate.text = formattedDate

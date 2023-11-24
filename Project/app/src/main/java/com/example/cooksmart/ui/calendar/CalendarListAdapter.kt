@@ -99,7 +99,7 @@ class CalendarListAdapter(private val context: Context,
     }
 
     fun dateString (date : Long) : String{
-        val dateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         return dateFormat.format(date).uppercase(Locale.getDefault())
     }
 

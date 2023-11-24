@@ -21,6 +21,7 @@ class TextService(private val openAI: OpenAI) {
     private var audioText: String = ""
 //    private var introCompleted: Boolean = false
     private var startIndex: Int = 0
+    private var tempIndex: Int = 0
     private val audioTextChannel = Channel<String>(Channel.UNLIMITED)
     private var firstAudio = true  // Counter to track the number of substrings processed
 
@@ -48,11 +49,18 @@ class TextService(private val openAI: OpenAI) {
                 .onEach { response ->
                     val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
                     fullText += text
-                    val firstNewLineIndex = fullText.indexOf("\n\n", startIndex)
+                    val firstNewLineIndex = fullText.indexOf("\n\n", tempIndex)
                     if (firstNewLineIndex > 0) {
                         audioText = fullText.substring(startIndex, firstNewLineIndex)
-                        onAudioTextReady(audioText)
-                        startIndex = firstNewLineIndex + 1
+                        if(firstAudio || audioText.length > 50) {
+                            onAudioTextReady(audioText)
+                            startIndex = firstNewLineIndex + 1
+                            tempIndex = startIndex
+                            firstAudio = false
+                        }else{
+                            //force to move to the next paragraph
+                            tempIndex = firstNewLineIndex + 1
+                        }
                         Log.d("TextService", "Sending one paragraph of audio")
                     }
                     responseState.postValue(fullText)

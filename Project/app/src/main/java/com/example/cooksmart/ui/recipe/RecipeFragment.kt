@@ -94,7 +94,12 @@ class RecipeFragment : Fragment() {
             }
         }
     }
-
+    private fun isScrollViewAtBottom(): Boolean {
+        val scrollView = binding.scrollView
+        val child = scrollView.getChildAt(0)
+        val childHeight = child.height
+        return scrollView.height + scrollView.scrollY >= childHeight
+    }
     private fun playAudio(audioUrl: String) {
         // Stop and release the current mediaPlayer if it's playing
 //        try {

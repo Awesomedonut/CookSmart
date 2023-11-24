@@ -61,6 +61,8 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
                     _nextAudioUrl.value = it
                     isAudioPlaying = true
                 }
+            }else{
+                _nextAudioUrl.value = ""
             }
         }
     }
@@ -95,7 +97,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
         fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
     }
 
-    fun fetchAudioUrl(text: String) {
+    private fun fetchAudioUrl(text: String) {
         Log.d("fetchAudioUrl", text)
         viewModelScope.launch {
             // Wait for the last job to complete if it's still active

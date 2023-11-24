@@ -12,6 +12,9 @@ import com.example.cooksmart.database.Recipe
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/**
+ * Shows each row in the recipe database in a RecyclerView
+ */
 class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyViewHolder>(){
     private var recipeList = emptyList<Recipe>()
 

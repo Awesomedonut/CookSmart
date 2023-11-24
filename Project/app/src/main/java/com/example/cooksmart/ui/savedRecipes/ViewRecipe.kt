@@ -14,6 +14,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.cooksmart.R
 
+/**
+ * Shows the details of specific recipe the user clicked on
+ */
 class ViewRecipe : Fragment() {
     private val args by navArgs<ViewRecipeArgs>()
     private lateinit var recipeViewModel: SavedRecipeViewModel
@@ -29,7 +32,7 @@ class ViewRecipe : Fragment() {
         view.findViewById<TextView>(R.id.viewRecipeTitle).text = args.currentRecipe.name
         view.findViewById<TextView>(R.id.viewRecipeIngredients).text = args.currentRecipe.ingredients
         view.findViewById<TextView>(R.id.viewRecipeInstructions).text = args.currentRecipe.instructions
-        view.findViewById<TextView>(R.id.viewRecipeFavorite).text = args.currentRecipe.isFavorite.toString()
+        view.findViewById<TextView>(R.id.viewRecipeFavorite).text = "Is favourited? ${args.currentRecipe.isFavorite}"
 
         recipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
@@ -50,7 +53,7 @@ class ViewRecipe : Fragment() {
         }
         builder.setNegativeButton("No") { _, _ -> }
         builder.setTitle("Delete recipe?")
-        builder.setMessage("Are you sure you want to delete ${args.currentRecipe.name} from your saved recipes?")
+        builder.setMessage("Are you sure you want to remove ${args.currentRecipe.name} from your saved recipes?")
         builder.create().show()
     }
 }

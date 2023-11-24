@@ -150,7 +150,7 @@ class IngredientUpdate : Fragment() {
         }
         builder.setNegativeButton("No") { _, _ -> }
         builder.setTitle("Delete ingredient?")
-        builder.setMessage("Are you sure you want to delete ${args.currentIngredient.name} from your ingredients?")
+        builder.setMessage("Are you sure you want to remove ${args.currentIngredient.name} from your ingredients?")
         builder.create().show()
     }
     private fun categoryStringToInt(string: String): Int {

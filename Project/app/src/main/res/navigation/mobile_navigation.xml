@@ -54,6 +54,9 @@
         <action
             android:id="@+id/action_navigation_saved_recipes_to_navigation_view_recipe"
             app:destination="@id/navigation_view_recipe" />
+        <action
+            android:id="@+id/action_navigation_saved_recipes_to_addRecipe"
+            app:destination="@id/navigation_add_recipe" />
     </fragment>
     <fragment
         android:id="@+id/navigation_view_recipe"
@@ -66,6 +69,15 @@
         <argument
             android:name="currentRecipe"
             app:argType="com.example.cooksmart.database.Recipe" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_add_recipe"
+        android:name="com.example.cooksmart.ui.savedRecipes.AddRecipe"
+        android:label="Add Recipe"
+        tools:layout="@layout/fragment_add_recipe" >
+        <action
+            android:id="@+id/action_addRecipe_to_navigation_saved_recipes"
+            app:destination="@id/navigation_saved_recipes" />
     </fragment>
 
 </navigation>

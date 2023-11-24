@@ -28,5 +28,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Is Favorited?" />
+        <Button
+            android:id="@+id/view_recipe_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:text="@string/delete"
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

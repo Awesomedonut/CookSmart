@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
-import com.example.cooksmart.database.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentFridgeBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 

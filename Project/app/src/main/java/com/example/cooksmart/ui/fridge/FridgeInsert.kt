@@ -17,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
-import com.example.cooksmart.database.IngredientViewModel
 import com.example.cooksmart.ui.structs.CategoryType
 import java.text.SimpleDateFormat
 import java.util.Calendar

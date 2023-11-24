@@ -11,12 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
-import com.example.cooksmart.database.RecipeViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class AllRecipesFragment : Fragment() {
-    private lateinit var recipeViewModel: RecipeViewModel
+    private lateinit var savedRecipeViewModel: SavedRecipeViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,9 +29,9 @@ class AllRecipesFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        recipeViewModel = ViewModelProvider(this)[RecipeViewModel::class.java]
+        savedRecipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
-        recipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
+        savedRecipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
             adapter.setData(recipe)
         }
 
@@ -51,7 +50,7 @@ class AllRecipesFragment : Fragment() {
         val instructions = "Cut chicken. Cook chicken and pasta. While pasta is cooking, heat sauce in saucepan. Mix together and serve."
         val isFavorite = true
         val recipe = Recipe(0, name ,ingredients, instructions, currentDate, isFavorite)
-        recipeViewModel.insertRecipe(recipe)
+        savedRecipeViewModel.insertRecipe(recipe)
         Toast.makeText(requireContext(), "Successfully added recipe!", Toast.LENGTH_SHORT).show()
     }
 }

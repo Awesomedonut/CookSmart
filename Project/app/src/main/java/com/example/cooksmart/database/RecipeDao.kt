@@ -24,4 +24,7 @@ interface RecipeDao {
 
     @Query("DELETE FROM recipe_table")
     suspend fun deleteAllRecipes()
+
+    @Query("SELECT * FROM recipe_table WHERE name LIKE :searchQuery")
+    fun searchRecipeDatabase(searchQuery: String): LiveData<List<Recipe>>
 }

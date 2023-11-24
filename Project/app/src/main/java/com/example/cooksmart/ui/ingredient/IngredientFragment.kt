@@ -33,13 +33,13 @@ class IngredientFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val layout = inflater.inflate(R.layout.fragment_ingredient,container,false)
-        val menuHost = requireActivity() as MenuHost
 
-        // From https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
+        // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
+        val menuHost = requireActivity() as MenuHost
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.options_menu, menu)
-                searchView = menu.findItem(R.id.ingredient_search)?.actionView as SearchView
+                searchView = menu.findItem(R.id.search_bar)?.actionView as SearchView
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         if (query != null) {

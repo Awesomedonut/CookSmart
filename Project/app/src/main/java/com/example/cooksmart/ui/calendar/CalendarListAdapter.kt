@@ -54,18 +54,19 @@ class CalendarListAdapter(private val context: Context,
             val expiryDate = ingredient.bestBefore
             var ingredientString = ingredient.name + " " + dateString(expiryDate)
             tvExpiryDate.text = ingredientString
+            tvExpiryDate.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
             calendarViewModel.getSelectedDate().observe(lifecycleOwner){
                 val selectedDate = it
                 val expiryDays = daysExpiry(expiryDate, selectedDate)
                 if(expiryDays <= 0){
-                    tvExpiryDate.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_red))
+                    tvExpiryDate.setBackgroundResource(R.drawable.lv_red_circular)
                 }
                 else if(expiryDays < 3 ){
-                    tvExpiryDate.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_yellow))
+                    tvExpiryDate.setBackgroundResource(R.drawable.lv_yellow_circular)
                 }
                 else{
-                    tvExpiryDate.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_green))
+                    tvExpiryDate.setBackgroundResource(R.drawable.lv_green_circular)
                 }
 
                 tvExpiryDate.setOnClickListener{

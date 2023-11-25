@@ -40,6 +40,11 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     private val _playerLoaded = MutableLiveData<Boolean>().apply { value = false }
     val playerLoaded: LiveData<Boolean> = _playerLoaded
 
+    private val _input = MutableLiveData<String>("")
+    val input: LiveData<String> get() = _input
+
+    private val _isCreating = MutableLiveData<Boolean>()
+    val isCreating: LiveData<Boolean> = _isCreating
 
 //    fun loadData() {
 //        _isLoading.value = true
@@ -84,6 +89,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     fun cleanup(){
         viewModelScope.launch(Dispatchers.Main) {
             audioQueue.clear()
+            _nextAudioUrl.value = ""
             //_playerLoaded.value = false
         }
     }
@@ -99,6 +105,26 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     private fun loadImage(){
 
     }
+
+    fun appendInputAudio(text: String) {
+        viewModelScope.launch {
+            _input.value += text
+        }
+    }
+    fun resetInputAudio() {
+        viewModelScope.launch {
+            _input.value = ""
+            _response.value = ""
+            _imageUrl.value = ""
+            _isCreating.value = false
+        }
+    }
+
+
+//    fun createRecipe() {
+//        postQuestion()
+//    }
+
     private fun postQuestion(question: String) {
         viewModelScope.launch {
             fetcher.startStreaming(
@@ -141,7 +167,8 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
             }
         }
     }
-    fun processSpokenText(spokenText: String) {
+    fun process(spokenText: String) {
+        _isCreating.value = true
         postQuestion(spokenText)
     }
 

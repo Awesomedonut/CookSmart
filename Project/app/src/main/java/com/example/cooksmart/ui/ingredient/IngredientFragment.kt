@@ -1,12 +1,14 @@
 package com.example.cooksmart.ui.ingredient
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -15,11 +17,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.util.query
 import com.example.cooksmart.R
 import com.example.cooksmart.databinding.FragmentIngredientBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import androidx.appcompat.widget.SearchView
+
 class IngredientFragment : Fragment() {
 
     private var _binding: FragmentIngredientBinding? = null
@@ -68,7 +69,6 @@ class IngredientFragment : Fragment() {
         val recyclerView = layout.findViewById<RecyclerView>(R.id.ingredients_list)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
         ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
             adapter.setData(ingredient)

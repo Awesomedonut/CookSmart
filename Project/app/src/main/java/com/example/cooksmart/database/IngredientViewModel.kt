@@ -12,7 +12,7 @@ class IngredientViewModel(application: Application): AndroidViewModel(applicatio
     private val repository: IngredientRepository
 
     init {
-        val ingredientDao = IngredientDatabase.getIngredientDatabase(application).ingredientDao
+        val ingredientDao = CookSmartDatabase.getCookSmartDatabase(application).ingredientDao()
         repository = IngredientRepository(ingredientDao)
         readAllIngredients = repository.allIngredients
     }

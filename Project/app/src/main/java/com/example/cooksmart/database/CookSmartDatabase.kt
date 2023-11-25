@@ -5,16 +5,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Calendar::class], version = 1, exportSchema = false)
-abstract class CalendarDatabase: RoomDatabase() {
-    abstract val calendarDao: CalendarDao
+@Database(entities = [Ingredient::class, Recipe::class, Calendar::class], version = 1)
+abstract class CookSmartDatabase : RoomDatabase() {
+    abstract fun ingredientDao(): IngredientDao
+    abstract fun recipeDao(): RecipeDao
+    abstract fun calendarDao(): CalendarDao
 
-    // Is a singleton:
     companion object {
         @Volatile
-        private var INSTANCE : CalendarDatabase? = null
+        private var INSTANCE : CookSmartDatabase? = null
 
-        fun getCalendarDatabase(context: Context): CalendarDatabase {
+        fun getCookSmartDatabase(context: Context): CookSmartDatabase {
             // Return instance if already exists
             val tempInstance = INSTANCE
             if (tempInstance != null) {
@@ -23,8 +24,8 @@ abstract class CalendarDatabase: RoomDatabase() {
             synchronized(this) { // only one thread can have access to the block of code
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    CalendarDatabase::class.java,
-                    "calendar_table"
+                    CookSmartDatabase::class.java,
+                    "cooksmart_db"
                 ).build()
                 INSTANCE = instance
                 return instance

@@ -12,7 +12,7 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
     private val repository: CalendarRepository
 
     init {
-        val calendarDao = CalendarDatabase.getCalendarDatabase(application).calendarDao
+        val calendarDao = CookSmartDatabase.getCookSmartDatabase(application).calendarDao()
         repository = CalendarRepository(calendarDao)
         readAllCalendar = repository.allCalendar
     }

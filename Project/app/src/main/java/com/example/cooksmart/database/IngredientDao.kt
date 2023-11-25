@@ -24,4 +24,7 @@ interface IngredientDao {
 
     @Query("DELETE FROM ingredient_table")
     suspend fun deleteAllIngredients()
+
+    @Query("SELECT * FROM ingredient_table WHERE name LIKE :searchQuery OR category LIKE :searchQuery")
+    fun searchIngredientsDatabase(searchQuery: String): LiveData<List<Ingredient>>
 }

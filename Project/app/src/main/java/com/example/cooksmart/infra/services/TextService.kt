@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class TextService(private val openAI: OpenAI) {
@@ -21,14 +22,16 @@ class TextService(private val openAI: OpenAI) {
     private var audioText: String = ""
 //    private var introCompleted: Boolean = false
     private var startIndex: Int = 0
+    private var tempIndex: Int = 0
     private val audioTextChannel = Channel<String>(Channel.UNLIMITED)
-    private var firstAudio = true  // Counter to track the number of substrings processed
-
+    private var audioCount = 0
+    private var summarySent = false
     fun startStream(
         coroutineScope: CoroutineScope,
         question: String,
         responseState: MutableLiveData<String>,
         onAudioTextReady: (text: String) -> Unit,
+        onSummaryReady: (text: String) -> Unit,
         onCompleted: () -> Unit
     ) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -38,21 +41,36 @@ class TextService(private val openAI: OpenAI) {
                 messages = listOf(
                     ChatMessage(
                         role = ChatRole.User,
-                        content = "Please create a recipe along with cooking instructions based " +
-                                "on the ingredients provided, don't return special characters like " +
-                                "#, *, I need to read it: $question"
+                        content = "Create a recipe along with cooking instructions based " +
+                                "on the ingredients provided, the instructions should be less than " +
+                                "5 steps, don't return special characters like " +
+                                "#, *, I need to read it, start with here is: $question"
                     )
                 )
             )
             openAI.chatCompletions(chatCompletionRequest)
+                .onStart {
+                    resetText()
+                }
                 .onEach { response ->
                     val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
                     fullText += text
-                    val firstNewLineIndex = fullText.indexOf("\n\n", startIndex)
+                    val firstNewLineIndex = fullText.indexOf("\n\n", tempIndex)
                     if (firstNewLineIndex > 0) {
                         audioText = fullText.substring(startIndex, firstNewLineIndex)
-                        onAudioTextReady(audioText)
-                        startIndex = firstNewLineIndex + 1
+                        if(audioCount == 0 || audioText.length > 50) {
+                            onAudioTextReady(audioText)
+                            startIndex = firstNewLineIndex + 1
+                            tempIndex = startIndex
+                            audioCount ++
+                            if(audioCount > 1 && !summarySent){
+                                onSummaryReady(fullText)
+                                summarySent = true
+                            }
+                        }else{
+                            //force to move to the next paragraph
+                            tempIndex = firstNewLineIndex + 1
+                        }
                         Log.d("TextService", "Sending one paragraph of audio")
                     }
                     responseState.postValue(fullText)
@@ -71,6 +89,9 @@ class TextService(private val openAI: OpenAI) {
         fullText = ""
         audioText = ""
         startIndex = 0
+        tempIndex = 0
+        audioCount = 0
+        summarySent = false
     }
 
     fun get(coroutineScope: CoroutineScope, prompt: String) {

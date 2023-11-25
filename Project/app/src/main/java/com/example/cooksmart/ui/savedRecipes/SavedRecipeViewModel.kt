@@ -1,13 +1,17 @@
-package com.example.cooksmart.database
+package com.example.cooksmart.ui.savedRecipes
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.cooksmart.database.Ingredient
+import com.example.cooksmart.database.Recipe
+import com.example.cooksmart.database.RecipeDatabase
+import com.example.cooksmart.database.RecipeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RecipeViewModel(application: Application): AndroidViewModel(application) {
+class SavedRecipeViewModel(application: Application): AndroidViewModel(application) {
     val readAllRecipes: LiveData<List<Recipe>>
     private val repository: RecipeRepository
 
@@ -39,5 +43,21 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllRecipes()
         }
+    }
+
+    fun searchRecipe(searchQuery: String): LiveData<List<Recipe>> {
+        return repository.searchRecipe(searchQuery)
+    }
+
+    fun getAllFavoriteRecipes(): LiveData<List<Recipe>> {
+        return repository.getAllFavoriteRecipes()
+    }
+
+    fun getRecipesSortedByName(): LiveData<List<Recipe>> {
+        return repository.getRecipesSortedByName()
+    }
+
+    fun getRecipesSortedByDate(): LiveData<List<Recipe>> {
+        return repository.getRecipesSortedByDate()
     }
 }

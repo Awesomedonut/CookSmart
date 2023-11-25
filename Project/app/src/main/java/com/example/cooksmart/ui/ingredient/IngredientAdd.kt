@@ -1,4 +1,4 @@
-package com.example.cooksmart.ui.fridge
+package com.example.cooksmart.ui.ingredient
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -17,13 +17,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
-import com.example.cooksmart.database.IngredientViewModel
 import com.example.cooksmart.ui.structs.CategoryType
+import com.example.cooksmart.utils.ConvertUtils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class FridgeInsert : Fragment() {
+class IngredientAdd : Fragment() {
     private lateinit var categoriesSpinner: Spinner
     private lateinit var categoriesAdapter: SpinnerAdapter
     private lateinit var ingredientViewModel: IngredientViewModel
@@ -92,7 +92,7 @@ class FridgeInsert : Fragment() {
             val ingredient = Ingredient(0, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.insertIngredient(ingredient)
             Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_fridgeInsert2_to_navigation_fridge)
+            findNavController().navigate(R.id.action_navigation_ingredient_add_to_navigation_ingredient)
         } else {
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }
@@ -107,10 +107,8 @@ class FridgeInsert : Fragment() {
     }
 
     private fun updateBestBeforeText() {
-        // SimpleDateFormat from https://developer.android.com/reference/kotlin/android/icu/text/SimpleDateFormat
         val bestBeforeText = view.findViewById<TextView>(R.id.date_input_current)
-        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
-        val formattedDate = dateFormat.format(selectedDate.time)
+        val formattedDate = ConvertUtils.longToDateString(selectedDate.timeInMillis)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
     }
 }

@@ -34,6 +34,24 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     private var isAudioPlaying = false
     private var lastFetchJob: Job? = null
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _playerLoaded = MutableLiveData<Boolean>().apply { value = false }
+    val playerLoaded: LiveData<Boolean> = _playerLoaded
+
+    private val _input = MutableLiveData<String>("")
+    val input: LiveData<String> get() = _input
+
+    private val _isCreating = MutableLiveData<Boolean>()
+    val isCreating: LiveData<Boolean> = _isCreating
+
+//    fun loadData() {
+//        _isLoading.value = true
+//        // Load data...
+//        _isLoading.value = false
+//    }
+
     private fun enqueueAudioUrl(audioUrl: String) {
         audioQueue.add(audioUrl)
 //        if (audioQueue.size > 0) {
@@ -43,7 +61,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        cleanupQueue()
+        cleanup()
     }
     fun audioCompleted() {
         isAudioPlaying = false
@@ -60,42 +78,80 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
                 nextUrl?.let {
                     _nextAudioUrl.value = it
                     isAudioPlaying = true
+                    _playerLoaded.value = true
                 }
+            }else{
+                _nextAudioUrl.value = ""
             }
         }
     }
 
-    fun cleanupQueue(){
+    fun cleanup(){
         viewModelScope.launch(Dispatchers.Main) {
             audioQueue.clear()
+            _nextAudioUrl.value = ""
+            //_playerLoaded.value = false
         }
     }
     private fun fetchImageUrl(question: String) {
 
         val openAI = OpenAIProvider.instance
         val imageService = ImageService(openAI)
-        imageService.fetchImage(viewModelScope, question, _imageUrl, ::loadImage)
+        imageService.fetchImage(viewModelScope,
+            "Generate a beautiful dish with these details:$question",
+            _imageUrl,
+            ::loadImage)
     }
     private fun loadImage(){
 
     }
+
+    fun appendInputAudio(text: String) {
+        viewModelScope.launch {
+            _input.value += text
+        }
+    }
+    fun resetInputAudio() {
+        viewModelScope.launch {
+            _input.value = ""
+            _response.value = ""
+            _imageUrl.value = ""
+            _isCreating.value = false
+        }
+    }
+
+
+//    fun createRecipe() {
+//        postQuestion()
+//    }
+
     private fun postQuestion(question: String) {
         viewModelScope.launch {
-            fetcher.startStreaming(this,question, _response, ::fetchAudioUrl, ::summarizeDish)
+            fetcher.startStreaming(
+                this,
+                question,
+                _response,
+                ::fetchAudioUrl,
+                ::fetchImageUrl,
+                ::summarizeDish)
+            _imageUrl.value = ""
         }
     }
     private fun summarizeDish(){
         Log.d("RecipeViewModel", "summarizeDish....")
-        viewModelScope.launch {
-            fetcher.startStreaming(this, "describe the finished food using no more than two sentences: $_response",_responseDishSummary, {}, ::fetchImageUrl)
-        }
+//        viewModelScope.launch {
+//            fetcher.startStreaming(this,
+//                "summarize the finished food using no more " +
+//                        "than two sentences with these details: " +
+//                        "$text",_responseDishSummary, {}, ::fetchImageUrl)
+//        }
     }
     private fun fetchImageUrl(){
         Log.d("RecipeViewModel", "fetch....")
-        fetchImageUrl("Give me a beautiful food presentation:$_responseDishSummary")
+        fetchImageUrl("Generate a beautiful dish with these details:$_responseDishSummary")
     }
 
-    fun fetchAudioUrl(text: String) {
+    private fun fetchAudioUrl(text: String) {
         Log.d("fetchAudioUrl", text)
         viewModelScope.launch {
             // Wait for the last job to complete if it's still active
@@ -111,7 +167,8 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
             }
         }
     }
-    fun processSpokenText(spokenText: String) {
+    fun process(spokenText: String) {
+        _isCreating.value = true
         postQuestion(spokenText)
     }
 

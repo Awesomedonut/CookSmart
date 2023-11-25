@@ -9,10 +9,14 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
+import com.example.cooksmart.utils.ConvertUtils
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class RecipeListAdapter: RecyclerView.Adapter<RecipeListAdapter.MyViewHolder>(){
+/**
+ * Shows each row in the recipe database in a RecyclerView
+ */
+class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyViewHolder>(){
     private var recipeList = emptyList<Recipe>()
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
@@ -29,12 +33,11 @@ class RecipeListAdapter: RecyclerView.Adapter<RecipeListAdapter.MyViewHolder>(){
         // Display the row info
         holder.itemView.findViewById<TextView>(R.id.list_name).text = currentRecipe.name.toString()
         val date = currentRecipe.dateAdded
-        val dateFormat = SimpleDateFormat("yyyy MMM dd", Locale.getDefault())
-        val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())
+        val formattedDate = ConvertUtils.longToDateString(date)
         holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
 
         holder.itemView.findViewById<ConstraintLayout>(R.id.recipeRowLayout).setOnClickListener {
-            val action = AllRecipesFragmentDirections.actionNavigationAllRecipesToViewRecipe(currentRecipe)
+            val action = SavedRecipesFragmentDirections.actionNavigationSavedRecipesToNavigationViewRecipe(currentRecipe)
             holder.itemView.findNavController().navigate(action)
         }
     }

@@ -77,21 +77,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom">
             <Button
-                android:id="@+id/update_button_delete"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight="1"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:text="@string/delete"
-                android:textStyle="bold" />
-            <Space
-                android:layout_width="40dp"
-                android:layout_height="match_parent"/>
-            <Button
                 android:id="@+id/update_button_confirm"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
                 android:text="@string/update"
                 android:textStyle="bold" />
         </LinearLayout>

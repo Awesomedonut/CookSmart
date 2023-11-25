@@ -6,6 +6,11 @@
         android:title="@string/title_ingredients" />
 
     <item
+        android:id="@+id/navigation_category"
+        android:icon="@drawable/baseline_menu_book_24"
+        android:title="@string/title_category" />
+
+    <item
         android:id="@+id/navigation_recipe"
         android:icon="@drawable/baseline_menu_book_24"
         android:title="@string/title_recipe" />
@@ -17,6 +22,6 @@
 
     <item
         android:id="@+id/navigation_calendar"
-        android:icon="@drawable/baseline_calendar_today_24"
+        android:icon="@drawable/grocery_24px"
         android:title="@string/title_calendar" />
 </menu>

@@ -87,4 +87,12 @@
             app:destination="@id/navigation_saved_recipes" />
     </fragment>
 
+    <fragment
+        android:id="@+id/navigation_category"
+        android:name="com.example.cooksmart.ui.category.CategoryFragment"
+        android:label="Category Display"
+        tools:layout="@layout/fragement_category">
+
+    </fragment>
+
 </navigation>

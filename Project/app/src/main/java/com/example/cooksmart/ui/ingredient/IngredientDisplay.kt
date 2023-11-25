@@ -1,6 +1,7 @@
 package com.example.cooksmart.ui.ingredient
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,9 +17,14 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
+import com.example.cooksmart.ui.savedRecipes.RecipeIngredientAdapter
+import com.example.cooksmart.ui.savedRecipes.SavedRecipeViewModel
 import java.util.Calendar
 
 class IngredientDisplay: Fragment() {
@@ -67,19 +73,19 @@ class IngredientDisplay: Fragment() {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
+        //display row of ingredient
+        adapter = CategoryListAdapter()
+        val recyclerView = view.findViewById<RecyclerView>(R.id.category_depend_list)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
+        ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
+            adapter.setData(ingredient)
+        }
+
         return view
     }
 
-    private fun backIngredient() {
-        // back to the ingredient page
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Yes") { _, _ ->
-            ingredientViewModel.deleteIngredient(args.currentIngredient)
-            Toast.makeText(requireContext(), "return Ingredient page", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_ingredientDisplay_to_navigation_ingredient)
-        }
-        builder.setNegativeButton("No") { _, _ -> }
-    }
     private fun searchQuery(query: String) {
         // Search for the query with any surrounding letters
         val searchQuery = "%$query%"

@@ -36,10 +36,10 @@ class CategoryListAdapter: RecyclerView.Adapter<CategoryListAdapter.MyViewHolder
         val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())
         holder.itemView.findViewById<TextView>(R.id.list_best_before).text = formattedDate
 
-//        holder.itemView.findViewById<ConstraintLayout>(R.id.rowLayout).setOnClickListener {
-//            val action = IngredientFragmentDirections.action_navigation_ingredient_to_ingredientDisplay(currentIngredient)
-//            holder.itemView.findNavController().navigate(action)
-//        }
+        holder.itemView.findViewById<ConstraintLayout>(R.id.rowLayout).setOnClickListener {
+            val action = IngredientDisplayDirections.actionIngredientDisplayToNavigationIngredientUpdate(currentIngredient)
+            holder.itemView.findNavController().navigate(action)
+        }
     }
 
     fun setData(ingredient: List<Ingredient>) {

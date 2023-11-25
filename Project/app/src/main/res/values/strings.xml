@@ -29,4 +29,14 @@
     <string name="update">Update</string>
     <string name="delete">Delete</string>
     <string name="search_title">Search</string>
+
+    <string name="selected_item">Selected item:</string>
+
+    <string-array name="recipeSpinner">
+        <item>All recipes</item>
+        <item>Sort by title</item>
+        <item>Sort by date</item>
+        <item>Favorite recipes</item>
+    </string-array>
+
 </resources>

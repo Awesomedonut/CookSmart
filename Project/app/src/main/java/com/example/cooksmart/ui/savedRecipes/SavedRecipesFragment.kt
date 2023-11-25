@@ -7,6 +7,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -25,6 +29,8 @@ class SavedRecipesFragment : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
     private lateinit var adapter: SavedRecipesListAdapter
     private lateinit var searchView: SearchView
+    private lateinit var recipeSpinner: Spinner
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,9 +76,53 @@ class SavedRecipesFragment : Fragment() {
 
         savedRecipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
-        savedRecipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
-            adapter.setData(recipe)
+//        savedRecipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
+//            adapter.setData(recipe)
+//        }
+
+        // Spinner
+        val spinnerLists = resources.getStringArray(R.array.recipeSpinner)
+        recipeSpinner = view.findViewById<Spinner>(R.id.spinner)
+        if (recipeSpinner != null) {
+            val sprAdapter = ArrayAdapter(
+                requireActivity(),
+                android.R.layout.simple_spinner_item, spinnerLists
+            )
+            recipeSpinner.adapter = sprAdapter
+
+            recipeSpinner.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?, position: Int, id: Long
+                ) {
+                    println(
+                        getString(R.string.selected_item) + " " +
+                                "" + position + " " + spinnerLists[position]
+                    )
+
+                    // Remove previous observers
+                    savedRecipeViewModel.readAllRecipes.removeObservers(viewLifecycleOwner)
+                    savedRecipeViewModel.getAllFavoriteRecipes().removeObservers(viewLifecycleOwner)
+
+                    if(position == 0) {
+                        showAllRecipes()
+                    }else if(position == 1) {
+                        showSavedRecipesSortedByName()
+                    }else if (position == 2){
+                        showSavedRecipesSortedByDate()
+                    }else if (position == 3){
+                        showAllFavoriteRecipes()
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    TODO("Not yet implemented")
+                }
+            }
         }
+
+
 
         // Navigate to add recipe fragment for user to add their own recipe
         view.findViewById<FloatingActionButton>(R.id.recipe_add).setOnClickListener {
@@ -91,4 +141,34 @@ class SavedRecipesFragment : Fragment() {
             }
         }
     }
+
+    private fun showAllRecipes(){
+        savedRecipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
+            adapter.setData(recipe)
+        }
+    }
+    private fun showSavedRecipesSortedByName() {
+        savedRecipeViewModel.getRecipesSortedByName().observe(viewLifecycleOwner) { list ->
+            list?.let {
+                adapter.setData(it)
+            }
+        }
+    }
+
+    private fun showSavedRecipesSortedByDate() {
+        savedRecipeViewModel.getRecipesSortedByDate().observe(viewLifecycleOwner) { list ->
+            list?.let {
+                adapter.setData(it)
+            }
+        }
+    }
+
+    private fun showAllFavoriteRecipes() {
+        savedRecipeViewModel.getAllFavoriteRecipes().observe(viewLifecycleOwner) { list ->
+            list?.let {
+                adapter.setData(it)
+            }
+        }
+    }
+
 }

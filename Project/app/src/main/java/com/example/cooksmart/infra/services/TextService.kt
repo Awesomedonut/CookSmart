@@ -41,10 +41,10 @@ class TextService(private val openAI: OpenAI) {
                 messages = listOf(
                     ChatMessage(
                         role = ChatRole.User,
-                        content = "Please create a recipe along with cooking instructions based " +
+                        content = "Create a recipe along with cooking instructions based " +
                                 "on the ingredients provided, the instructions should be less than " +
                                 "5 steps, don't return special characters like " +
-                                "#, *, I need to read it: $question"
+                                "#, *, I need to read it, start with here is: $question"
                     )
                 )
             )

@@ -9,6 +9,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
+import com.example.cooksmart.utils.ConvertUtils
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -32,8 +33,7 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
         holder.itemView.findViewById<TextView>(R.id.list_name).text = currentIngredient.name
         holder.itemView.findViewById<TextView>(R.id.list_quantity).text = currentIngredient.quantity
         val date = currentIngredient.bestBefore
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())
+        val formattedDate = ConvertUtils.longToDateString(date)
         holder.itemView.findViewById<TextView>(R.id.list_best_before).text = formattedDate
 
         holder.itemView.findViewById<ConstraintLayout>(R.id.rowLayout).setOnClickListener {

@@ -18,6 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.ui.ingredient.IngredientUpdateArgs
+import com.example.cooksmart.utils.ConvertUtils
 
 class UpdateRecipe : Fragment() {
 
@@ -50,9 +51,7 @@ class UpdateRecipe : Fragment() {
         isFavoriteRecipe.isChecked = args.currentRecipe.isFavorite
         view.findViewById<EditText>(R.id.recipe_instructions_update).setText(args.currentRecipe.instructions)
         val ingredients = args.currentRecipe.ingredients
-        val ingredientsArrayList = ArrayList<String>(stringToArrayList(ingredients))
-        println("List: $ingredientsArrayList")
-        ingredientsList = ingredientsArrayList
+        ingredientsList = ArrayList(ConvertUtils.stringToArrayList(ingredients))
 
         // Display each ingredient in ingredientsList in a ListView row
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
@@ -103,14 +102,5 @@ class UpdateRecipe : Fragment() {
     private fun isNotValidInput(title: String, ingredients: ArrayList<String>, instructions: String): Boolean {
         // Returns true if fields are empty
         return (title == "" || ingredients.isEmpty() || instructions == "")
-    }
-
-    /**
-     * From https://stackoverflow.com/questions/53512575/how-to-convert-a-string-sentence-to-arraylist-in-kotlin
-     */
-    private fun stringToArrayList(str: String): List<String> {
-        val strNoArray = str.substring(1, str.length-1)
-        val list = strNoArray.trim().splitToSequence(',', ' ').filter{it.isNotEmpty()}.toList()
-        return list
     }
 }

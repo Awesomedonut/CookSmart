@@ -29,6 +29,7 @@ import com.example.cooksmart.database.Ingredient
 import java.text.SimpleDateFormat
 import java.util.Locale
 import com.example.cooksmart.ui.structs.CategoryType
+import com.example.cooksmart.utils.ConvertUtils
 import java.util.Calendar
 
 class IngredientUpdate : Fragment() {
@@ -82,8 +83,7 @@ class IngredientUpdate : Fragment() {
         view.findViewById<EditText>(R.id.update_name_ingredient).setText(args.currentIngredient.name)
         view.findViewById<EditText>(R.id.update_quantity).setText(args.currentIngredient.quantity)
         val date = args.currentIngredient.bestBefore
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())
+        val formattedDate = ConvertUtils.longToDateString(date)
         view.findViewById<TextView>(R.id.update_date_input_current).text = formattedDate
 
         return view
@@ -134,10 +134,8 @@ class IngredientUpdate : Fragment() {
     }
 
     private fun updateBestBeforeText() {
-        // SimpleDateFormat from https://developer.android.com/reference/kotlin/android/icu/text/SimpleDateFormat
         val bestBeforeText = view.findViewById<TextView>(R.id.update_date_input_current)
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(selectedDate.time)
+        val formattedDate = ConvertUtils.longToDateString(selectedDate.timeInMillis)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
     }
 

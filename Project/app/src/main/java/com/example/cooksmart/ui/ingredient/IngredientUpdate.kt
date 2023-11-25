@@ -101,7 +101,7 @@ class IngredientUpdate : Fragment() {
             val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.updateIngredient(updatedIngredient)
             Toast.makeText(requireContext(), "Ingredient updated!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_navigation_ingredient_update_to_navigation_ingredient)
+            findNavController().navigate(R.id.action_navigation_ingredient_update_to_ingredientDisplay)
         } else {
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }
@@ -146,7 +146,7 @@ class IngredientUpdate : Fragment() {
             ingredientViewModel.deleteIngredient(args.currentIngredient)
             Toast.makeText(requireContext(), "${args.currentIngredient.name} has been removed!", Toast.LENGTH_SHORT).show()
             // After deleting, go back to ingredients list fragment
-            findNavController().navigate(R.id.action_navigation_ingredient_update_to_navigation_ingredient)
+            findNavController().navigate(R.id.action_navigation_ingredient_update_to_ingredientDisplay)
         }
         builder.setNegativeButton("No") { _, _ -> }
         builder.setTitle("Delete ingredient?")

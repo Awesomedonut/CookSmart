@@ -1,4 +1,4 @@
-package com.example.cooksmart.ui.category
+package com.example.cooksmart.ui.ingredient
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,16 +7,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
-import java.util.Collections
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class CategoryAdapter(var context: Context, var arrayList: ArrayList<CategoryData>) :
-    RecyclerView.Adapter<CategoryAdapter.ItemHolder>() {
+class IngredientAdapter(var context: Context, var arrayList: ArrayList<IngredientCardViewFormat>) :
+    RecyclerView.Adapter<IngredientAdapter.ItemHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         val viewHolder = LayoutInflater.from(parent.context)
-            .inflate(R.layout.category_list, parent, false)
+            .inflate(R.layout.cardview_list, parent, false)
         return ItemHolder(viewHolder)
     }
 
@@ -26,13 +30,14 @@ class CategoryAdapter(var context: Context, var arrayList: ArrayList<CategoryDat
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
 
-        val categoryItem: CategoryData = arrayList.get(position)
+        val categoryItem = arrayList[position]
 
         holder.images.setImageResource(categoryItem.categoryImage ?: R.drawable.ic_launcher_foreground)
         holder.titles.text = categoryItem.categoryName
 
-        holder.titles.setOnClickListener {
-            Toast.makeText(context, categoryItem.categoryName, Toast.LENGTH_LONG).show()
+        holder.itemView.findViewById<CardView>(R.id.card_view).setOnClickListener {
+            val action = IngredientFragmentDirections.actionNavigationIngredientToIngredientDisplay()
+            holder.itemView.findNavController().navigate(action)
         }
 
     }

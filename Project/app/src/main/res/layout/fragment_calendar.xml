@@ -23,11 +23,15 @@
             android:layout_margin="8dp"
             android:text="Date Placeholder"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
         <ListView
             android:id="@+id/lvIngredients"
             android:layout_width="wrap_content"
             android:layout_height="500dp"
             android:layout_below="@+id/tvDateSelected"
-            android:layout_margin="8dp" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp" />
     </RelativeLayout>
 </ScrollView>

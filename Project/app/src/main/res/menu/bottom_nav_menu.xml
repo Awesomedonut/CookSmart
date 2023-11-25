@@ -6,11 +6,6 @@
         android:title="@string/title_ingredients" />
 
     <item
-        android:id="@+id/navigation_category"
-        android:icon="@drawable/baseline_menu_book_24"
-        android:title="@string/title_category" />
-
-    <item
         android:id="@+id/navigation_recipe"
         android:icon="@drawable/baseline_menu_book_24"
         android:title="@string/title_recipe" />

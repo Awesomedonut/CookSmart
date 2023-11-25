@@ -18,8 +18,8 @@
             android:id="@+id/action_navigation_ingredient_to_ingredient_add"
             app:destination="@id/navigation_ingredient_add" />
         <action
-            android:id="@+id/action_navigation_ingredient_to_ingredient_update"
-            app:destination="@id/navigation_ingredient_update" />
+            android:id="@+id/action_navigation_ingredient_to_ingredientDisplay"
+            app:destination="@id/ingredientDisplay" />
     </fragment>
 
     <fragment
@@ -43,15 +43,15 @@
         android:id="@+id/navigation_ingredient_update"
         android:name="com.example.cooksmart.ui.ingredient.IngredientUpdate"
         android:label="Update" >
-        <action
-            android:id="@+id/action_navigation_ingredient_update_to_navigation_ingredient"
-            app:destination="@id/navigation_ingredient" />
         <argument
             android:name="currentIngredient"
             app:argType="com.example.cooksmart.database.Ingredient" />
         <action
             android:id="@+id/action_navigation_ingredient_update_to_navigation_calendar"
             app:destination="@id/navigation_calendar" />
+        <action
+            android:id="@+id/action_navigation_ingredient_update_to_ingredientDisplay"
+            app:destination="@id/ingredientDisplay" />
     </fragment>
     <fragment
         android:id="@+id/navigation_saved_recipes"
@@ -86,13 +86,17 @@
             android:id="@+id/action_addRecipe_to_navigation_saved_recipes"
             app:destination="@id/navigation_saved_recipes" />
     </fragment>
-
     <fragment
-        android:id="@+id/navigation_category"
-        android:name="com.example.cooksmart.ui.category.CategoryFragment"
-        android:label="Category Display"
-        tools:layout="@layout/fragement_category">
-
+        android:id="@+id/ingredientDisplay"
+        android:name="com.example.cooksmart.ui.ingredient.IngredientDisplay"
+        android:label="fregement_ingredient_display"
+        tools:layout="@layout/fragement_ingredient_display" >
+        <action
+            android:id="@+id/action_ingredientDisplay_to_navigation_ingredient"
+            app:destination="@id/navigation_ingredient" />
+        <action
+            android:id="@+id/action_ingredientDisplay_to_navigation_ingredient_update"
+            app:destination="@id/navigation_ingredient_update" />
     </fragment>
 
 </navigation>

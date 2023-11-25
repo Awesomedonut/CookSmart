@@ -12,7 +12,7 @@ import com.example.cooksmart.database.Ingredient
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHolder>(){
+class CategoryListAdapter: RecyclerView.Adapter<CategoryListAdapter.MyViewHolder>(){
     private var ingredientList = emptyList<Ingredient>()
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
@@ -36,10 +36,10 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
         val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())
         holder.itemView.findViewById<TextView>(R.id.list_best_before).text = formattedDate
 
-        holder.itemView.findViewById<ConstraintLayout>(R.id.rowLayout).setOnClickListener {
-            val action = IngredientFragmentDirections.actionNavigationIngredientToIngredientUpdate(currentIngredient)
-            holder.itemView.findNavController().navigate(action)
-        }
+//        holder.itemView.findViewById<ConstraintLayout>(R.id.rowLayout).setOnClickListener {
+//            val action = IngredientFragmentDirections.action_navigation_ingredient_to_ingredientDisplay(currentIngredient)
+//            holder.itemView.findNavController().navigate(action)
+//        }
     }
 
     fun setData(ingredient: List<Ingredient>) {

@@ -4,6 +4,9 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -14,6 +17,10 @@ import android.widget.SpinnerAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -39,7 +46,6 @@ class IngredientUpdate : Fragment() {
         view = inflater.inflate(R.layout.fragment_ingredient_update, container, false)
 
         val confirmButton = view.findViewById<Button>(R.id.update_button_confirm)
-        val deleteButton = view.findViewById<Button>(R.id.update_button_delete)
         val editDate = view.findViewById<Button>(R.id.update_best_before_date_picker)
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
@@ -68,10 +74,6 @@ class IngredientUpdate : Fragment() {
 
         confirmButton.setOnClickListener {
             updateIngredient()
-        }
-
-        deleteButton.setOnClickListener {
-            deleteIngredient()
         }
 
         // Populate fields with the saved values from args

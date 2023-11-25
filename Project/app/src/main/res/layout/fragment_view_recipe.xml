@@ -12,12 +12,25 @@
             android:id="@+id/viewRecipeTitle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="Title" />
+        <TextView
+            android:id="@+id/viewRecipeIngredientsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Ingredients" />
         <TextView
             android:id="@+id/viewRecipeIngredients"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Ingredients" />
+        <TextView
+            android:id="@+id/viewRecipeInstructionsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Instructions" />
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -32,18 +45,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Is Favorited?" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="bottom">
-            <Button
-                android:id="@+id/view_recipe_delete_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:text="@string/delete"
-                android:textStyle="bold" />
-        </LinearLayout>
-
     </LinearLayout>
 </ScrollView>

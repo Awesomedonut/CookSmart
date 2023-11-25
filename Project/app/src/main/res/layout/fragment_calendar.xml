@@ -23,11 +23,20 @@
             android:layout_margin="8dp"
             android:text="Date Placeholder"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        <TextView
+            android:id="@+id/tvIngredientsList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDateSelected"
+            android:text="Ingredients"
+            android:textSize="16dp"
+            android:layout_margin="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
         <ListView
             android:id="@+id/lvIngredients"
             android:layout_width="wrap_content"
-            android:layout_height="500dp"
-            android:layout_below="@+id/tvDateSelected"
+            android:layout_height="200dp"
+            android:layout_below="@+id/tvIngredientsList"
             android:layout_margin="8dp" />
     </RelativeLayout>
 </ScrollView>

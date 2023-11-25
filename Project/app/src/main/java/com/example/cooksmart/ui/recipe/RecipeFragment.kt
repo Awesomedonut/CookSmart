@@ -12,6 +12,7 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.speech.RecognizerIntent
+import android.util.Log
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -22,6 +23,7 @@ import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.infra.services.SmartNetService
 import com.example.cooksmart.infra.net.UnsafeHttpClient
 import com.example.cooksmart.utils.DataFetcher
+import com.example.cooksmart.utils.DebouncedOnClickListener
 import java.util.Locale
 
 class RecipeFragment : Fragment() {
@@ -51,6 +53,9 @@ class RecipeFragment : Fragment() {
                 val results = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 if (!results.isNullOrEmpty()) {
                     val spokenText = results[0]
+                    Log.d("Recipe....",spokenText)
+                    if(!spokenText.isNullOrEmpty())
+                        viewModel.appendInputAudio(spokenText)
                     // Handle the spoken text
                 }
             }
@@ -61,6 +66,32 @@ class RecipeFragment : Fragment() {
     }
 
     private fun setupUI() {
+
+        DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
+            viewModel.resetInputAudio()
+            viewModel.cleanup()
+        }
+
+        DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonCreateRecipes, 500) {
+            viewModel.process(binding.buttonOption1.text.toString())
+        }
+
+        DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
+            viewModel.process(binding.buttonOption1.text.toString())
+        }
+
+
+//        binding.buttonReset.setOnClickListener {
+//            viewModel.resetInputAudio()
+//        }
+//        binding.buttonCreateRecipes.setOnClickListener {
+//            viewModel.process(binding.buttonOption1.text.toString())
+//        }
+//        binding.buttonOption1.setOnClickListener {
+//            viewModel.process(binding.buttonOption1.text.toString())
+//        }
+//
+
         binding.micImageView.setOnClickListener {
             try {
                 if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
@@ -85,11 +116,23 @@ class RecipeFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        viewModel.input.observe(viewLifecycleOwner){
+            if(it.isNotEmpty())
+            {
+                binding.buttonOption1.text = it
+            }else
+                binding.buttonOption1.text = "Beef, Sweet Potatoes, eggs"
+        }
         viewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
-
+        viewModel.isCreating.observe(viewLifecycleOwner){
+            binding.buttonCreateRecipes.isVisible = !it
+            binding.buttonOption1.isVisible = !it
+            binding.micImageView.isVisible = !it
+            binding.buttonReset.isVisible = it
+        }
         viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             if(imageUrl.isEmpty()){
              binding.responseImage.isVisible = false
@@ -102,11 +145,12 @@ class RecipeFragment : Fragment() {
 
         viewModel.playerLoaded.observe(viewLifecycleOwner){
             binding.progressBar.isVisible = !it
-            binding.micImageView.isVisible = it
+//            binding.micImageView.isVisible = it
             if(viewModel.response.value == null || viewModel.response.value?.isEmpty() == true) {
                 if (it)
                     binding.responseTextView.text =
-                        "Please click the speaker icon to tell me what ingredients do you have"
+                        "Click the ingredients to give it a try, " +
+                                "or click the speaker icon to tell me what ingredients do you have"
                 else
                     binding.responseTextView.text = "Loading, please wait"
             }
@@ -163,14 +207,14 @@ class RecipeFragment : Fragment() {
             val results: ArrayList<String> =
                 data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
             val spokenText = results[0]
-            if (spokenText.length > 5)
-                viewModel.processSpokenText(spokenText)
-            else
-                Toast.makeText(
-                    this@RecipeFragment.context,
-                    "Your input is too short, please try again",
-                    Toast.LENGTH_SHORT
-                ).show()
+//            if (spokenText.length > 5)
+//                viewModel.processSpokenText(spokenText)
+//            else
+//                Toast.makeText(
+//                    this@RecipeFragment.context,
+//                    "Your input is too short, please try again",
+//                    Toast.LENGTH_SHORT
+//                ).show()
         }
     }
 

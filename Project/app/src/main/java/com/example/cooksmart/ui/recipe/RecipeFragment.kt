@@ -14,6 +14,8 @@ import android.media.MediaPlayer
 import android.speech.RecognizerIntent
 import android.widget.ScrollView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.example.cooksmart.BuildConfig
@@ -30,6 +32,7 @@ class RecipeFragment : Fragment() {
     private lateinit var viewModel: RecipeViewModel
     private val REQUEST_CODE_SPEECH_INPUT = 1
     private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +45,16 @@ class RecipeFragment : Fragment() {
         val fetcher = DataFetcher(smartNetService)
         val viewModelFactory = RecipeViewModelFactory(fetcher)
         viewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
+        speechResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val data = result.data
+                val results = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                if (!results.isNullOrEmpty()) {
+                    val spokenText = results[0]
+                    // Handle the spoken text
+                }
+            }
+        }
         setupUI()
         setupObservers()
         return binding.root
@@ -55,18 +68,18 @@ class RecipeFragment : Fragment() {
                 }
             } catch (e: Exception) {
             }
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-            )
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text")
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text")
+                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 10000) // 10 seconds
+                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 10000) // 10 seconds
+                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 10000) // 10 seconds
+            }
             try {
-                startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT)
+                speechResultLauncher.launch(intent)
             } catch (e: Exception) {
-                Toast.makeText(this@RecipeFragment.context, " " + e.message, Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this@RecipeFragment.context, " " + e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

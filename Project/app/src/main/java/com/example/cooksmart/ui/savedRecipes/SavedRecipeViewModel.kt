@@ -48,4 +48,16 @@ class SavedRecipeViewModel(application: Application): AndroidViewModel(applicati
     fun searchRecipe(searchQuery: String): LiveData<List<Recipe>> {
         return repository.searchRecipe(searchQuery)
     }
+
+    fun getAllFavoriteRecipes(): LiveData<List<Recipe>> {
+        return repository.getAllFavoriteRecipes()
+    }
+
+    fun getRecipesSortedByName(): LiveData<List<Recipe>> {
+        return repository.getRecipesSortedByName()
+    }
+
+    fun getRecipesSortedByDate(): LiveData<List<Recipe>> {
+        return repository.getRecipesSortedByDate()
+    }
 }

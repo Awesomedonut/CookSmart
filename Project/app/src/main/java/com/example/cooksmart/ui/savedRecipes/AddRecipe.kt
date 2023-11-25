@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
@@ -21,6 +22,7 @@ class AddRecipe : Fragment() {
     private lateinit var ingredientEditText: EditText
     private lateinit var ingredientAddButton: Button
     private lateinit var ingredientListView: ListView
+    private lateinit var isFavoriteRecipe : CheckBox
     private lateinit var adapter: ArrayAdapter<String>
     private val ingredientsList = ArrayList<String>()
     private lateinit var confirmButton: Button
@@ -36,6 +38,8 @@ class AddRecipe : Fragment() {
         ingredientEditText = view.findViewById(R.id.recipe_ingredients_edittext)
         ingredientAddButton = view.findViewById(R.id.add_ingredient_recipe)
         ingredientListView = view.findViewById(R.id.recipe_ingredients_listview)
+        isFavoriteRecipe = view.findViewById(R.id.isFavoriteRecipe)
+
 
         // Display each ingredient in ingredientsList in a ListView row
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
@@ -64,12 +68,13 @@ class AddRecipe : Fragment() {
 
     private fun insertRecipe() {
         val title = view.findViewById<EditText>(R.id.title_recipe).text.toString()
+        val isFavorite = view.findViewById<CheckBox>(R.id.isFavoriteRecipe)
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions).text.toString()
         val currentDate = System.currentTimeMillis()
         // Check all fields have input and then save into database as Recipe entity
         if (!isNotValidInput(title, ingredientsList, instructions)) {
-            val recipe = Recipe(0, title, ingredients, instructions, currentDate, false)
+            val recipe = Recipe(0, title, ingredients, instructions, currentDate, isFavorite.isChecked)
             savedRecipeViewModel.insertRecipe(recipe)
             Toast.makeText(requireContext(), "Recipe added!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_addRecipe_to_navigation_saved_recipes)

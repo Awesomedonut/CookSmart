@@ -24,4 +24,16 @@ class RecipeRepository(private val recipeDao: RecipeDao) {
     fun searchRecipe(searchQuery: String): LiveData<List<Recipe>> {
         return recipeDao.searchRecipeDatabase(searchQuery)
     }
+
+    fun getAllFavoriteRecipes(): LiveData<List<Recipe>> {
+        return recipeDao.getAllFavoriteRecipes()
+    }
+
+    fun getRecipesSortedByName(): LiveData<List<Recipe>> {
+        return recipeDao.getRecipesSortedByName()
+    }
+
+    fun getRecipesSortedByDate(): LiveData<List<Recipe>> {
+        return recipeDao.getRecipesSortedByDate()
+    }
 }

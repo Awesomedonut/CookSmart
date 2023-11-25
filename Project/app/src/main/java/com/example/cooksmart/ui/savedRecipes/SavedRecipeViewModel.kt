@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.cooksmart.database.CookSmartDatabase
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.database.Recipe
-import com.example.cooksmart.database.RecipeDatabase
 import com.example.cooksmart.database.RecipeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

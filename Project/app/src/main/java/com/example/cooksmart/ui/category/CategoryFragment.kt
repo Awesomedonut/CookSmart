@@ -46,11 +46,8 @@ class CategoryFragment : Fragment() {
             )
         )
 
-        //println("size"+arrayList.size)
-
         categoryAdapter = CategoryAdapter(requireContext(), arrayList)
         recyclerView?.adapter = categoryAdapter
-
 
         return view
     }

@@ -28,7 +28,7 @@ class CategoryAdapter(var context: Context, var arrayList: ArrayList<CategoryDat
 
         val categoryItem: CategoryData = arrayList.get(position)
 
-        holder.images.setImageResource(categoryItem.categoryImage!!)
+        holder.images.setImageResource(categoryItem.categoryImage ?: R.drawable.ic_launcher_foreground)
         holder.titles.text = categoryItem.categoryName
 
         holder.titles.setOnClickListener {
@@ -43,45 +43,3 @@ class CategoryAdapter(var context: Context, var arrayList: ArrayList<CategoryDat
 
     }
 }
-
-//import android.content.Context
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import android.widget.ImageView
-//import android.widget.TextView
-//import android.widget.Toast
-//import androidx.recyclerview.widget.RecyclerView
-//import com.example.cooksmart.R
-//
-//class CategoryAdapter(private val myCategoryData: Array<CategoryData>, private val context: Context?) :
-//    RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-//        val layoutInflater = LayoutInflater.from(parent.context)
-//        val view: View = layoutInflater.inflate(R.layout.category_list, parent, false)
-//        return ViewHolder(view)
-//    }
-//
-//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        val myCategoryDataList: CategoryData = myCategoryData[position]
-//        holder.textViewName.text = myCategoryDataList.getCategoryName()
-//        myCategoryDataList.getCategoryImage()?.let { holder.movieImage.setImageResource(it) }
-//        holder.itemView.setOnClickListener {
-//            Toast.makeText(
-//                context,
-//                myCategoryDataList.getCategoryName(),
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return myCategoryData.size
-//    }
-//
-//    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        var movieImage: ImageView = itemView.findViewById(R.id.imageview)
-//        var textViewName: TextView = itemView.findViewById(R.id.textName)
-//    }
-//}

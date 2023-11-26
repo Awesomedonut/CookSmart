@@ -1,5 +1,7 @@
 package com.example.cooksmart.ui.calendar
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
@@ -24,6 +27,9 @@ import java.util.Calendar
 import java.util.Locale
 
 
+private const val COOKSMART = "COOKSMART"
+private const val DATE_KEY = "DATE KEY"
+
 class CalendarFragment : Fragment() {
 
     private var _binding: FragmentCalendarBinding? = null
@@ -33,6 +39,7 @@ class CalendarFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var ingredientList : ArrayList<Ingredient>
+    private lateinit var sharedPreferences : SharedPreferences
     val selectedDate = Calendar.getInstance()
 
     private lateinit var calendarDBViewModel : CalendarDBViewModel
@@ -44,6 +51,8 @@ class CalendarFragment : Fragment() {
     ): View {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        sharedPreferences = requireActivity().getSharedPreferences(COOKSMART, Context.MODE_PRIVATE)
 
         val calendarViewModel : CalendarViewModel =
             ViewModelProvider(this)[CalendarViewModel::class.java]
@@ -87,6 +96,14 @@ class CalendarFragment : Fragment() {
             else{
 
             }
+        }
+
+        val btnAddPlan : Button = root.findViewById(R.id.btnAddPlan)
+        btnAddPlan.setOnClickListener{
+            findNavController().navigate(R.id.action_navigation_calendar_to_navigation_calendar_add)
+            val editor = sharedPreferences.edit()
+            editor.putLong(DATE_KEY, convertCalendartoLong(selectedDate))
+            editor.apply()
         }
 
         return root

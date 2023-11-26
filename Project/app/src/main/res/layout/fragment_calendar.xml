@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/calendar"
                 android:layout_margin="8dp"
-                android:text="Date Placeholder"
+                android:text="@string/date_placeholder"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
             <TextView
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvDateSelected"
                 android:layout_margin="8dp"
-                android:text="Ingredients"
+                android:text="@string/ingredients"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textSize="16dp" />
 
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/lvIngredients"
                 android:layout_margin="8dp"
-                android:text="Plan"
+                android:text="@string/plan"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textSize="16dp" />
 
@@ -68,7 +68,7 @@
                 android:layout_below="@+id/tvPlanCalendar"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="8dp"
-                android:text="No plan detected!" />
+                android:text="@string/no_plan_detected" />
 
             <Button
                 android:id="@+id/btnAddPlan"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvPlanPlaceholder"
                 android:layout_centerHorizontal="true"
-                android:text="Add Plan" />
+                android:text="@string/add_plan" />
         </RelativeLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

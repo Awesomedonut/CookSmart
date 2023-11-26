@@ -37,6 +37,13 @@
     <string name="favorite_button">Favorite button</string>
     <string name="delete_ingredient_button">Delete ingredient button</string>
     <string name="saved_recipes">Saved Recipes</string>
+    <string name="no_plan_detected">No plan detected!</string>
+    <string name="plan">Plan</string>
+    <string name="add_plan">Add Plan</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="date_placeholder">Date Placeholder</string>
+    <string name="date">Date</string>
+    <string name="hint_plan">e.g. Meal Plan, Guests, etc.</string>
 
     <string-array name="recipeSpinner">
         <item>Date added: oldest</item>

@@ -57,6 +57,7 @@ class CalendarFragment : Fragment() {
         val calendarViewModel : CalendarViewModel =
             ViewModelProvider(this)[CalendarViewModel::class.java]
 
+        // Accessing Ingredient table in database
         val ingredientListView : ListView = root.findViewById(R.id.lvIngredients)
         ingredientList = ArrayList()
         val ingredientAdapter =
@@ -70,20 +71,12 @@ class CalendarFragment : Fragment() {
             ingredientAdapter.notifyDataSetChanged()
         }
 
-        // Initialize date variables
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
-        val tvDate : TextView = root.findViewById(R.id.tvDateSelected)
-        tvDate.text = formattedDate
-        calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
-
-        val calendar : CalendarView = root.findViewById(R.id.calendar)
-        calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            setDate(root, year, month, dayOfMonth)
-            calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
-        }
+        // Initialize date/calendar related items
+        initDate(root, calendarViewModel)
+        initCalendar(root, calendarViewModel)
 
 
+        // Access calendar database
         calendarDBViewModel = ViewModelProvider(this)[CalendarDBViewModel::class.java]
         calendarDBViewModel.readAllCalendar.observe(viewLifecycleOwner){
             if(it.isNotEmpty()){
@@ -98,15 +91,38 @@ class CalendarFragment : Fragment() {
             }
         }
 
-        val btnAddPlan : Button = root.findViewById(R.id.btnAddPlan)
-        btnAddPlan.setOnClickListener{
-            findNavController().navigate(R.id.action_navigation_calendar_to_navigation_calendar_add)
-            val editor = sharedPreferences.edit()
-            editor.putLong(DATE_KEY, convertCalendartoLong(selectedDate))
-            editor.apply()
-        }
+        // Initialize add plan button + TODO: update plan
+        initAddPlan(root, sharedPreferences)
 
         return root
+    }
+
+    private fun initAddPlan(view: View, sharedPreferences: SharedPreferences?) {
+        val btnAddPlan : Button = view.findViewById(R.id.btnAddPlan)
+        btnAddPlan.setOnClickListener{
+            findNavController().navigate(R.id.action_navigation_calendar_to_navigation_calendar_add)
+            val editor = sharedPreferences?.edit()
+            if (editor != null) {
+                editor.putLong(DATE_KEY, convertCalendartoLong(selectedDate))
+                editor.apply()
+            }
+        }
+    }
+
+    private fun initCalendar(view : View, calendarViewModel: CalendarViewModel) {
+        val calendar : CalendarView = view.findViewById(R.id.calendar)
+        calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            setDate(view, year, month, dayOfMonth)
+            calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
+        }
+    }
+
+    private fun initDate(view : View, calendarViewModel : CalendarViewModel) {
+        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
+        val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
+        val tvDate : TextView = view.findViewById(R.id.tvDateSelected)
+        tvDate.text = formattedDate
+        calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
     }
 
     override fun onDestroyView() {

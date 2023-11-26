@@ -12,7 +12,7 @@
             android:layout_margin="8dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:text="Date"
+            android:text="@string/date"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textStyle="bold"/>
         <TextView
@@ -22,7 +22,7 @@
             android:layout_margin="8dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvCalendarDateSelected"
-            android:text="Plan"
+            android:text="@string/plan"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
         <EditText
             android:id="@+id/etCalendarPlan"
@@ -31,7 +31,7 @@
             android:layout_margin="8dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvCalendarPlanTitle"
-            android:text="e.g. Meal Plan, Guests, etc." />
+            android:hint="@string/hint_plan" />
     </RelativeLayout>
 
 </ScrollView>

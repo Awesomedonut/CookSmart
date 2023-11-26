@@ -76,6 +76,9 @@
         <argument
             android:name="currentRecipe"
             app:argType="com.example.cooksmart.database.Recipe" />
+        <action
+            android:id="@+id/action_navigation_view_recipe_to_updateRecipe"
+            app:destination="@id/navigation_update_recipe" />
     </fragment>
     <fragment
         android:id="@+id/navigation_add_recipe"
@@ -85,6 +88,18 @@
         <action
             android:id="@+id/action_addRecipe_to_navigation_saved_recipes"
             app:destination="@id/navigation_saved_recipes" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_update_recipe"
+        android:name="com.example.cooksmart.ui.savedRecipes.UpdateRecipe"
+        android:label="Update Recipe"
+        tools:layout="@layout/fragment_update_recipe" >
+        <action
+            android:id="@+id/action_navigation_update_recipe_to_navigation_view_recipe"
+            app:destination="@id/navigation_view_recipe" />
+        <argument
+            android:name="currentRecipe"
+            app:argType="com.example.cooksmart.database.Recipe" />
     </fragment>
 
     <fragment

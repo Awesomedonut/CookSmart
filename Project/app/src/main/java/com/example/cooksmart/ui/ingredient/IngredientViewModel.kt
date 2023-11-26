@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.cooksmart.database.CookSmartDatabase
 import com.example.cooksmart.database.Ingredient
-import com.example.cooksmart.database.IngredientDatabase
 import com.example.cooksmart.database.IngredientRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ class IngredientViewModel(application: Application): AndroidViewModel(applicatio
     private val repository: IngredientRepository
 
     init {
-        val ingredientDao = IngredientDatabase.getIngredientDatabase(application).ingredientDao
+        val ingredientDao = CookSmartDatabase.getCookSmartDatabase(application).ingredientDao()
         repository = IngredientRepository(ingredientDao)
         readAllIngredients = repository.allIngredients
     }

@@ -4,6 +4,9 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -14,6 +17,10 @@ import android.widget.SpinnerAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -22,6 +29,7 @@ import com.example.cooksmart.database.Ingredient
 import java.text.SimpleDateFormat
 import java.util.Locale
 import com.example.cooksmart.ui.structs.CategoryType
+import com.example.cooksmart.utils.ConvertUtils
 import java.util.Calendar
 
 class IngredientUpdate : Fragment() {
@@ -39,7 +47,6 @@ class IngredientUpdate : Fragment() {
         view = inflater.inflate(R.layout.fragment_ingredient_update, container, false)
 
         val confirmButton = view.findViewById<Button>(R.id.update_button_confirm)
-        val deleteButton = view.findViewById<Button>(R.id.update_button_delete)
         val editDate = view.findViewById<Button>(R.id.update_best_before_date_picker)
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
@@ -70,18 +77,13 @@ class IngredientUpdate : Fragment() {
             updateIngredient()
         }
 
-        deleteButton.setOnClickListener {
-            deleteIngredient()
-        }
-
         // Populate fields with the saved values from args
         val position = categoryStringToInt(args.currentIngredient.category)
         view.findViewById<Spinner>(R.id.update_category).setSelection(position)
         view.findViewById<EditText>(R.id.update_name_ingredient).setText(args.currentIngredient.name)
         view.findViewById<EditText>(R.id.update_quantity).setText(args.currentIngredient.quantity)
         val date = args.currentIngredient.bestBefore
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(date).uppercase(Locale.getDefault())
+        val formattedDate = ConvertUtils.longToDateString(date)
         view.findViewById<TextView>(R.id.update_date_input_current).text = formattedDate
 
         return view
@@ -132,10 +134,8 @@ class IngredientUpdate : Fragment() {
     }
 
     private fun updateBestBeforeText() {
-        // SimpleDateFormat from https://developer.android.com/reference/kotlin/android/icu/text/SimpleDateFormat
         val bestBeforeText = view.findViewById<TextView>(R.id.update_date_input_current)
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(selectedDate.time)
+        val formattedDate = ConvertUtils.longToDateString(selectedDate.timeInMillis)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
     }
 

@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.structs.CategoryType
+import com.example.cooksmart.utils.ConvertUtils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -106,10 +107,8 @@ class IngredientAdd : Fragment() {
     }
 
     private fun updateBestBeforeText() {
-        // SimpleDateFormat from https://developer.android.com/reference/kotlin/android/icu/text/SimpleDateFormat
         val bestBeforeText = view.findViewById<TextView>(R.id.date_input_current)
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(selectedDate.time)
+        val formattedDate = ConvertUtils.longToDateString(selectedDate.timeInMillis)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
     }
 }

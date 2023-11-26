@@ -25,18 +25,18 @@ interface IngredientDao {
     @Query("DELETE FROM ingredient_table")
     suspend fun deleteAllIngredients()
 
-    @Query("SELECT * FROM ingredient_table WHERE name LIKE :searchQuery OR category LIKE :searchQuery")
+    @Query("SELECT * FROM ingredient_table WHERE ingredient_name LIKE :searchQuery OR ingredient_category LIKE :searchQuery")
     fun searchIngredientsDatabase(searchQuery: String): LiveData<List<Ingredient>>
 
-    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(name)")
+    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_name)")
     fun getIngredeintSortedByName(): LiveData<List<Ingredient>>
 
-    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(bestBefore)")
+    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_bestBefore)")
     fun showBestDayOldest(): LiveData<List<Ingredient>>
 
-    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(bestBefore) DESC")
+    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_bestBefore) DESC")
     fun showBestDayNewest(): LiveData<List<Ingredient>>
 
-    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(bestBefore) DESC")
+    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_dateAdded) DESC")
     fun showAddedDayNewest(): LiveData<List<Ingredient>>
 }

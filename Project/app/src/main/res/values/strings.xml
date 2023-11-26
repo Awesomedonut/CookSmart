@@ -32,18 +32,18 @@
     <string name="selected_item">Selected item:</string>
 
     <string-array name="recipeSpinner">
-        <item>All recipes</item>
-        <item>Sort by title</item>
-        <item>Sort by date</item>
-        <item>Favorite recipes</item>
+        <item>All</item>
+        <item>Title: A to Z</item>
+        <item>Date added: newest</item>
+        <item>Favorites</item>
     </string-array>
 
     <string-array name="ingredientSpinner">
-        <item>All intgredients</item>
-        <item>Sort by alphabetically</item>
-        <item>Sort by best before date(oldest)</item>
-        <item>Sort by best before date (newest)</item>
-        <item>Sort by date added (newest)</item>
+        <item>All</item>
+        <item>Name: A to Z</item>
+        <item>Best before date: oldest</item>
+        <item>Best before date: newest</item>
+        <item>Date added: newest</item>
     </string-array>
 
 </resources>

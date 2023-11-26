@@ -12,6 +12,11 @@
         android:id="@+id/linear_layout"
         android:gravity="right">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sort by:"/>
+
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="wrap_content"

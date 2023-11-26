@@ -1,6 +1,9 @@
 package com.example.cooksmart.ui.savedRecipes
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -8,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -59,10 +63,18 @@ class ViewRecipe : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         // Set the fields from the currentRecipe
-        view.findViewById<TextView>(R.id.viewRecipeTitle).text = args.currentRecipe.name
+        val spannableName = SpannableString(args.currentRecipe.name)
+        spannableName.setSpan(UnderlineSpan(), 0, spannableName.length, 0)
+        view.findViewById<TextView>(R.id.viewRecipeTitle).text = spannableName
         view.findViewById<TextView>(R.id.viewRecipeIngredients).text = args.currentRecipe.ingredients
         view.findViewById<TextView>(R.id.viewRecipeInstructions).text = args.currentRecipe.instructions
-        view.findViewById<TextView>(R.id.viewRecipeFavorite).text = "Is favourited? ${args.currentRecipe.isFavorite}"
+        val favoriteIcon = view.findViewById<ImageView>(R.id.viewRecipeFavoriteIcon)
+
+        if (args.currentRecipe.isFavorite) {
+            favoriteIcon.setImageResource(R.drawable.favorite_icon)
+        } else {
+            favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
+        }
 
         recipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 

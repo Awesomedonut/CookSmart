@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import com.example.cooksmart.R
@@ -18,19 +17,12 @@ import com.example.cooksmart.R
 class RecipeIngredientAdapter(context: Context, private val ingredientsList: ArrayList<String>):
     ArrayAdapter<String>(context, R.layout.ingredient_listview_item, ingredientsList) {
 
-    private var onDeleteClickListener: ((Int) -> Unit)? = null
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val row = inflater.inflate(R.layout.ingredient_listview_item, parent, false)
 
         val rowEditText = row.findViewById<EditText>(R.id.editTextIngredient)
-        val deleteButton = row.findViewById<Button>(R.id.deleteIngredient)
         rowEditText.setText(ingredientsList[position])
-
-        // Listen for delete button click for each row
-        deleteButton.setOnClickListener {
-            onDeleteClickListener?.invoke(position)
-        }
 
         return row
     }
@@ -46,9 +38,5 @@ class RecipeIngredientAdapter(context: Context, private val ingredientsList: Arr
             ingredientsList[i] = editText.text.toString()
         }
         notifyDataSetChanged()
-    }
-
-    fun setOnDeleteClickListener(listener: (Int) -> Unit) {
-        onDeleteClickListener = listener
     }
 }

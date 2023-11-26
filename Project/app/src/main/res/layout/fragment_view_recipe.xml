@@ -13,37 +13,53 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Title" />
+            android:text="Title"
+            android:paddingBottom="20dp"
+            android:gravity="center"/>
         <TextView
             android:id="@+id/viewRecipeIngredientsLabel"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Ingredients" />
+            android:text="Ingredients"
+            android:layout_margin="16dp"  />
         <TextView
             android:id="@+id/viewRecipeIngredients"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Ingredients" />
+            android:layout_height="wrap_content"
+            android:text="Ingredients"
+            android:layout_margin="10dp"/>
         <TextView
             android:id="@+id/viewRecipeInstructionsLabel"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Instructions" />
+            android:text="Instructions"
+            android:layout_margin="16dp"/>
+
         <ScrollView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/viewRecipeInstructions"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Instructions" />
+                android:layout_height="wrap_content"
+                android:text="Instructions"
+                android:layout_margin="16dp"/>
         </ScrollView>
-        <TextView
-            android:id="@+id/viewRecipeFavorite"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Is Favorited?" />
+
+        <ImageView
+            android:id="@+id/viewRecipeFavoriteIcon"
+            android:layout_width="44dp"
+            android:layout_height="38dp"
+            android:layout_gravity="right"
+            android:src="@drawable/favorite_icon" />
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/viewRecipeFavorite"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:text="Is Favorited?" />-->
+
     </LinearLayout>
 </ScrollView>

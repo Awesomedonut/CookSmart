@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.cooksmart.database.CookSmartDatabase
-import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.database.RecipeRepository
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +26,19 @@ class SavedRecipeViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
+    suspend fun getRecipeById(recipeId: Long): Recipe {
+        return repository.getRecipeById(recipeId)
+    }
+
     fun updateRecipe(recipe: Recipe) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateRecipe(recipe)
+        }
+    }
+
+    fun updateIsFavorite(id: Long, isFavorite: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateIsFavorite(id, isFavorite)
         }
     }
 

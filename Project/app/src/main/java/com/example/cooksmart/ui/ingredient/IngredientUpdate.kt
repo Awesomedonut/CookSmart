@@ -17,7 +17,6 @@ import android.widget.SpinnerAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
@@ -26,7 +25,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
-import java.text.SimpleDateFormat
 import java.util.Locale
 import com.example.cooksmart.ui.structs.CategoryType
 import com.example.cooksmart.utils.ConvertUtils
@@ -42,7 +40,7 @@ class IngredientUpdate : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_ingredient_update, container, false)
 
@@ -50,7 +48,22 @@ class IngredientUpdate : Fragment() {
         val editDate = view.findViewById<Button>(R.id.update_best_before_date_picker)
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
-
+        // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
+        val menuHost = requireActivity() as MenuHost
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.delete_menu, menu)
+            }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    // Delete dialog if user clicks delete button on menu toolbar
+                    R.id.delete_menu -> deleteIngredient()
+                    // Go back to previous page if user clicks back button on menu toolbar
+                    android.R.id.home -> findNavController().navigateUp()
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
         // Setup spinner
         // Assuming your Spinner is defined in fridge_insert layout
         categoriesSpinner = view.findViewById(R.id.update_category)
@@ -103,7 +116,7 @@ class IngredientUpdate : Fragment() {
             val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.updateIngredient(updatedIngredient)
             Toast.makeText(requireContext(), "Ingredient updated!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_navigation_ingredient_update_to_navigation_ingredient)
+            findNavController().navigateUp()
         } else {
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }

@@ -1,65 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.savedRecipes.ViewRecipe">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-        <TextView
-            android:id="@+id/viewRecipeTitle"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Title"
-            android:paddingBottom="20dp"
-            android:gravity="center"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/viewRecipeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:text="@string/title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintEnd_toEndOf="@+id/viewRecipeFavoriteIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/viewRecipeFavoriteIcon"
+                android:layout_width="44dp"
+                android:layout_height="38dp"
+                android:layout_gravity="end"
+                android:src="@drawable/favorite_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/favorite_button" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
             android:id="@+id/viewRecipeIngredientsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Ingredients"
+            android:text="@string/title_ingredients"
             android:layout_margin="16dp"  />
         <TextView
             android:id="@+id/viewRecipeIngredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ingredients"
             android:layout_margin="10dp"/>
         <TextView
             android:id="@+id/viewRecipeInstructionsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Instructions"
+            android:text="@string/instructions"
             android:layout_margin="16dp"/>
-
-        <ScrollView
+        <TextView
+            android:id="@+id/viewRecipeInstructions"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/viewRecipeInstructions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Instructions"
-                android:layout_margin="16dp"/>
-        </ScrollView>
-
-        <ImageView
-            android:id="@+id/viewRecipeFavoriteIcon"
-            android:layout_width="44dp"
-            android:layout_height="38dp"
-            android:layout_gravity="right"
-            android:src="@drawable/favorite_icon" />
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/viewRecipeFavorite"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:text="Is Favorited?" />-->
-
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"/>
     </LinearLayout>
 </ScrollView>

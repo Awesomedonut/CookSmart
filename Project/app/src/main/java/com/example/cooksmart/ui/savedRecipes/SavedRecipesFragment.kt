@@ -74,14 +74,10 @@ class SavedRecipesFragment : Fragment() {
 
         savedRecipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
-//        savedRecipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
-//            adapter.setData(recipe)
-//        }
-
         // Spinner
         val spinnerLists = resources.getStringArray(R.array.recipeSpinner)
-        recipeSpinner = view.findViewById<Spinner>(R.id.spinner)
-        if (recipeSpinner != null) {
+        recipeSpinner = view.findViewById(R.id.spinner)
+
             val sprAdapter = ArrayAdapter(
                 requireActivity(),
                 android.R.layout.simple_spinner_item, spinnerLists
@@ -103,14 +99,11 @@ class SavedRecipesFragment : Fragment() {
                     savedRecipeViewModel.readAllRecipes.removeObservers(viewLifecycleOwner)
                     savedRecipeViewModel.getAllFavoriteRecipes().removeObservers(viewLifecycleOwner)
 
-                    if(position == 0) {
-                        showAllRecipes()
-                    }else if (position == 1){
-                        showSavedRecipesSortedByDate()
-                    }else if(position == 2) {
-                        showSavedRecipesSortedByName()
-                    }else if (position == 3){
-                        showAllFavoriteRecipes()
+                    when (position) {
+                        0 -> showAllRecipes()
+                        1 -> showSavedRecipesSortedByDate()
+                        2 -> showSavedRecipesSortedByName()
+                        3 -> showAllFavoriteRecipes()
                     }
                 }
 
@@ -118,11 +111,8 @@ class SavedRecipesFragment : Fragment() {
                     TODO("Not yet implemented")
                 }
             }
-        }
 
-
-
-        // Navigate to add recipe fragment for user to add their own recipe
+        // Navigate to add recipe fragment for user to add their own recipe if they click the plus button
         view.findViewById<FloatingActionButton>(R.id.recipe_add).setOnClickListener {
             findNavController().navigate(R.id.action_navigation_saved_recipes_to_addRecipe)
         }

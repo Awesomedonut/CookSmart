@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:text="@string/title"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <EditText
@@ -20,20 +20,20 @@
             android:layout_width="match_parent"
             android:importantForAutofill="no"
             android:layout_height="48dp"
-            android:inputType="text"
-            android:hint="Chocolate Chip Cookies" />
+            android:inputType="textCapWords|textAutoCorrect"
+            android:hint="@string/title_hint" />
 
         <ImageView
             android:id="@+id/favoriteIcon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:contentDescription="Favorite Icon"
+            android:contentDescription="@string/favorite_icon"
             android:src="@drawable/favorite_icon_border" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ingredients"
+            android:text="@string/title_ingredients"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <ListView
             android:id="@+id/recipe_ingredients_listview"
@@ -45,23 +45,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:inputType="text"
-            android:hint="Enter Ingredient"/>
+            android:inputType="textCapSentences|textAutoCorrect"
+            android:hint="@string/enter_ingredient"/>
         <Button
             android:id="@+id/add_ingredient_recipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Add Ingredient"/>
+            android:hint="@string/add_ingredient"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Instructions"
+            android:text="@string/instructions"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <EditText
             android:id="@+id/recipe_instructions"
-            android:hint="1. Preheat oven to 365 degrees F. Line two baking sheets with parchment paper and set aside."
+            android:hint="@string/instruction_hint"
             android:layout_width="match_parent"
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textCapSentences"
             android:layout_height="wrap_content"/>
 
         <LinearLayout
@@ -70,10 +70,9 @@
             android:layout_gravity="bottom">
             <Button
                 android:id="@+id/button_confirm"
-                android:layout_width="500dp"
+                android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_weight="1"
                 android:text="@string/add"
                 android:textStyle="bold" />
         </LinearLayout>

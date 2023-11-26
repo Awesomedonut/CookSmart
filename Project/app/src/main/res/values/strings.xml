@@ -47,6 +47,7 @@
 
     <string-array name="ingredientSpinner">
         <item>Date added: oldest</item>
+
         <item>Date added: newest</item>
         <item>Name: A to Z</item>
         <item>Best before date: oldest</item>

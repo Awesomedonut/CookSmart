@@ -13,7 +13,7 @@
     <item
         android:id="@+id/navigation_saved_recipes"
         android:icon="@drawable/baseline_collections_bookmark_24"
-        android:title="Saved Recipes" />
+        android:title="@string/saved_recipes" />
 
     <item
         android:id="@+id/navigation_calendar"

@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.utils.ConvertUtils
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 /**
  * Shows each row in the recipe database in a RecyclerView
@@ -20,7 +18,7 @@ import java.util.Locale
 class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyViewHolder>(){
     private var recipeList = emptyList<Recipe>()
 
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
+    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recipe_list_row, parent, false))
@@ -32,7 +30,7 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentRecipe = recipeList[position]
         // Display the row info
-        holder.itemView.findViewById<TextView>(R.id.list_name).text = currentRecipe.name.toString()
+        holder.itemView.findViewById<TextView>(R.id.list_name).text = currentRecipe.name
         val date = currentRecipe.dateAdded
         val formattedDate = ConvertUtils.longToDateString(date)
         holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate

@@ -47,7 +47,7 @@ class ViewRecipe : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_view_recipe, container, false)
 
-        // Set up viewmodel
+        // Set up view model
         recipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
         // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment

@@ -38,4 +38,12 @@
         <item>Favorite recipes</item>
     </string-array>
 
+    <string-array name="ingredientSpinner">
+        <item>All intgredients</item>
+        <item>Sort by alphabetically</item>
+        <item>Sort by best before date(oldest)</item>
+        <item>Sort by best before date (newest)</item>
+        <item>Sort by date added (newest)</item>
+    </string-array>
+
 </resources>

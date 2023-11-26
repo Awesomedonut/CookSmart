@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cooksmart.database.CookSmartDatabase
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.database.IngredientRepository
+import com.example.cooksmart.database.Recipe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -46,5 +47,19 @@ class IngredientViewModel(application: Application): AndroidViewModel(applicatio
 
     fun searchIngredient(searchQuery: String): LiveData<List<Ingredient>> {
         return repository.searchIngredient(searchQuery)
+    }
+
+    fun getIngredeintSortedByName(): LiveData<List<Ingredient>> {
+        return repository.getIngredeintSortedByName()
+    }
+    fun showBestDayOldest(): LiveData<List<Ingredient>> {
+        return repository.showBestDayOldest()
+    }
+    fun showBestDayNewest(): LiveData<List<Ingredient>> {
+        return repository.showBestDayNewest()
+    }
+
+    fun showAddedDayNewest(): LiveData<List<Ingredient>> {
+        return repository.showAddedDayNewest()
     }
 }

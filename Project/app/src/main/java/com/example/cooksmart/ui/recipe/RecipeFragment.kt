@@ -72,9 +72,9 @@ class RecipeFragment : Fragment() {
             viewModel.cleanup()
         }
 
-        DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonCreateRecipes, 500) {
-            viewModel.process(binding.buttonOption1.text.toString())
-        }
+//        DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonCreateRecipes, 500) {
+//            viewModel.process(binding.buttonOption1.text.toString())
+//        }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
             viewModel.process(binding.buttonOption1.text.toString())
@@ -128,7 +128,7 @@ class RecipeFragment : Fragment() {
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
         viewModel.isCreating.observe(viewLifecycleOwner){
-            binding.buttonCreateRecipes.isVisible = !it
+//            binding.buttonCreateRecipes.isVisible = !it
             binding.buttonOption1.isVisible = !it
             binding.micImageView.isVisible = !it
             binding.buttonReset.isVisible = it

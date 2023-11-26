@@ -27,9 +27,19 @@ class SavedRecipeViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
+    suspend fun getRecipeById(recipeId: Long): Recipe {
+        return repository.getRecipeById(recipeId)
+    }
+
     fun updateRecipe(recipe: Recipe) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateRecipe(recipe)
+        }
+    }
+
+    fun updateIsFavorite(id: Long, isFavorite: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateIsFavorite(id, isFavorite)
         }
     }
 

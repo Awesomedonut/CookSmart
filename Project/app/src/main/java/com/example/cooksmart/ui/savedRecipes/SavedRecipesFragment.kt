@@ -105,10 +105,10 @@ class SavedRecipesFragment : Fragment() {
 
                     if(position == 0) {
                         showAllRecipes()
-                    }else if(position == 1) {
-                        showSavedRecipesSortedByName()
-                    }else if (position == 2){
+                    }else if (position == 1){
                         showSavedRecipesSortedByDate()
+                    }else if(position == 2) {
+                        showSavedRecipesSortedByName()
                     }else if (position == 3){
                         showAllFavoriteRecipes()
                     }

@@ -22,16 +22,13 @@
             android:layout_height="48dp"
             android:inputType="text"
             android:hint="Chocolate Chip Cookies" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <CheckBox
-                android:id="@+id/isFavoriteRecipe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Favorite"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/favoriteIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="Favorite Icon"
+            android:src="@drawable/favorite_icon_border" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,7 +38,8 @@
         <ListView
             android:id="@+id/recipe_ingredients_listview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
         <EditText
             android:id="@+id/recipe_ingredients_edittext"
             android:layout_width="match_parent"

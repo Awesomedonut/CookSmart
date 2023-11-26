@@ -103,7 +103,7 @@ class IngredientUpdate : Fragment() {
             val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, currentDate, bestBefore)
             ingredientViewModel.updateIngredient(updatedIngredient)
             Toast.makeText(requireContext(), "Ingredient updated!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_navigation_ingredient_update_to_navigation_ingredient)
+            findNavController().navigateUp()
         } else {
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }

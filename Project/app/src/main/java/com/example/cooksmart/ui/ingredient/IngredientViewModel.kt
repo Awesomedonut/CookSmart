@@ -47,4 +47,18 @@ class IngredientViewModel(application: Application): AndroidViewModel(applicatio
     fun searchIngredient(searchQuery: String): LiveData<List<Ingredient>> {
         return repository.searchIngredient(searchQuery)
     }
+
+    fun getIngredientSortedByCategory(): LiveData<List<Ingredient>> {
+        return repository.getIngredientSortedByCategory()
+    }
+    fun showBestDayOldest(): LiveData<List<Ingredient>> {
+        return repository.showBestDayOldest()
+    }
+    fun showBestDayNewest(): LiveData<List<Ingredient>> {
+        return repository.showBestDayNewest()
+    }
+
+    fun showAddedDayNewest(): LiveData<List<Ingredient>> {
+        return repository.showAddedDayNewest()
+    }
 }

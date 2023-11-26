@@ -9,8 +9,16 @@ class RecipeRepository(private val recipeDao: RecipeDao) {
         recipeDao.insertRecipe(recipe)
     }
 
+    suspend fun getRecipeById(recipeId: Long): Recipe {
+        return recipeDao.getRecipeById(recipeId)
+    }
+
     suspend fun updateRecipe(recipe: Recipe) {
         recipeDao.updateRecipe(recipe)
+    }
+
+    suspend fun updateIsFavorite(id: Long, isFavorite: Boolean) {
+        recipeDao.updateIsFavorite(id, isFavorite)
     }
 
     suspend fun deleteRecipe(recipe: Recipe) {

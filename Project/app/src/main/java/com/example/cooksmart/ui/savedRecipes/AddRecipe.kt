@@ -23,7 +23,7 @@ class AddRecipe : Fragment() {
     private lateinit var ingredientAddButton: Button
     private lateinit var ingredientListView: ListView
     private lateinit var isFavoriteRecipe : CheckBox
-    private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var adapter: RecipeIngredientAdapter
     private val ingredientsList = ArrayList<String>()
     private lateinit var confirmButton: Button
 
@@ -51,7 +51,7 @@ class AddRecipe : Fragment() {
         ingredientAddButton.setOnClickListener {
             val newIngredient = ingredientEditText.text.toString()
             if (newIngredient.isNotEmpty()) {
-                (adapter as RecipeIngredientAdapter).updateIngredients(ingredientListView)
+                adapter.updateIngredients(ingredientListView)
                 ingredientsList.add(newIngredient)
                 adapter.notifyDataSetChanged()
                 ingredientEditText.text.clear()
@@ -61,6 +61,12 @@ class AddRecipe : Fragment() {
         // Add the recipe using all the user input when they press add ingredient button
         confirmButton.setOnClickListener {
             insertRecipe()
+        }
+
+        // Delete ingredient row if delete button clicked
+        adapter.setOnDeleteClickListener { it ->
+            ingredientsList.removeAt(it)
+            adapter.notifyDataSetChanged()
         }
 
         return view

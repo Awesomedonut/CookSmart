@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tvChosenDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:text="Date"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/tvCalendarPlanTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvChosenDate"
+            android:text="Plan"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        <EditText
+            android:id="@+id/etCalendarPlan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvCalendarPlanTitle"
+            android:text="e.g. Meal Plan, Guests, etc." />
+    </RelativeLayout>
+
+</ScrollView>

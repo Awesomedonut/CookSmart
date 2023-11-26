@@ -4,18 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CalendarView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
-import com.example.cooksmart.ui.ingredient.IngredientListAdapter
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -36,6 +34,8 @@ class CalendarFragment : Fragment() {
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var ingredientList : ArrayList<Ingredient>
     val selectedDate = Calendar.getInstance()
+
+    private lateinit var calendarDBViewModel : CalendarDBViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +74,20 @@ class CalendarFragment : Fragment() {
             calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
         }
 
+
+        calendarDBViewModel = ViewModelProvider(this)[CalendarDBViewModel::class.java]
+        calendarDBViewModel.readAllCalendar.observe(viewLifecycleOwner){
+            if(it.isNotEmpty()){
+                var calendarObject = calendarDBViewModel.getCalendarByDate(convertCalendartoLong(selectedDate))
+                var tvPlan : TextView = root.findViewById(R.id.tvPlanPlaceholder)
+                if (calendarObject != null) {
+                    tvPlan.text = calendarObject.plan
+                }
+            }
+            else{
+
+            }
+        }
 
         return root
     }

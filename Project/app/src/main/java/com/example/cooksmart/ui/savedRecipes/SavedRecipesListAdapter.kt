@@ -3,6 +3,7 @@ package com.example.cooksmart.ui.savedRecipes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
@@ -35,6 +36,17 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
         val date = currentRecipe.dateAdded
         val formattedDate = ConvertUtils.longToDateString(date)
         holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
+
+        val favoriteIcon = holder.itemView.findViewById<ImageView>(R.id.list_isFavorite)
+
+        if (currentRecipe.isFavorite) {
+            // Show the favorite icon
+            favoriteIcon.visibility = View.VISIBLE
+        } else {
+            // Hide the favorite icon
+            favoriteIcon.visibility = View.GONE
+        }
+
 
         holder.itemView.findViewById<ConstraintLayout>(R.id.recipeRowLayout).setOnClickListener {
             val action = SavedRecipesFragmentDirections.actionNavigationSavedRecipesToNavigationViewRecipe(currentRecipe)

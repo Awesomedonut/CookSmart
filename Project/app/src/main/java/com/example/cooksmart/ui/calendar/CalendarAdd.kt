@@ -23,6 +23,7 @@ import java.util.Locale
 
 private const val COOKSMART = "COOKSMART"
 private const val DATE_KEY = "DATE KEY"
+private const val CALENDAR_PLAN_EXISTS_KEY = "CALENDAR_PLAN_EXISTS_KEY"
 
 class CalendarAdd: Fragment() {
     private lateinit var view: View
@@ -42,6 +43,7 @@ class CalendarAdd: Fragment() {
 
         sharedPreferences = requireActivity().getSharedPreferences(COOKSMART, Context.MODE_PRIVATE)
         val date = sharedPreferences.getLong(DATE_KEY, 0L)
+        val planExists = sharedPreferences.getBoolean(CALENDAR_PLAN_EXISTS_KEY, false)
 
         // Initialize date
         val tvDate : TextView = view.findViewById(R.id.tvCalendarDateSelected)
@@ -52,12 +54,41 @@ class CalendarAdd: Fragment() {
 
         // Initialize buttons
         calendarViewModel = ViewModelProvider(this)[CalendarViewModel::class.java]
-        initButtons(view, date, calendarViewModel)
+        initButtons(view, formattedDate, calendarViewModel, planExists)
+
+        if(planExists){
+            initDataFromCalendar(view, calendarViewModel, formattedDate, sharedPreferences)
+        }
 
         return view
     }
 
-    private fun initButtons(view: View, date : Long, calendarViewModel : CalendarViewModel) {
+    private fun initDataFromCalendar(view : View, calendarViewModel: CalendarViewModel, formattedDate: String, sharedPreferences: SharedPreferences) {
+        calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){ calendars ->
+            if (calendars != null && calendars.isNotEmpty()) {
+                var found = false
+                val planText: EditText = view.findViewById(R.id.etCalendarPlan)
+                for (element in calendars) {
+                    if (element.date == formattedDate) {
+                        planText.setText(element.plan)
+                        found = true
+                    }
+                }
+                if (!found){
+                    planText.setHint(R.string.hint_plan)
+                }
+            }
+        }
+        // reset shared preference value
+        val editor = sharedPreferences.edit()
+        if (editor != null) {
+            editor.putBoolean(CALENDAR_PLAN_EXISTS_KEY, false)
+            editor.apply()
+        }
+
+    }
+
+    private fun initButtons(view: View, date : String, calendarViewModel : CalendarViewModel, planExists : Boolean) {
         val btnCancel : Button = view.findViewById(R.id.btnAddPlanCancel)
         btnCancel.setOnClickListener{
             findNavController().navigate(R.id.action_navigation_calendar_add_to_navigation_calendar)
@@ -65,14 +96,32 @@ class CalendarAdd: Fragment() {
 
         val btnSave : Button = view.findViewById(R.id.btnAddPlanSave)
         btnSave.setOnClickListener{
-            val etPlan : EditText = view.findViewById(R.id.etCalendarPlan)
+            if(planExists){
+                updateCalendarObject(calendarViewModel, date)
+            }
+            val etPlan: EditText = view.findViewById(R.id.etCalendarPlan)
             val planString = etPlan.text.toString()
             val newCal = com.example.cooksmart.database.Calendar(0, date, planString)
             calendarViewModel.insertCalendar(newCal)
-            Toast.makeText(requireContext(), "Calendar plan added!", Toast.LENGTH_SHORT).show()
+            if(!planExists){
+                Toast.makeText(requireContext(), "Calendar plan added!", Toast.LENGTH_SHORT).show()
+            }
             findNavController().navigate(R.id.action_navigation_calendar_add_to_navigation_calendar)
         }
 
+    }
+
+    private fun updateCalendarObject(calendarViewModel: CalendarViewModel, date: String){
+        calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){calendars ->
+            if (calendars.isNotEmpty() && calendars != null){
+                for(element in calendars){
+                    if(element.date == date){
+                        calendarViewModel.deleteCalendar(element)
+                    }
+                }
+            }
+        }
+        Toast.makeText(requireContext(), "Calendar plan updated!", Toast.LENGTH_SHORT).show()
     }
 
     fun convertCalendartoLong(calendar : Calendar): Long {

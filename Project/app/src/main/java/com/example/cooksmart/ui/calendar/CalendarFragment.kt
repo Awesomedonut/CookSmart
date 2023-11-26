@@ -29,6 +29,7 @@ import java.util.Locale
 
 private const val COOKSMART = "COOKSMART"
 private const val DATE_KEY = "DATE KEY"
+private const val CALENDAR_PLAN_EXISTS_KEY = "CALENDAR_PLAN_EXISTS_KEY"
 
 class CalendarFragment : Fragment() {
 
@@ -40,7 +41,7 @@ class CalendarFragment : Fragment() {
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var ingredientList : ArrayList<Ingredient>
     private lateinit var sharedPreferences : SharedPreferences
-    val selectedDate = Calendar.getInstance()
+    var selectedDate = Calendar.getInstance()
 
     private lateinit var calendarViewModel : CalendarViewModel
 
@@ -53,25 +54,12 @@ class CalendarFragment : Fragment() {
         val root: View = binding.root
 
         sharedPreferences = requireActivity().getSharedPreferences(COOKSMART, Context.MODE_PRIVATE)
-        
-        // Access calendar database
-        calendarViewModel = ViewModelProvider(this)[CalendarViewModel::class.java]
-        calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
-                var calendarObject = calendarViewModel.getCalendarByDate(convertCalendartoLong(selectedDate))
-                var tvPlan : TextView = root.findViewById(R.id.tvPlanPlaceholder)
-                if (calendarObject != null) {
-                    tvPlan.text = calendarObject.plan
-                }
-            }
-            else{
-
-            }
-        }
 
         // Initialize date/calendar related items
+        calendarViewModel = ViewModelProvider(this)[CalendarViewModel::class.java]
         initDate(root, calendarViewModel)
         initCalendar(root, calendarViewModel)
+        callUpdatePlanText(root, calendarViewModel)
 
         // Accessing Ingredient table in database
         val ingredientListView : ListView = root.findViewById(R.id.lvIngredients)
@@ -94,6 +82,46 @@ class CalendarFragment : Fragment() {
         return root
     }
 
+    private fun callUpdatePlanText(view : View, calendarViewModel: CalendarViewModel) {
+        calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){calendars ->
+            updatePlanText(view, calendars)
+        }
+
+    }
+
+    private fun updatePlanText(view: View, calendars: List<com.example.cooksmart.database.Calendar>?) {
+        if (calendars != null) {
+            if(calendars.isNotEmpty()){
+                val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
+                val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
+                val tvPlan : TextView = view.findViewById(R.id.tvPlanPlaceholder)
+                var found = false
+                val button : Button = view.findViewById(R.id.btnAddPlan)
+                val editor = sharedPreferences?.edit()
+
+                for(element in calendars){
+                    if(element.date == formattedDate){
+                        tvPlan.text = element.plan
+                        found = true
+                        if (editor != null) {
+                            editor.putBoolean(CALENDAR_PLAN_EXISTS_KEY, true)
+                            editor.apply()
+                        }
+                    }
+                    button.text = getString(R.string.update_plan)
+                }
+                if(!found){
+                    tvPlan.text = getString(R.string.no_plan_detected)
+                    button.text = getString(R.string.add_plan)
+                    if (editor != null) {
+                        editor.putBoolean(CALENDAR_PLAN_EXISTS_KEY, false)
+                        editor.apply()
+                    }
+                }
+            }
+        }
+    }
+
     private fun initAddPlan(view: View, sharedPreferences: SharedPreferences?) {
         val btnAddPlan : Button = view.findViewById(R.id.btnAddPlan)
         btnAddPlan.setOnClickListener{
@@ -111,6 +139,7 @@ class CalendarFragment : Fragment() {
         calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
             setDate(view, year, month, dayOfMonth)
             calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
+            callUpdatePlanText(view, calendarViewModel)
         }
     }
 

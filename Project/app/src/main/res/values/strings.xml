@@ -47,6 +47,7 @@
     <string name="save">Save</string>
     <string name="write_plan">Write your plan below!</string>
     <string name="generate_recipes">Generate Recipes</string>
+    <string name="update_plan">Update Plan</string>
 
     <string-array name="recipeSpinner">
         <item>Date added: oldest</item>

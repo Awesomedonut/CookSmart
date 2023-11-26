@@ -54,12 +54,4 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
             repository.deleteAllCalendar()
         }
     }
-
-    fun getCalendarByDate(date : Long) : Calendar? {
-        var retCal : Calendar? = null
-        viewModelScope.launch(Dispatchers.IO) {
-            retCal = repository.getCalendarByDate(date)
-        }
-        return retCal
-    }
 }

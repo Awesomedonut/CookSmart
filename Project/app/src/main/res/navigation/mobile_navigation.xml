@@ -38,6 +38,9 @@
         android:name="com.example.cooksmart.ui.calendar.CalendarAdd"
         android:label="Calendar Add"
         tools:layout="@layout/fragment_calendar_add" >
+        <action
+            android:id="@+id/action_navigation_calendar_add_to_navigation_calendar"
+            app:destination="@+id/navigation_calendar"/>
     </fragment>
     <fragment
         android:id="@+id/navigation_ingredient_add"

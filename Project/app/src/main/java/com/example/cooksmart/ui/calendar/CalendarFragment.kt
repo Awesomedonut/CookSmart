@@ -42,7 +42,7 @@ class CalendarFragment : Fragment() {
     private lateinit var sharedPreferences : SharedPreferences
     val selectedDate = Calendar.getInstance()
 
-    private lateinit var calendarDBViewModel : CalendarDBViewModel
+    private lateinit var calendarViewModel : CalendarViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,9 +53,25 @@ class CalendarFragment : Fragment() {
         val root: View = binding.root
 
         sharedPreferences = requireActivity().getSharedPreferences(COOKSMART, Context.MODE_PRIVATE)
+        
+        // Access calendar database
+        calendarViewModel = ViewModelProvider(this)[CalendarViewModel::class.java]
+        calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){
+            if(it.isNotEmpty()){
+                var calendarObject = calendarViewModel.getCalendarByDate(convertCalendartoLong(selectedDate))
+                var tvPlan : TextView = root.findViewById(R.id.tvPlanPlaceholder)
+                if (calendarObject != null) {
+                    tvPlan.text = calendarObject.plan
+                }
+            }
+            else{
 
-        val calendarViewModel : CalendarViewModel =
-            ViewModelProvider(this)[CalendarViewModel::class.java]
+            }
+        }
+
+        // Initialize date/calendar related items
+        initDate(root, calendarViewModel)
+        initCalendar(root, calendarViewModel)
 
         // Accessing Ingredient table in database
         val ingredientListView : ListView = root.findViewById(R.id.lvIngredients)
@@ -71,25 +87,6 @@ class CalendarFragment : Fragment() {
             ingredientAdapter.notifyDataSetChanged()
         }
 
-        // Initialize date/calendar related items
-        initDate(root, calendarViewModel)
-        initCalendar(root, calendarViewModel)
-
-
-        // Access calendar database
-        calendarDBViewModel = ViewModelProvider(this)[CalendarDBViewModel::class.java]
-        calendarDBViewModel.readAllCalendar.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
-                var calendarObject = calendarDBViewModel.getCalendarByDate(convertCalendartoLong(selectedDate))
-                var tvPlan : TextView = root.findViewById(R.id.tvPlanPlaceholder)
-                if (calendarObject != null) {
-                    tvPlan.text = calendarObject.plan
-                }
-            }
-            else{
-
-            }
-        }
 
         // Initialize add plan button + TODO: update plan
         initAddPlan(root, sharedPreferences)

@@ -44,6 +44,8 @@
     <string name="date_placeholder">Date Placeholder</string>
     <string name="date">Date</string>
     <string name="hint_plan">e.g. Meal Plan, Guests, etc.</string>
+    <string name="save">Save</string>
+    <string name="write_plan">Write your plan below!</string>
 
     <string-array name="recipeSpinner">
         <item>Date added: oldest</item>

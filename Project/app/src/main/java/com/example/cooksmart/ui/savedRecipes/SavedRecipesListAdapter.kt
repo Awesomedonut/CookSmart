@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
@@ -31,9 +32,9 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
         val currentRecipe = recipeList[position]
         // Display the row info
         holder.itemView.findViewById<TextView>(R.id.list_name).text = currentRecipe.name
-        val date = currentRecipe.dateAdded
-        val formattedDate = ConvertUtils.longToDateString(date)
-        holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
+//        val date = currentRecipe.dateAdded
+//        val formattedDate = ConvertUtils.longToDateString(date)
+//        holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
 
         val favoriteIcon = holder.itemView.findViewById<ImageView>(R.id.list_isFavorite)
 
@@ -45,8 +46,7 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
             favoriteIcon.visibility = View.GONE
         }
 
-
-        holder.itemView.findViewById<ConstraintLayout>(R.id.recipeRowLayout).setOnClickListener {
+        holder.itemView.findViewById<LinearLayout>(R.id.recipeRowLayout).setOnClickListener {
             val action = SavedRecipesFragmentDirections.actionNavigationSavedRecipesToNavigationViewRecipe(currentRecipe)
             holder.itemView.findNavController().navigate(action)
         }

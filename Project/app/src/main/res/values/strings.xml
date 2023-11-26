@@ -37,6 +37,7 @@
     <string name="favorite_button">Favorite button</string>
     <string name="delete_ingredient_button">Delete ingredient button</string>
     <string name="saved_recipes">Saved Recipes</string>
+    <string name="generate_recipes">Generate Recipes</string>
 
     <string-array name="recipeSpinner">
         <item>Date added: oldest</item>

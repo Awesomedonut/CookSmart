@@ -3,6 +3,7 @@ package com.example.cooksmart.ui.ingredient
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
@@ -34,7 +35,7 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
         val formattedDate = ConvertUtils.longToDateString(date)
         holder.itemView.findViewById<TextView>(R.id.list_best_before).text = formattedDate
 
-        holder.itemView.findViewById<ConstraintLayout>(R.id.rowLayout).setOnClickListener {
+        holder.itemView.findViewById<LinearLayout>(R.id.rowLayout).setOnClickListener {
             val action = IngredientFragmentDirections.actionNavigationIngredientToIngredientUpdate(currentIngredient)
             holder.itemView.findNavController().navigate(action)
         }

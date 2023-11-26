@@ -35,8 +35,32 @@
         <ListView
             android:id="@+id/lvIngredients"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="100dp"
             android:layout_below="@+id/tvIngredientsList"
             android:layout_margin="8dp" />
+        <TextView
+            android:id="@+id/tvPlanCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lvIngredients"
+            android:text="Plan"
+            android:textSize="16dp"
+            android:layout_margin="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        <TextView
+            android:id="@+id/tvPlanPlaceholder"
+            android:text="No plan detected!"
+            android:layout_below="@+id/tvPlanCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"/>
+        <Button
+            android:id="@id/btnAddPlan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Plan"
+            android:layout_below="@+id/tvPlanPlaceholder"
+            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 </ScrollView>

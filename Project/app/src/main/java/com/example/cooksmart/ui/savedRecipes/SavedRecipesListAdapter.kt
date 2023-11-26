@@ -36,14 +36,17 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
 //        val formattedDate = ConvertUtils.longToDateString(date)
 //        holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
 
-        val favoriteIcon = holder.itemView.findViewById<ImageView>(R.id.list_isFavorite)
+        var favoriteIcon = holder.itemView.findViewById<ImageView>(R.id.list_isFavorite)
+        var borderFavIcon = holder.itemView.findViewById<ImageView>(R.id.list_isNotFavorite)
 
         if (currentRecipe.isFavorite) {
             // Show the favorite icon
+            borderFavIcon.visibility = View.GONE
             favoriteIcon.visibility = View.VISIBLE
         } else {
             // Hide the favorite icon
             favoriteIcon.visibility = View.GONE
+            borderFavIcon.visibility = View.VISIBLE
         }
 
         holder.itemView.findViewById<LinearLayout>(R.id.recipeRowLayout).setOnClickListener {

@@ -84,7 +84,7 @@ class IngredientFragment : Fragment() {
 
         // Spinner
         val spinnerLists = resources.getStringArray(R.array.ingredientSpinner)
-        ingredientSpinner = layout.findViewById<Spinner>(R.id.category)
+        ingredientSpinner = layout.findViewById<Spinner>(R.id.ingredient_sort)
         if (ingredientSpinner != null) {
             val sprAdapter = ArrayAdapter(
                 requireActivity(),
@@ -108,16 +108,16 @@ class IngredientFragment : Fragment() {
 
                     if(position == 0) {
                         showAllIngredients()
-                    }else if(position == 1) {
+                    }else if (position == 1){
+                        showAddedDayNewest()
+                    }else if(position == 2) {
                         showNameAlphabetically()
-                    }else if (position == 2){
-                        showBestDayOldest()
                     }else if (position == 3){
+                        showBestDayOldest()
+                    }else if (position == 4){
                         showBestDayNewest()
                     }
-                    else if (position == 4){
-                        showAddedDayNewest()
-                    }
+
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {

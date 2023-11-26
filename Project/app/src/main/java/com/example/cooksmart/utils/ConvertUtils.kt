@@ -6,10 +6,12 @@ import java.util.Locale
 class ConvertUtils {
 
     companion object {
-        // From https://stackoverflow.com/questions/53512575/how-to-convert-a-string-sentence-to-arraylist-in-kotlin
+        // Inspired by https://stackoverflow.com/questions/53512575/how-to-convert-a-string-sentence-to-arraylist-in-kotlin
         fun stringToArrayList(str: String): List<String> {
+            // Discard the starting and ending square brackets
             val strNoArray = str.substring(1, str.length-1)
             val list = strNoArray.trim().splitToSequence(',').filter{it.isNotEmpty()}.toList()
+            // Trim leading and trailing whitespace
             val trimmedSpacesList = list.map {it.trim()}
             return ArrayList<String>(trimmedSpacesList)
         }

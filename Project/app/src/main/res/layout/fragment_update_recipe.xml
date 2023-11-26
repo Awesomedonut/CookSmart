@@ -22,13 +22,6 @@
             android:inputType="text"
             android:hint="Chocolate Chip Cookies" />
 
-        <ImageView
-            android:id="@+id/favoriteIconUpdate"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="Favorite Icon"
-            android:src="@drawable/favorite_icon_border" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

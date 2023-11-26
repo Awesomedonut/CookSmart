@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +25,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.cooksmart.R
+import com.example.cooksmart.database.Recipe
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 
 /**
  * Shows the details of specific recipe the user clicked on
@@ -31,6 +37,8 @@ import com.example.cooksmart.R
 class ViewRecipe : Fragment() {
     private val args by navArgs<ViewRecipeArgs>()
     private lateinit var recipeViewModel: SavedRecipeViewModel
+    private lateinit var favoriteIcon: ImageView
+    private var isFavorite = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,19 +47,24 @@ class ViewRecipe : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_view_recipe, container, false)
 
+        // Set up viewmodel
+        recipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
+
         // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
         val menuHost = requireActivity() as MenuHost
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.update_delete_menu, menu)
             }
-
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
-                    // Navigate to update page with the currentRecipe entity as an argument
+                    // Navigate to update page with the most update version of the current recipe as an argument
                     R.id.update_menu -> {
-                        val action = ViewRecipeDirections.actionNavigationViewRecipeToUpdateRecipe(args.currentRecipe)
-                        findNavController().navigate(action)
+                        CoroutineScope(Main).launch {
+                            val recipe = recipeViewModel.getRecipeById(args.currentRecipe.id)
+                            val action = ViewRecipeDirections.actionNavigationViewRecipeToUpdateRecipe(recipe)
+                            findNavController().navigate(action)
+                        }
                     }
                     // Delete dialog if user clicks delete button on menu toolbar
                     R.id.delete_menu -> deleteRecipe()
@@ -68,17 +81,33 @@ class ViewRecipe : Fragment() {
         view.findViewById<TextView>(R.id.viewRecipeTitle).text = spannableName
         view.findViewById<TextView>(R.id.viewRecipeIngredients).text = args.currentRecipe.ingredients
         view.findViewById<TextView>(R.id.viewRecipeInstructions).text = args.currentRecipe.instructions
-        val favoriteIcon = view.findViewById<ImageView>(R.id.viewRecipeFavoriteIcon)
-
-        if (args.currentRecipe.isFavorite) {
+        favoriteIcon = view.findViewById(R.id.viewRecipeFavoriteIcon)
+        
+        // Set the favorite icon to filled or unfilled depending on currentRecipe isFavorite
+        isFavorite = args.currentRecipe.isFavorite
+        if (isFavorite) {
             favoriteIcon.setImageResource(R.drawable.favorite_icon)
         } else {
             favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
         }
 
-        recipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
+        // Listen for clicks on the heart icon and if pressed, make isFavorite the opposite of current isFavorite state and update to database
+        favoriteIcon.setOnClickListener {
+            isFavorite = !isFavorite
+            if (isFavorite) {
+                favoriteIcon.setImageResource(R.drawable.favorite_icon)
+            } else {
+                favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
+            }
+            updateFavorite()
+        }
 
         return view
+    }
+
+    private fun updateFavorite() {
+        // Check all fields have input and then save into database as Recipe entity
+        recipeViewModel.updateIsFavorite(args.currentRecipe.id, isFavorite)
     }
 
     private fun deleteRecipe() {

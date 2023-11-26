@@ -29,7 +29,7 @@ interface IngredientDao {
     fun searchIngredientsDatabase(searchQuery: String): LiveData<List<Ingredient>>
 
     @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_category)")
-    fun getIngredeintSortedByCategory(): LiveData<List<Ingredient>>
+    fun getIngredientSortedByCategory(): LiveData<List<Ingredient>>
 
     @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_bestBefore)")
     fun showBestDayOldest(): LiveData<List<Ingredient>>

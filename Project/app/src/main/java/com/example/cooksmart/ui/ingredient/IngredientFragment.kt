@@ -134,7 +134,7 @@ class IngredientFragment : Fragment() {
         }
     }
     private fun showNameAlphabetically() {
-        ingredientViewModel.getIngredeintSortedByCategory().observe(viewLifecycleOwner) { list ->
+        ingredientViewModel.getIngredientSortedByCategory().observe(viewLifecycleOwner) { list ->
             list?.let {
                 adapter.setData(it)
             }

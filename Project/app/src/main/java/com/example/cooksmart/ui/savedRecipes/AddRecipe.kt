@@ -86,7 +86,6 @@ class AddRecipe : Fragment() {
 
     private fun insertRecipe() {
         val title = view.findViewById<EditText>(R.id.title_recipe).text.toString()
-        //val isFavorite = view.findViewById<CheckBox>(R.id.isFavoriteRecipe)
         val isFavorite = favoriteIcon.tag as? Boolean ?: false
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions).text.toString()

@@ -41,35 +41,21 @@ class UpdateRecipe : Fragment() {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_update_recipe, container, false)
         confirmButton = view.findViewById(R.id.button_confirm_update)
-
         ingredientEditText = view.findViewById(R.id.recipe_ingredients_edittext_update)
         ingredientAddButton = view.findViewById(R.id.add_ingredient_recipe_update)
         ingredientListView = view.findViewById(R.id.recipe_ingredients_listview_update)
-        favoriteIcon = view.findViewById(R.id.favoriteIconUpdate)
+
+        savedRecipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
         // Populate previous fields
         view.findViewById<EditText>(R.id.title_recipe_update).setText(args.currentRecipe.name)
-        favoriteIcon.tag = args.currentRecipe.isFavorite
         view.findViewById<EditText>(R.id.recipe_instructions_update).setText(args.currentRecipe.instructions)
         val ingredients = args.currentRecipe.ingredients
         ingredientsList = ArrayList(ConvertUtils.stringToArrayList(ingredients))
 
-        var isFavorite = false
-        favoriteIcon.setOnClickListener {
-            isFavorite = !isFavorite
-
-            if (isFavorite) {
-                favoriteIcon.setImageResource(R.drawable.favorite_icon)
-            } else {
-                favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
-            }
-            favoriteIcon.tag = isFavorite
-        }
         // Display each ingredient in ingredientsList in a ListView row
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
         ingredientListView.adapter = adapter
-
-        savedRecipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
         // Update the new ingredient the user added from the add ingredient button to the ingredientsList
         ingredientAddButton.setOnClickListener {
@@ -98,7 +84,7 @@ class UpdateRecipe : Fragment() {
 
     private fun updateRecipe() {
         val title = view.findViewById<EditText>(R.id.title_recipe_update).text.toString()
-        val isFavorite = favoriteIcon.tag as? Boolean ?: false
+        val isFavorite = args.currentRecipe.isFavorite
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions_update).text.toString()
         val currentDate = System.currentTimeMillis()
@@ -107,7 +93,7 @@ class UpdateRecipe : Fragment() {
             val recipe = Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite)
             savedRecipeViewModel.updateRecipe(recipe)
             Toast.makeText(requireContext(), "Recipe updated!", Toast.LENGTH_SHORT).show()
-            val action = UpdateRecipeDirections.actionNavigationUpdateRecipeToNavigationViewRecipe(args.currentRecipe)
+            val action = UpdateRecipeDirections.actionNavigationUpdateRecipeToNavigationViewRecipe(recipe)
             findNavController().navigate(action)
         } else {
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()

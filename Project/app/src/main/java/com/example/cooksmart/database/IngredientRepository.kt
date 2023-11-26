@@ -24,4 +24,19 @@ class IngredientRepository(private val ingredientDao: IngredientDao) {
     fun searchIngredient(searchQuery: String): LiveData<List<Ingredient>> {
         return ingredientDao.searchIngredientsDatabase(searchQuery)
     }
+
+    fun getIngredeintSortedByName(): LiveData<List<Ingredient>> {
+        return ingredientDao.getIngredeintSortedByName()
+    }
+    fun showBestDayOldest(): LiveData<List<Ingredient>> {
+        return ingredientDao.showBestDayOldest()
+    }
+
+    fun showBestDayNewest(): LiveData<List<Ingredient>> {
+        return ingredientDao.showBestDayNewest()
+    }
+
+    fun showAddedDayNewest(): LiveData<List<Ingredient>> {
+        return ingredientDao.showAddedDayNewest()
+    }
 }

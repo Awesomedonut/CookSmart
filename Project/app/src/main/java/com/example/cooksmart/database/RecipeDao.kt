@@ -25,18 +25,18 @@ interface RecipeDao {
     @Query("DELETE FROM recipe_table")
     suspend fun deleteAllRecipes()
 
-    @Query("SELECT * FROM recipe_table WHERE name LIKE :searchQuery")
+    @Query("SELECT * FROM recipe_table WHERE recipe_name LIKE :searchQuery")
     fun searchRecipeDatabase(searchQuery: String): LiveData<List<Recipe>>
 
     // Inside your SavedRecipeDao or wherever you handle database queries
 
-    @Query("SELECT * FROM recipe_table WHERE isFavorite = 1")
+    @Query("SELECT * FROM recipe_table WHERE recipe_isFavorite = 1")
     fun getAllFavoriteRecipes(): LiveData<List<Recipe>>
 
-    @Query("SELECT * FROM recipe_table ORDER BY LOWER(name)")
+    @Query("SELECT * FROM recipe_table ORDER BY LOWER(recipe_name)")
     fun getRecipesSortedByName(): LiveData<List<Recipe>>
 
-    @Query("SELECT * FROM recipe_table ORDER BY dateAdded ASC")
+    @Query("SELECT * FROM recipe_table ORDER BY recipe_dateAdded ASC")
     fun getRecipesSortedByDate(): LiveData<List<Recipe>>
 
 

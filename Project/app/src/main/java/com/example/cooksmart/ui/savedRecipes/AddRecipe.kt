@@ -8,8 +8,10 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -22,7 +24,7 @@ class AddRecipe : Fragment() {
     private lateinit var ingredientEditText: EditText
     private lateinit var ingredientAddButton: Button
     private lateinit var ingredientListView: ListView
-    private lateinit var isFavoriteRecipe : CheckBox
+    private lateinit var favoriteIcon : ImageView
     private lateinit var adapter: ArrayAdapter<String>
     private val ingredientsList = ArrayList<String>()
     private lateinit var confirmButton: Button
@@ -38,9 +40,20 @@ class AddRecipe : Fragment() {
         ingredientEditText = view.findViewById(R.id.recipe_ingredients_edittext)
         ingredientAddButton = view.findViewById(R.id.add_ingredient_recipe)
         ingredientListView = view.findViewById(R.id.recipe_ingredients_listview)
-        isFavoriteRecipe = view.findViewById(R.id.isFavoriteRecipe)
+        //isFavoriteRecipe = view.findViewById(R.id.isFavoriteRecipe)
+        favoriteIcon = view.findViewById(R.id.favoriteIcon)
+        var isFavorite = false
 
+        favoriteIcon.setOnClickListener {
+            isFavorite = !isFavorite
 
+            if (isFavorite) {
+                favoriteIcon.setImageResource(R.drawable.favorite_icon)
+            } else {
+                favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
+            }
+            favoriteIcon.tag = isFavorite
+        }
         // Display each ingredient in ingredientsList in a ListView row
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
         ingredientListView.adapter = adapter
@@ -57,7 +70,6 @@ class AddRecipe : Fragment() {
                 ingredientEditText.text.clear()
             }
         }
-
         // Add the recipe using all the user input when they press add ingredient button
         confirmButton.setOnClickListener {
             insertRecipe()
@@ -68,13 +80,14 @@ class AddRecipe : Fragment() {
 
     private fun insertRecipe() {
         val title = view.findViewById<EditText>(R.id.title_recipe).text.toString()
-        val isFavorite = view.findViewById<CheckBox>(R.id.isFavoriteRecipe)
+        //val isFavorite = view.findViewById<CheckBox>(R.id.isFavoriteRecipe)
+        val isFavorite = favoriteIcon.tag as? Boolean ?: false
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions).text.toString()
         val currentDate = System.currentTimeMillis()
         // Check all fields have input and then save into database as Recipe entity
         if (!isNotValidInput(title, ingredientsList, instructions)) {
-            val recipe = Recipe(0, title, ingredients, instructions, currentDate, isFavorite.isChecked)
+            val recipe = Recipe(0, title, ingredients, instructions, currentDate, isFavorite)
             savedRecipeViewModel.insertRecipe(recipe)
             Toast.makeText(requireContext(), "Recipe added!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_addRecipe_to_navigation_saved_recipes)

@@ -107,7 +107,7 @@ class UpdateRecipe : Fragment() {
             val recipe = Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite)
             savedRecipeViewModel.updateRecipe(recipe)
             Toast.makeText(requireContext(), "Recipe updated!", Toast.LENGTH_SHORT).show()
-            val action = UpdateRecipeDirections.actionNavigationUpdateRecipeToNavigationViewRecipe(args.currentRecipe)
+            val action = UpdateRecipeDirections.actionNavigationUpdateRecipeToNavigationViewRecipe(recipe)
             findNavController().navigate(action)
         } else {
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()

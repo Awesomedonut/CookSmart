@@ -35,10 +35,11 @@
             android:layout_height="wrap_content"
             android:text="Ingredients"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipe_ingredients_listview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
         <EditText
             android:id="@+id/recipe_ingredients_edittext"
             android:layout_width="match_parent"

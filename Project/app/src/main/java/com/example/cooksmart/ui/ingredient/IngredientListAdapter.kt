@@ -10,13 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.utils.ConvertUtils
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHolder>(){
     private var ingredientList = emptyList<Ingredient>()
 
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
+    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ingredient_list_row, parent, false))

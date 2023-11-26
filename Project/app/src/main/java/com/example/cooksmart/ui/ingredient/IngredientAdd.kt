@@ -19,7 +19,6 @@ import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.structs.CategoryType
 import com.example.cooksmart.utils.ConvertUtils
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 

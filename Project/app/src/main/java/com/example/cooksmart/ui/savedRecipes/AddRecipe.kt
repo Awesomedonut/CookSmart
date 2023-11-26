@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -32,15 +29,14 @@ class AddRecipe : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_add_recipe, container, false)
-        confirmButton = view.findViewById<Button>(R.id.button_confirm)
+        confirmButton = view.findViewById(R.id.button_confirm)
 
         ingredientEditText = view.findViewById(R.id.recipe_ingredients_edittext)
         ingredientAddButton = view.findViewById(R.id.add_ingredient_recipe)
         ingredientListView = view.findViewById(R.id.recipe_ingredients_listview)
-        //isFavoriteRecipe = view.findViewById(R.id.isFavoriteRecipe)
         favoriteIcon = view.findViewById(R.id.favoriteIcon)
         var isFavorite = false
 
@@ -76,7 +72,7 @@ class AddRecipe : Fragment() {
         }
 
         // Delete ingredient row if delete button is clicked
-        adapter.setOnDeleteClickListener {it ->
+        adapter.setOnDeleteClickListener {
             ingredientsList.removeAt(it)
             adapter.notifyDataSetChanged()
         }

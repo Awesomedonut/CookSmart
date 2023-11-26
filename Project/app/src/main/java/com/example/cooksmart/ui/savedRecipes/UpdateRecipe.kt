@@ -4,21 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
-import com.example.cooksmart.ui.ingredient.IngredientUpdateArgs
 import com.example.cooksmart.utils.ConvertUtils
 
 class UpdateRecipe : Fragment() {
@@ -28,7 +23,6 @@ class UpdateRecipe : Fragment() {
     private lateinit var ingredientEditText: EditText
     private lateinit var ingredientAddButton: Button
     private lateinit var ingredientListView: ListView
-    private lateinit var favoriteIcon : ImageView
     private lateinit var adapter: RecipeIngredientAdapter
     private var ingredientsList = ArrayList<String>()
     private lateinit var confirmButton: Button
@@ -37,7 +31,7 @@ class UpdateRecipe : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_update_recipe, container, false)
         confirmButton = view.findViewById(R.id.button_confirm_update)
@@ -74,7 +68,7 @@ class UpdateRecipe : Fragment() {
         }
 
         // Delete ingredient row if delete button is clicked
-        adapter.setOnDeleteClickListener {it ->
+        adapter.setOnDeleteClickListener {
             ingredientsList.removeAt(it)
             adapter.notifyDataSetChanged()
         }

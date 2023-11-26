@@ -84,47 +84,41 @@ class IngredientFragment : Fragment() {
 
         // Spinner
         val spinnerLists = resources.getStringArray(R.array.ingredientSpinner)
-        ingredientSpinner = layout.findViewById<Spinner>(R.id.ingredient_sort)
-        if (ingredientSpinner != null) {
-            val sprAdapter = ArrayAdapter(
-                requireActivity(),
-                android.R.layout.simple_spinner_item, spinnerLists
-            )
-            ingredientSpinner.adapter = sprAdapter
+        ingredientSpinner = layout.findViewById(R.id.ingredient_sort)
 
-            ingredientSpinner.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View?, position: Int, id: Long
-                ) {
-                    println(
-                        getString(R.string.selected_item) + " " +
-                                "" + position + " " + spinnerLists[position]
-                    )
+        val sprAdapter = ArrayAdapter(
+            requireActivity(),
+            android.R.layout.simple_spinner_item, spinnerLists
+        )
+        ingredientSpinner.adapter = sprAdapter
 
-                    // Remove previous observers
-                    ingredientViewModel.readAllIngredients.removeObservers(viewLifecycleOwner)
+        ingredientSpinner.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?, position: Int, id: Long
+            ) {
+                println(
+                    getString(R.string.selected_item) + " " +
+                            "" + position + " " + spinnerLists[position]
+                )
 
-                    if(position == 0) {
-                        showAllIngredients()
-                    }else if (position == 1){
-                        showAddedDayNewest()
-                    }else if(position == 2) {
-                        showNameAlphabetically()
-                    }else if (position == 3){
-                        showBestDayOldest()
-                    }else if (position == 4){
-                        showBestDayNewest()
-                    }
+                // Remove previous observers
+                ingredientViewModel.readAllIngredients.removeObservers(viewLifecycleOwner)
 
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    TODO("Not yet implemented")
+                when (position) {
+                    0 -> showAllIngredients()
+                    1 -> showAddedDayNewest()
+                    2 -> showNameAlphabetically()
+                    3 -> showBestDayOldest()
+                    4 -> showBestDayNewest()
                 }
             }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
         }
+
 
         return layout
     }

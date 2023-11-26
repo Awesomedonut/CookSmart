@@ -3,7 +3,6 @@
     <string name="title_recipe">Recipes</string>
     <string name="title_ingredients">Ingredients</string>
     <string name="title_calendar">Calendar</string>
-
     <string name="ingredient_insert">Add Ingredient</string>
     <string name="category">Category</string>
     <string name="name">Name</string>
@@ -22,14 +21,22 @@
     <string name="chicken_breast">Chicken breast</string>
     <string name="_1_kg">1 kg</string>
     <string name="date_not_set">Date not set!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="update">Update</string>
     <string name="delete">Delete</string>
     <string name="search_title">Search</string>
-
     <string name="selected_item">Selected item:</string>
+    <string name="title">Title</string>
+    <string name="instructions">Instructions</string>
+    <string name="add_ingredient">Add Ingredient</string>
+    <string name="instruction_hint">1. Preheat oven to 365 degrees F. Line two baking sheets with parchment paper and set aside.</string>
+    <string name="title_hint">Chocolate Chip Cookies</string>
+    <string name="enter_ingredient">Enter Ingredient</string>
+    <string name="favorite_icon">Favorite Icon</string>
+    <string name="sort_by">Sort by:</string>
+    <string name="add_ingredient_button">Add ingredient button</string>
+    <string name="favorite_button">Favorite button</string>
+    <string name="delete_ingredient_button">Delete ingredient button</string>
+    <string name="saved_recipes">Saved Recipes</string>
 
     <string-array name="recipeSpinner">
         <item>Date added: oldest</item>

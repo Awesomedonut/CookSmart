@@ -48,7 +48,7 @@ class CalendarListAdapter(private val context: Context,
             val tvExpiryDate : TextView = view.findViewById(R.id.tvCalendarListExpiryDate)
             val ingredient = ingredientList[position]
             val expiryDate = ingredient.bestBefore
-            var ingredientString = ingredient.name + " " + dateString(expiryDate)
+            var ingredientString = ingredient.name + " — expires " + dateString(expiryDate)
             tvExpiryDate.text = ingredientString
             tvExpiryDate.textAlignment = View.TEXT_ALIGNMENT_CENTER
 

@@ -73,11 +73,6 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     fun audioCompleted() {
         isAudioPlaying = false
     }
-//    fun checkAndPlayAudio() {
-//        if (audioQueue.isNotEmpty()) {
-//            playNextAudio()
-//        }
-//    }
     fun playNextAudio() {
         viewModelScope.launch(Dispatchers.Main) {
             if (audioQueue.isNotEmpty() && !isAudioPlaying) {
@@ -127,11 +122,6 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
         }
     }
 
-
-//    fun createRecipe() {
-//        postQuestion()
-//    }
-
     private fun postQuestion(question: String) {
         viewModelScope.launch {
             fetcher.startStreaming(
@@ -139,8 +129,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
                 question,
                 _response,
                 ::fetchAudioUrl,
-                ::fetchImageUrl,
-                ::summarizeDish)
+                ::fetchImageUrl)
             _imageUrl.value = ""
         }
     }
@@ -153,7 +142,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
             _info.value = text
 //            onAnswerReady(audio.answer)
             if(text.contains("These ingredients are available:"))
-            _input.value = text.replace("These ingredients are available:","")
+                _input.value = text.replace("These ingredients are available:","")
         }
 
     }
@@ -162,30 +151,8 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
         Log.d("RecipeVM.analyze${base64.length}",base64)
         viewModelScope.launch {
             fetcher.analyzeImage(base64,::updateIngredients)
-//            fetcher.startStreaming(
-//                this,
-//                question,
-//                _response,
-//                ::fetchAudioUrl,
-//                ::fetchImageUrl,
-//                ::summarizeDish)
             _imageUrl.value = ""
         }
-    }
-
-
-    private fun summarizeDish(){
-        Log.d("RecipeViewModel", "summarizeDish....")
-//        viewModelScope.launch {
-//            fetcher.startStreaming(this,
-//                "summarize the finished food using no more " +
-//                        "than two sentences with these details: " +
-//                        "$text",_responseDishSummary, {}, ::fetchImageUrl)
-//        }
-    }
-    private fun fetchImageUrl(){
-        Log.d("RecipeViewModel", "fetch....")
-        fetchImageUrl("Generate a beautiful dish with these details:$_responseDishSummary")
     }
 
     private fun fetchAudioUrl(text: String) {

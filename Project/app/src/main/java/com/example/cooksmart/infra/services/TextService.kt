@@ -32,7 +32,7 @@ class TextService(private val openAI: OpenAI) {
         responseState: MutableLiveData<String>,
         onAudioTextReady: ((text: String) -> Unit)? = null,  // Made nullable
         onSummaryReady: ((text: String) -> Unit)? = null,    // Made nullable
-        onCompleted: () -> Unit
+        onCompleted: (() -> Unit)? = null
     ) {
         coroutineScope.launch(Dispatchers.IO) {
             println("\n>️ Streaming chat completions...: $question")
@@ -79,7 +79,7 @@ class TextService(private val openAI: OpenAI) {
                     onAudioTextReady?.invoke(fullText.substring(startIndex))  // Call only if not null
                     responseState.postValue(fullText)
                     resetText()
-                    onCompleted()
+                    onCompleted?.invoke()
                 }
                 .launchIn(coroutineScope)
         }

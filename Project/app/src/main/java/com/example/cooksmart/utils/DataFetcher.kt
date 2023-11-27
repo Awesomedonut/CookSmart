@@ -12,20 +12,22 @@ import kotlinx.coroutines.launch
 
 class DataFetcher(private val smartNetService: SmartNetService) {
 
-    fun startStreaming(coroutineScope: CoroutineScope,
-                       question: String,
-                       responseState: MutableLiveData<String>,
-                       onAudioTextReady: (text: String) -> Unit,
-                       onSummaryReady: (text: String) -> Unit,
-                       onCompleted: () -> Unit) {
+    fun startStreaming(
+        coroutineScope: CoroutineScope,
+        question: String,
+        responseState: MutableLiveData<String>,
+        onAudioTextReady: (text: String) -> Unit,
+        onSummaryReady: (text: String) -> Unit
+    ) {
         val openAI = OpenAIProvider.instance
         val textService = TextService(openAI)
-        textService.startStream(coroutineScope,
+        textService.startStream(
+            coroutineScope,
             question,
             responseState,
             onAudioTextReady,
-            onSummaryReady,
-            onCompleted)
+            onSummaryReady, null
+        )
     }
 
     fun fetchAudio(question: String, onAudioUrlReady: (text: String) -> Unit) {
@@ -41,10 +43,8 @@ class DataFetcher(private val smartNetService: SmartNetService) {
         smartNetService.makeCall("chat/vision", question) { jsonResponse ->
             val gson = Gson()
             val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
-            //TODO: refactor
-//            CoroutineScope(Dispatchers.Main).launch {
-                onAnswerReady(audio.answer)
-//            }
+            onAnswerReady(audio.answer)
+
         }
     }
 

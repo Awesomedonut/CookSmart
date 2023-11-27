@@ -30,8 +30,8 @@ class TextService(private val openAI: OpenAI) {
         coroutineScope: CoroutineScope,
         question: String,
         responseState: MutableLiveData<String>,
-        onAudioTextReady: (text: String) -> Unit,
-        onSummaryReady: (text: String) -> Unit,
+        onAudioTextReady: ((text: String) -> Unit)? = null,  // Made nullable
+        onSummaryReady: ((text: String) -> Unit)? = null,    // Made nullable
         onCompleted: () -> Unit
     ) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -59,12 +59,12 @@ class TextService(private val openAI: OpenAI) {
                     if (firstNewLineIndex > 0) {
                         audioText = fullText.substring(startIndex, firstNewLineIndex)
                         if(audioCount == 0 || audioText.length > 50) {
-                            onAudioTextReady(audioText)
+                            onAudioTextReady?.invoke(audioText)  // Call only if not null
                             startIndex = firstNewLineIndex + 1
                             tempIndex = startIndex
                             audioCount ++
                             if(audioCount > 1 && !summarySent){
-                                onSummaryReady(fullText)
+                                onSummaryReady?.invoke(fullText)  // Call only if not null
                                 summarySent = true
                             }
                         }else{
@@ -76,7 +76,7 @@ class TextService(private val openAI: OpenAI) {
                     responseState.postValue(fullText)
                 }
                 .onCompletion {
-                    onAudioTextReady(fullText.substring(startIndex))
+                    onAudioTextReady?.invoke(fullText.substring(startIndex))  // Call only if not null
                     responseState.postValue(fullText)
                     resetText()
                     onCompleted()

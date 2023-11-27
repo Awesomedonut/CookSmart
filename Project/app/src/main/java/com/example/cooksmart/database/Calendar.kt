@@ -13,7 +13,7 @@ data class Calendar (
     var id: Long,
 
     @ColumnInfo(name="calender_date")
-    var date: Long,
+    var date: String,
 
     @ColumnInfo(name="calender_plan")
     var plan: String,

@@ -21,7 +21,6 @@
             android:id="@+id/action_navigation_ingredient_to_ingredient_update"
             app:destination="@id/navigation_ingredient_update" />
     </fragment>
-
     <fragment
         android:id="@+id/navigation_calendar"
         android:name="com.example.cooksmart.ui.calendar.CalendarFragment"
@@ -30,6 +29,18 @@
         <action
             android:id="@+id/action_navigation_calendar_to_navigation_ingredient_update"
             app:destination="@id/navigation_ingredient_update" />
+        <action
+            android:id="@+id/action_navigation_calendar_to_navigation_calendar_add"
+            app:destination="@+id/navigation_calendar_add"/>
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_calendar_add"
+        android:name="com.example.cooksmart.ui.calendar.CalendarAdd"
+        android:label="Calendar Add"
+        tools:layout="@layout/fragment_calendar_add" >
+        <action
+            android:id="@+id/action_navigation_calendar_add_to_navigation_calendar"
+            app:destination="@+id/navigation_calendar"/>
     </fragment>
     <fragment
         android:id="@+id/navigation_ingredient_add"

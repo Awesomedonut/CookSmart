@@ -55,5 +55,10 @@
         <item>Best before date: newest</item>
 
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="update_recipe">Update Recipe</string>
+    <string name="generate_recipe">Generate Recipe</string>
+    <string name="add_recipe">Add Recipe</string>
 
 </resources>

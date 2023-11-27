@@ -25,5 +25,8 @@ data class Recipe (
     var dateAdded: Long,
 
     @ColumnInfo(name="recipe_isFavorite")
-    var isFavorite: Boolean = false
+    var isFavorite: Boolean = false,
+
+    @ColumnInfo(name="recipe_image")
+    var image: String = "",
 ): Parcelable

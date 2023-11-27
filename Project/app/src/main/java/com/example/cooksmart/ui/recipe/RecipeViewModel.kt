@@ -1,11 +1,15 @@
 package com.example.cooksmart.ui.recipe
 
+import android.app.Application
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cooksmart.database.CookSmartDatabase
+import com.example.cooksmart.database.Recipe
+import com.example.cooksmart.database.RecipeRepository
 import com.example.cooksmart.infra.services.ImageService
 import com.example.cooksmart.infra.services.OpenAIProvider
 import com.example.cooksmart.utils.BitmapHelper
@@ -17,7 +21,8 @@ import kotlinx.coroutines.launch
 import java.util.LinkedList
 import java.util.Queue
 
-class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
+class RecipeViewModel(private val fetcher: DataFetcher, application: Application) :
+    AndroidViewModel(application) {
     private val _response = MutableLiveData<String>()
     val response: LiveData<String> get() = _response
 
@@ -59,6 +64,12 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
 //        _isLoading.value = false
 //    }
 
+    private val repository: RecipeRepository
+
+    init {
+        val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
+        repository = RecipeRepository(recipeDao)
+    }
     private fun enqueueAudioUrl(audioUrl: String) {
         audioQueue.add(audioUrl)
 //        if (audioQueue.size > 0) {
@@ -84,6 +95,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
                 }
             }else{
                 _nextAudioUrl.value = ""
+                saveRecipe()
             }
         }
     }
@@ -104,10 +116,19 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
             _imageUrl,
             ::loadImage)
     }
-    private fun loadImage(){
-
+    private suspend fun loadImage(){
+//        saveRecipe()
     }
-
+    private suspend fun saveRecipe(){
+        if (_input?.value != null && _response?.value != null) {
+            val image = _imageUrl.value ?: ""
+            Log.d("saveRecipe",image)
+            val currentDate = System.currentTimeMillis()
+            val title = "AutoGen"
+            val recipe = Recipe(0, title, _input!!.value!!, _response!!.value!!, currentDate, false, image)
+            repository.insertRecipe(recipe)
+        }
+    }
     fun appendInputAudio(text: String) {
         viewModelScope.launch {
             _input.value += text
@@ -146,6 +167,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
         }
 
     }
+
     fun analyzeImage(bitmap: Bitmap) {
         val base64 = BitmapHelper.bitmapToBase64(bitmap)
         Log.d("RecipeVM.analyze${base64.length}",base64)

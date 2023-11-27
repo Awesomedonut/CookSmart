@@ -10,12 +10,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.reflect.KSuspendFunction0
 
 class ImageService(private val openAI: OpenAI) {
-    fun fetchImage(coroutineScope: CoroutineScope,
-                   userText: String,
-                   imageUrlState: MutableLiveData<String>,
-                   callback: () -> Unit) {
+    fun fetchImage(
+        coroutineScope: CoroutineScope,
+        userText: String,
+        imageUrlState: MutableLiveData<String>,
+        callback: KSuspendFunction0<Unit>
+    ) {
         Log.d("ImageService", "fetchimage ......")
         coroutineScope.launch(Dispatchers.IO) {
             try {

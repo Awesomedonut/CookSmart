@@ -75,7 +75,7 @@ class RecipeFragment : Fragment() {
         val httpClient = UnsafeHttpClient().getUnsafeOkHttpClient()
         val smartNetService = SmartNetService(httpClient)
         val dataFetcher = DataFetcher(smartNetService)
-        val viewModelFactory = RecipeViewModelFactory(dataFetcher)
+        val viewModelFactory = RecipeViewModelFactory(dataFetcher, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
     }
     private fun setIngreImgUri(){

@@ -16,7 +16,7 @@ interface RecipeDao {
     @Query("SELECT * FROM recipe_table")
     fun getAllRecipes(): LiveData<List<Recipe>>
 
-    @Query("SELECT id, recipe_name, recipe_ingredients, recipe_instructions, recipe_dateAdded, recipe_isFavorite FROM recipe_table WHERE id =:recipeId")
+    @Query("SELECT id, recipe_name, recipe_ingredients, recipe_instructions, recipe_dateAdded, recipe_isFavorite, recipe_image FROM recipe_table WHERE id =:recipeId")
     suspend fun getRecipeById(recipeId: Long): Recipe
 
     @Update

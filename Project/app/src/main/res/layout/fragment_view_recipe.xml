@@ -46,6 +46,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"/>
+        <ImageView
+            android:id="@+id/responseImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="image_desc"
+            />
         <TextView
             android:id="@+id/viewRecipeInstructionsLabel"
             android:layout_width="match_parent"

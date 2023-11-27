@@ -10,6 +10,7 @@ import com.example.cooksmart.infra.services.ImageService
 import com.example.cooksmart.infra.services.OpenAIProvider
 import com.example.cooksmart.utils.BitmapHelper
 import com.example.cooksmart.utils.DataFetcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -50,7 +51,8 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
 
     val photoLiveData = MutableLiveData<Bitmap?>()
 
-
+    private val _info = MutableLiveData<String>("")
+    val info: LiveData<String> get() = _info
 //    fun loadData() {
 //        _isLoading.value = true
 //        // Load data...
@@ -144,8 +146,16 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     }
 
     private fun updateIngredients(text: String){
+//        These ingredients are available: spices, what appears to be ground spices in the two containers with transparent lids.
         Log.d("RecipeVM.udpateIngredients",text)
-        _input.value = text
+        //TODO: refactor
+        CoroutineScope(Dispatchers.Main).launch {
+            _info.value = text
+//            onAnswerReady(audio.answer)
+            if(text.contains("These ingredients are available:"))
+            _input.value = text.replace("These ingredients are available:","")
+        }
+
     }
     fun analyzeImage(bitmap: Bitmap) {
         val base64 = BitmapHelper.bitmapToBase64(bitmap)

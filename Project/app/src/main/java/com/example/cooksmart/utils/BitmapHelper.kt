@@ -32,7 +32,7 @@ object BitmapHelper {
             return ret
         }
 
-    fun bitmapToBase64(bitmap: Bitmap, quality: Int=10, scale: Float=0.1f): String {
+    fun bitmapToBase64(bitmap: Bitmap, quality: Int=50, scale: Float=0.3f): String {
         ByteArrayOutputStream().apply {
             // Scale down bitmap if scale is less than 1
             val scaledBitmap = if (scale < 1) {

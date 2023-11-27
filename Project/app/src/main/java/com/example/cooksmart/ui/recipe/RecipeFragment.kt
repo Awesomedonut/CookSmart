@@ -170,6 +170,9 @@ class RecipeFragment : Fragment() {
             binding.micImageView.isVisible = !it
             binding.buttonReset.isVisible = it
         }
+        viewModel.info.observe(viewLifecycleOwner){
+            Toast.makeText(this@RecipeFragment.context, it, Toast.LENGTH_LONG).show()
+        }
         viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             if(imageUrl.isEmpty()){
              binding.responseImage.isVisible = false

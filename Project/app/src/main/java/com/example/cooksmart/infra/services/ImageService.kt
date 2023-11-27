@@ -12,7 +12,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ImageService(private val openAI: OpenAI) {
-    fun fetchImage(coroutineScope: CoroutineScope, userText: String, imageUrlState: MutableLiveData<String>, callback: () -> Unit) {
+    fun fetchImage(coroutineScope: CoroutineScope,
+                   userText: String,
+                   imageUrlState: MutableLiveData<String>,
+                   callback: () -> Unit) {
         Log.d("ImageService", "fetchimage ......")
         coroutineScope.launch(Dispatchers.IO) {
             try {

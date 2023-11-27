@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.recipe
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cooksmart.infra.services.ImageService
 import com.example.cooksmart.infra.services.OpenAIProvider
+import com.example.cooksmart.utils.BitmapHelper
 import com.example.cooksmart.utils.DataFetcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,6 +47,9 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
 
     private val _isCreating = MutableLiveData<Boolean>()
     val isCreating: LiveData<Boolean> = _isCreating
+
+    val photoLiveData = MutableLiveData<Bitmap?>()
+
 
 //    fun loadData() {
 //        _isLoading.value = true
@@ -137,6 +142,28 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
             _imageUrl.value = ""
         }
     }
+
+    private fun updateIngredients(text: String){
+        Log.d("RecipeVM.udpateIngredients",text)
+        _input.value = text
+    }
+    fun analyzeImage(bitmap: Bitmap) {
+        val base64 = BitmapHelper.bitmapToBase64(bitmap)
+        Log.d("RecipeVM.analyze${base64.length}",base64)
+        viewModelScope.launch {
+            fetcher.analyzeImage(base64,::updateIngredients)
+//            fetcher.startStreaming(
+//                this,
+//                question,
+//                _response,
+//                ::fetchAudioUrl,
+//                ::fetchImageUrl,
+//                ::summarizeDish)
+            _imageUrl.value = ""
+        }
+    }
+
+
     private fun summarizeDish(){
         Log.d("RecipeViewModel", "summarizeDish....")
 //        viewModelScope.launch {
@@ -167,6 +194,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
             }
         }
     }
+
     fun process(spokenText: String) {
         _isCreating.value = true
         postQuestion(spokenText)

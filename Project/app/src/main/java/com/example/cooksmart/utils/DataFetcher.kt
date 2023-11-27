@@ -33,4 +33,13 @@ class DataFetcher(private val smartNetService: SmartNetService) {
             onAudioUrlReady(audio.wavFileUrl)
         }
     }
+
+    fun analyzeImage(question: String, onAnswerReady: (text: String) -> Unit) {
+        smartNetService.makeCall("chat/vision", question) { jsonResponse ->
+            val gson = Gson()
+            val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
+            onAnswerReady(audio.answer)
+        }
+    }
+
 }

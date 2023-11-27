@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.recipe
 
+import android.Manifest
 import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,21 +10,29 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.databinding.FragmentRecipeBinding
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.net.Uri
+import android.provider.MediaStore
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.infra.services.SmartNetService
 import com.example.cooksmart.infra.net.UnsafeHttpClient
+import com.example.cooksmart.utils.BitmapHelper
 import com.example.cooksmart.utils.DataFetcher
 import com.example.cooksmart.utils.DebouncedOnClickListener
+import java.io.File
 import java.util.Locale
 
 class RecipeFragment : Fragment() {
@@ -35,6 +44,13 @@ class RecipeFragment : Fragment() {
     private val REQUEST_CODE_SPEECH_INPUT = 1
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var takePhotoLauncher: ActivityResultLauncher<Intent>
+    private val CAMERA_PERMISSION_REQUEST_CODE = 101
+    private lateinit var profileImgUri: Uri
+    private val PROFILEIMG_STATE_KEY = "profilePhoto"
+    private val PERMISSION_TEXT_STATE_KEY = "permissionText"
+    private val PACKAGE_NAME = "com.example.cooksmart"
+    private val PROFILE_IMG_FILE_NAME = "profile_img.jpg"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,9 +78,15 @@ class RecipeFragment : Fragment() {
         }
         setupUI()
         setupObservers()
+        setUpPhotoLauncher()
+        setProfileImgUri()
+
         return binding.root
     }
-
+    private fun setProfileImgUri(){
+        val tempImgFile = File(requireContext().getExternalFilesDir(null), PROFILE_IMG_FILE_NAME)
+        profileImgUri = FileProvider.getUriForFile(requireContext(),PACKAGE_NAME, tempImgFile)
+    }
     private fun setupUI() {
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
@@ -91,6 +113,7 @@ class RecipeFragment : Fragment() {
 //            viewModel.process(binding.buttonOption1.text.toString())
 //        }
 //
+        binding.buttonVision.setOnClickListener { changeProfilePhoto() }
 
         binding.micImageView.setOnClickListener {
             try {
@@ -114,7 +137,21 @@ class RecipeFragment : Fragment() {
             }
         }
     }
-
+    private fun changeProfilePhoto() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this.requireActivity(),
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            openCamera()
+        }
+    }
     private fun setupObservers() {
         viewModel.input.observe(viewLifecycleOwner){
             if(it.isNotEmpty())
@@ -132,6 +169,9 @@ class RecipeFragment : Fragment() {
             binding.buttonOption1.isVisible = !it
             binding.micImageView.isVisible = !it
             binding.buttonReset.isVisible = it
+        }
+        viewModel.info.observe(viewLifecycleOwner){
+            Toast.makeText(this@RecipeFragment.context, it, Toast.LENGTH_LONG).show()
         }
         viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             if(imageUrl.isEmpty()){
@@ -217,7 +257,39 @@ class RecipeFragment : Fragment() {
 //                ).show()
         }
     }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera()
+            } else {
+//                permissionText = "Camera permission was denied"
+            }
+        }
+    }
+    private fun setUpPhotoLauncher() {
+        val takePhotoActivityResult = ActivityResultContracts.StartActivityForResult()
+        takePhotoLauncher = registerForActivityResult(takePhotoActivityResult) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val bitmap = BitmapHelper.getBitmap(requireContext(), profileImgUri)
+                if (bitmap != null && bitmap.width > 0 && bitmap.height > 0) {
+                    // TODO: ask why observe doesnt seem to change
+                    //viewModel.userProfileLiveData.value?.profilePhotoString = BitmapHelper.bitmapToString(bitmap)
+                    viewModel.analyzeImage(bitmap)//.photoLiveData.value = bitmap
 
+                }
+            }
+        }
+    }
+    private fun openCamera() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, profileImgUri)
+        takePhotoLauncher.launch(cameraIntent)
+    }
     override fun onPause() {
         super.onPause()
         if (::mediaPlayer.isInitialized) {

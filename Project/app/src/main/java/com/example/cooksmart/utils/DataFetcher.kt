@@ -7,6 +7,8 @@ import com.example.cooksmart.infra.services.TextService
 import com.example.cooksmart.models.WavAudio
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DataFetcher(private val smartNetService: SmartNetService) {
 
@@ -30,7 +32,20 @@ class DataFetcher(private val smartNetService: SmartNetService) {
         smartNetService.makeCall("chat/audio", question) { jsonResponse ->
             val gson = Gson()
             val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
+            //TODO: refactor
             onAudioUrlReady(audio.wavFileUrl)
         }
     }
+
+    fun analyzeImage(question: String, onAnswerReady: (text: String) -> Unit) {
+        smartNetService.makeCall("chat/vision", question) { jsonResponse ->
+            val gson = Gson()
+            val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
+            //TODO: refactor
+//            CoroutineScope(Dispatchers.Main).launch {
+                onAnswerReady(audio.answer)
+//            }
+        }
+    }
+
 }

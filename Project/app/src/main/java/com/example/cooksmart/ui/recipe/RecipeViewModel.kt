@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.recipe
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cooksmart.infra.services.ImageService
 import com.example.cooksmart.infra.services.OpenAIProvider
+import com.example.cooksmart.utils.BitmapHelper
 import com.example.cooksmart.utils.DataFetcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -46,6 +49,10 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
     private val _isCreating = MutableLiveData<Boolean>()
     val isCreating: LiveData<Boolean> = _isCreating
 
+    val photoLiveData = MutableLiveData<Bitmap?>()
+
+    private val _info = MutableLiveData<String>("")
+    val info: LiveData<String> get() = _info
 //    fun loadData() {
 //        _isLoading.value = true
 //        // Load data...
@@ -137,6 +144,36 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
             _imageUrl.value = ""
         }
     }
+
+    private fun updateIngredients(text: String){
+//        These ingredients are available: spices, what appears to be ground spices in the two containers with transparent lids.
+        Log.d("RecipeVM.udpateIngredients",text)
+        //TODO: refactor
+        CoroutineScope(Dispatchers.Main).launch {
+            _info.value = text
+//            onAnswerReady(audio.answer)
+            if(text.contains("These ingredients are available:"))
+            _input.value = text.replace("These ingredients are available:","")
+        }
+
+    }
+    fun analyzeImage(bitmap: Bitmap) {
+        val base64 = BitmapHelper.bitmapToBase64(bitmap)
+        Log.d("RecipeVM.analyze${base64.length}",base64)
+        viewModelScope.launch {
+            fetcher.analyzeImage(base64,::updateIngredients)
+//            fetcher.startStreaming(
+//                this,
+//                question,
+//                _response,
+//                ::fetchAudioUrl,
+//                ::fetchImageUrl,
+//                ::summarizeDish)
+            _imageUrl.value = ""
+        }
+    }
+
+
     private fun summarizeDish(){
         Log.d("RecipeViewModel", "summarizeDish....")
 //        viewModelScope.launch {
@@ -167,6 +204,7 @@ class RecipeViewModel(private val fetcher: DataFetcher) : ViewModel() {
             }
         }
     }
+
     fun process(spokenText: String) {
         _isCreating.value = true
         postQuestion(spokenText)

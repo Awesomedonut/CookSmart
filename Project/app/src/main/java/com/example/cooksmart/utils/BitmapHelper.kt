@@ -1,4 +1,4 @@
-package com.example.yan_jin_song_myruns.utils
+package com.example.cooksmart.utils
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -31,4 +31,26 @@ object BitmapHelper {
                 bitmap.width, bitmap.height, matrix, true)
             return ret
         }
+
+    fun bitmapToBase64(bitmap: Bitmap, quality: Int=50, scale: Float=0.3f): String {
+        ByteArrayOutputStream().apply {
+            // Scale down bitmap if scale is less than 1
+            val scaledBitmap = if (scale < 1) {
+                val width = (bitmap.width * scale).toInt()
+                val height = (bitmap.height * scale).toInt()
+                Bitmap.createScaledBitmap(bitmap, width, height, true)
+            } else {
+                bitmap
+            }
+
+            // Compress Bitmap to ByteArrayOutputStream with specified quality
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, quality, this)
+
+            // Convert ByteArrayOutputStream to ByteArray
+            val byteArray = this.toByteArray()
+            // Convert ByteArray to Base64 String and prepend data URI prefix
+            return "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.DEFAULT)
+        }
+    }
+
 }

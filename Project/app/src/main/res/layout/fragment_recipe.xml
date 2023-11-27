@@ -13,6 +13,16 @@
         android:padding="2dp"
         android:gravity="right"
         app:layout_constraintTop_toTopOf="parent">
+        <Button
+            android:id="@+id/buttonVision"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Camera"
+            android:textSize="10sp"
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF"
+            android:padding="2dp"
+            />
 
         <Button
             android:id="@+id/buttonReset"

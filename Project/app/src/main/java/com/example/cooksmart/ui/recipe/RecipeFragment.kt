@@ -91,8 +91,10 @@ class RecipeFragment : Fragment() {
 
     private fun setupUI() {
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
+            mediaHandler.stopAndRelease { viewModel.audioCompleted() }
             viewModel.resetInputAudio()
             viewModel.cleanup()
+            viewModel.initAudioUrl("Reset, please tell me what do you have")
         }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
@@ -196,14 +198,14 @@ class RecipeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-//        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-//        viewModel.cleanup()
+        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
+        viewModel.cleanup()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-//        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-//        viewModel.cleanup()
+        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
+        viewModel.cleanup()
         _binding = null
     }
 }

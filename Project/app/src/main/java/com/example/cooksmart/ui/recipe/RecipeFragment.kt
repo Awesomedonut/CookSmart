@@ -31,6 +31,7 @@ import com.example.cooksmart.utils.CameraHandler
 import com.example.cooksmart.utils.DataFetcher
 import com.example.cooksmart.utils.DebouncedOnClickListener
 import com.example.cooksmart.utils.MediaHandler
+import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
 import java.util.Locale
 
@@ -102,28 +103,9 @@ class RecipeFragment : Fragment() {
 
         binding.micImageView.setOnClickListener {
             mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                putExtra(
-                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                )
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-                putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text")
-                putExtra(
-                    RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
-                    10000
-                ) // 10 seconds
-                putExtra(
-                    RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
-                    10000
-                ) // 10 seconds
-                putExtra(
-                    RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS,
-                    10000
-                ) // 10 seconds
-            }
+            val speechIntent = SpeechIntentHelper.createSpeechIntent()
             try {
-                speechResultLauncher.launch(intent)
+                speechResultLauncher.launch(speechIntent)
             } catch (e: Exception) {
                 Toast.makeText(this@RecipeFragment.context, " " + e.message, Toast.LENGTH_SHORT)
                     .show()

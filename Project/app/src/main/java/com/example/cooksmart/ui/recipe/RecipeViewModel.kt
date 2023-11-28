@@ -12,6 +12,7 @@ import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.database.RecipeRepository
 import com.example.cooksmart.infra.services.ImageService
 import com.example.cooksmart.infra.services.OpenAIProvider
+import com.example.cooksmart.infra.services.TextService
 import com.example.cooksmart.models.PromptBag
 import com.example.cooksmart.utils.BitmapHelper
 import com.example.cooksmart.utils.DataFetcher
@@ -60,11 +61,13 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
         _repository = RecipeRepository(recipeDao)
     }
 
-    private fun enqueueAudioUrl(audioUrl: String) {
+    private fun enqueueAudioUrl(audioUrl: String, promptId: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            val currentQueue = _audioQueue.value ?: LinkedList()
-            currentQueue.add(audioUrl)
-            _audioQueue.value = currentQueue
+            if(promptId == _promptId.value!!) {
+                val currentQueue = _audioQueue.value ?: LinkedList()
+                currentQueue.add(audioUrl)
+                _audioQueue.value = currentQueue
+            }
         }
     }
 
@@ -162,51 +165,67 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
     }
 
     private fun postQuestion(question: String) {
+
+                val openAI = OpenAIProvider.instance
+        val textService = TextService(openAI)
+
+        //TODO: fix the logic
         viewModelScope.launch {
-            fetcher.startStreaming(
-                this,
-                question,
-                _response,
-                ::fetchAudioUrl,
-                ::fetchImageUrl
-            )
-            _imageUrl.value = ""
+
+            //        textService.startStream(
+//            coroutineScope,
+//            question,
+//            responseState,
+//            onAudioTextReady,
+//            onSummaryReady, null
+//        )
+//            fetcher.startStreaming(
+//                this,
+//                question,
+//                _response,
+//                ::fetchAudioUrl,
+//                ::fetchImageUrl
+//            )
+//            _imageUrl.value = ""
         }
     }
 
-    private fun updateIngredients(text: String) {
+    private fun updateIngredients(text: String, promptId: Int) {
 //        These ingredients are available: spices, what appears to be ground spices in the two containers with transparent lids.
         Log.d("RecipeVM.udpateIngredients", text)
         //TODO: refactor
         CoroutineScope(Dispatchers.Main).launch {
-            _info.value = text
+            if (promptId == _promptId.value!!) {
+                _info.value = text
 //            onAnswerReady(audio.answer)
-            if (text.contains("These ingredients are available:"))
-                _input.value = text.replace("These ingredients are available:", "")
+                if (text.contains("These ingredients are available:"))
+                    _input.value = text.replace("These ingredients are available:", "")
+            }
         }
-
     }
 
     fun analyzeImage(bitmap: Bitmap) {
         val base64 = BitmapHelper.bitmapToBase64(bitmap)
         Log.d("RecipeVM.analyze${base64.length}", base64)
+        val promptBag = PromptBag(base64, _promptId.value!!)
         viewModelScope.launch {
-            fetcher.analyzeImage(base64, ::updateIngredients)
+            fetcher.analyzeImage(promptBag, ::updateIngredients)
             _imageUrl.value = ""
         }
     }
 
     private fun fetchAudioUrl(text: String) {
         Log.d("fetchAudioUrl", text)
+        val promptBag = PromptBag(text.replace("#", "").replace("*", ""),_promptId.value!!)
         viewModelScope.launch {
             // Wait for the last job to complete if it's still active
             //lastFetchJob?.join()
             // Start a new job for fetching audio
 //            lastFetchJob = launch {
             fetcher.fetchAudio(
-                text.replace("#", "").replace("*", "")
-            ) { audioUrl ->
-                enqueueAudioUrl(audioUrl)
+                promptBag
+            ) { audioUrl,promptId ->
+                enqueueAudioUrl(audioUrl,promptId)
                 playNextAudio()
             }
 //            }
@@ -214,6 +233,8 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
     }
 
     fun process(spokenText: String) {
+        if(_promptId.value != null)
+            _promptId.value = _promptId.value!! + 1
         _streamPaused = false
         _isCreating.value = true
         postQuestion(spokenText)
@@ -221,6 +242,8 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 
     fun Pause() {
         _streamPaused = true
+        if(_promptId.value != null)
+            _promptId.value = _promptId.value!! + 1
     }
 
     fun initAudioUrl(helloText: String) {

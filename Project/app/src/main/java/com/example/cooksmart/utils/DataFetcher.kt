@@ -31,7 +31,7 @@ class DataFetcher(private val smartNetService: SmartNetService) {
 //        )
 //    }
 
-    fun fetchAudio(promptBag: PromptBag, onAudioUrlReady: (text: String) -> Unit) {
+    fun fetchAudio(promptBag: PromptBag, onAudioUrlReady: (text: String, promptId: Int) -> Unit) {
         smartNetService.makeCall("chat/audio", promptBag) { jsonResponse, promptId ->
             val gson = Gson()
             val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
@@ -40,7 +40,8 @@ class DataFetcher(private val smartNetService: SmartNetService) {
         }
     }
 
-    fun analyzeImage(promptBag: PromptBag, onAnswerReady: (text: String) -> Unit) {
+    //TODO: refactor
+    fun analyzeImage(promptBag: PromptBag, onAnswerReady: (text: String, promptId: Int) -> Unit) {
         smartNetService.makeCall("chat/vision", promptBag) { jsonResponse, promptId ->
             val gson = Gson()
             val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)

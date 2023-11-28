@@ -61,16 +61,20 @@ class RecipeFragment : Fragment() {
         setIngreImgUri()
         return binding.root
     }
+
     private fun setupActivityResultLaunchers() {
-        speechResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-                result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.firstOrNull()?.let { spokenText ->
-                    Log.d("Recipe....", spokenText)
-                    viewModel.appendInputAudio(spokenText)
+        speechResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                    result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                        ?.firstOrNull()?.let { spokenText ->
+                        Log.d("Recipe....", spokenText)
+                        viewModel.appendInputAudio(spokenText)
+                    }
                 }
             }
-        }
     }
+
     private fun initializeViewModel() {
         val httpClient = UnsafeHttpClient().getUnsafeOkHttpClient()
         val smartNetService = SmartNetService(httpClient)
@@ -78,10 +82,12 @@ class RecipeFragment : Fragment() {
         val viewModelFactory = RecipeViewModelFactory(dataFetcher, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
     }
-    private fun setIngreImgUri(){
+
+    private fun setIngreImgUri() {
         val tempImgFile = File(requireContext().getExternalFilesDir(null), INGRE_IMG_FILE_NAME)
-        ingredientsImgUri = FileProvider.getUriForFile(requireContext(),PACKAGE_NAME, tempImgFile)
+        ingredientsImgUri = FileProvider.getUriForFile(requireContext(), PACKAGE_NAME, tempImgFile)
     }
+
     private fun setupUI() {
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
             viewModel.resetInputAudio()
@@ -95,61 +101,74 @@ class RecipeFragment : Fragment() {
         binding.buttonVision.setOnClickListener { changeIngrePhoto() }
 
         binding.micImageView.setOnClickListener {
+            mediaHandler.stopAndRelease { viewModel.audioCompleted() }
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                )
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
                 putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text")
-                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 10000) // 10 seconds
-                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 10000) // 10 seconds
-                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 10000) // 10 seconds
+                putExtra(
+                    RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
+                    10000
+                ) // 10 seconds
+                putExtra(
+                    RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
+                    10000
+                ) // 10 seconds
+                putExtra(
+                    RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS,
+                    10000
+                ) // 10 seconds
             }
             try {
                 speechResultLauncher.launch(intent)
             } catch (e: Exception) {
-                Toast.makeText(this@RecipeFragment.context, " " + e.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RecipeFragment.context, " " + e.message, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
+
     private fun changeIngrePhoto() {
-        if(cameraHandler.checkCameraPermission())
-        {
+        if (cameraHandler.checkCameraPermission()) {
             cameraHandler.openCamera()
         }
     }
+
     private fun setupObservers() {
-        viewModel.input.observe(viewLifecycleOwner){
-            if(it.isNotEmpty())
-            {
+        viewModel.input.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
                 binding.buttonOption1.text = it
-            }else
+            } else
                 binding.buttonOption1.text = "Beef, Sweet Potatoes, eggs"
         }
         viewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
-        viewModel.isCreating.observe(viewLifecycleOwner){
-//            binding.buttonCreateRecipes.isVisible = !it
+        viewModel.isCreating.observe(viewLifecycleOwner) {
             binding.buttonOption1.isVisible = !it
             binding.micImageView.isVisible = !it
             binding.buttonReset.isVisible = it
         }
-        viewModel.info.observe(viewLifecycleOwner){
+        viewModel.info.observe(viewLifecycleOwner) {
             Toast.makeText(this@RecipeFragment.context, it, Toast.LENGTH_LONG).show()
         }
         viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
-            if(imageUrl.isEmpty()){
-             binding.responseImage.isVisible = false
-            }else {
+            if (imageUrl.isEmpty()) {
+                binding.responseImage.isVisible = false
+            } else {
                 binding.responseImage.isVisible = true
                 Glide.with(this).load(imageUrl).into(binding.responseImage)
                 binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
             }
         }
 
-        viewModel.playerLoaded.observe(viewLifecycleOwner){
+        viewModel.playerLoaded.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = !it
-            if(viewModel.response.value == null || viewModel.response.value?.isEmpty() == true) {
+            if (viewModel.response.value == null || viewModel.response.value?.isEmpty() == true) {
                 if (it)
                     binding.responseTextView.text =
                         "Click the ingredients to give it a try, " +
@@ -181,6 +200,7 @@ class RecipeFragment : Fragment() {
     }
 
     private fun playAudio(audioUrl: String) {
+        Log.d("RecipeFrag", "playAudio$audioUrl")
         mediaHandler.playAudioFromUrl(audioUrl, object : AudioPlaybackCallback {
             override fun onAudioCompleted() {
                 viewModel.audioCompleted()
@@ -194,14 +214,14 @@ class RecipeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        mediaHandler.releaseMediaPlayer()
-        viewModel.cleanup()
+//        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
+//        viewModel.cleanup()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mediaHandler.releaseMediaPlayer()
-        viewModel.cleanup()
+//        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
+//        viewModel.cleanup()
         _binding = null
     }
 }

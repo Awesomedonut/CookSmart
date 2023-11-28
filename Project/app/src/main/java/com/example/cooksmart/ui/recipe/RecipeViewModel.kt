@@ -29,21 +29,14 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
     private val _imageUrl = MutableLiveData<String>()
     val imageUrl: LiveData<String> get() = _imageUrl
 
-    private val _responseAudio = MutableLiveData<String>()
-    val responseAudio: LiveData<String> get() = _responseAudio
-
-    private val _responseDishSummary = MutableLiveData<String>()
-
-    private val audioQueue: Queue<String> = LinkedList()
+    //    private val audioQueue: Queue<String> = LinkedList()
+    private val _audioQueue = MutableLiveData<Queue<String>>(LinkedList())
+    val audioQueue: LiveData<Queue<String>> get() = _audioQueue
 
     private val _nextAudioUrl = MutableLiveData<String>()
     val nextAudioUrl: LiveData<String> get() = _nextAudioUrl
 
     private var isAudioPlaying = false
-    private var lastFetchJob: Job? = null
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
 
     private val _playerLoaded = MutableLiveData<Boolean>().apply { value = false }
     val playerLoaded: LiveData<Boolean> = _playerLoaded
@@ -54,86 +47,100 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
     private val _isCreating = MutableLiveData<Boolean>()
     val isCreating: LiveData<Boolean> = _isCreating
 
-    val photoLiveData = MutableLiveData<Bitmap?>()
-
     private val _info = MutableLiveData<String>("")
     val info: LiveData<String> get() = _info
-//    fun loadData() {
-//        _isLoading.value = true
-//        // Load data...
-//        _isLoading.value = false
-//    }
 
-    private val repository: RecipeRepository
+    private val _repository: RecipeRepository
+    private var _streamPaused: Boolean = true
 
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
-        repository = RecipeRepository(recipeDao)
+        _repository = RecipeRepository(recipeDao)
     }
+
     private fun enqueueAudioUrl(audioUrl: String) {
-        audioQueue.add(audioUrl)
-//        if (audioQueue.size > 0) {
-//            playNextAudio()
-//        }
+        viewModelScope.launch(Dispatchers.Main) {
+            val currentQueue = _audioQueue.value ?: LinkedList()
+            currentQueue.add(audioUrl)
+            _audioQueue.value = currentQueue
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
         cleanup()
     }
+
     fun audioCompleted() {
         isAudioPlaying = false
     }
+
     fun playNextAudio() {
         viewModelScope.launch(Dispatchers.Main) {
-            if (audioQueue.isNotEmpty() && !isAudioPlaying) {
-                val nextUrl = audioQueue.poll()
+            if (!_audioQueue.value.isNullOrEmpty() && !isAudioPlaying) {
+                val nextUrl = _audioQueue.value?.poll()
+                _audioQueue.value = _audioQueue.value // Update the LiveData
                 nextUrl?.let {
                     _nextAudioUrl.value = it
                     isAudioPlaying = true
                     _playerLoaded.value = true
                 }
-            }else{
+            } else {
                 _nextAudioUrl.value = ""
+                isAudioPlaying = false
                 saveRecipe()
             }
         }
     }
 
-    fun cleanup(){
+    fun cleanup() {
         viewModelScope.launch(Dispatchers.Main) {
-            audioQueue.clear()
+            _audioQueue.value?.clear()
+//            _audioQueue.value = _audioQueue.value // Update the LiveData
             _nextAudioUrl.value = ""
-            //_playerLoaded.value = false
+            isAudioPlaying = false
+            _response.value = ""
+            _imageUrl.value = ""
+//            _responseAudio.value = ""
+            resetInputAudio()
+            _playerLoaded.value = false
         }
     }
+
     private fun fetchImageUrl(question: String) {
 
         val openAI = OpenAIProvider.instance
         val imageService = ImageService(openAI)
-        imageService.fetchImage(viewModelScope,
+        imageService.fetchImage(
+            viewModelScope,
             "Generate a beautiful dish with these details:$question",
             _imageUrl,
-            ::loadImage)
+            ::loadImage
+        )
     }
-    private suspend fun loadImage(){
+
+    private suspend fun loadImage() {
 //        saveRecipe()
     }
-    private suspend fun saveRecipe(){
+
+    private suspend fun saveRecipe() {
         if (_input?.value != null && _response?.value != null) {
             val image = _imageUrl.value ?: ""
-            Log.d("saveRecipe",image)
+            Log.d("saveRecipe", image)
             val currentDate = System.currentTimeMillis()
             val title = "AutoGen"
-            val recipe = Recipe(0, title, _input!!.value!!, _response!!.value!!, currentDate, false, image)
-            repository.insertRecipe(recipe)
+            val recipe =
+                Recipe(0, title, _input!!.value!!, _response!!.value!!, currentDate, false, image)
+            _repository.insertRecipe(recipe)
         }
     }
+
     fun appendInputAudio(text: String) {
         viewModelScope.launch {
             _input.value += text
         }
     }
+
     fun resetInputAudio() {
         viewModelScope.launch {
             _input.value = ""
@@ -150,29 +157,30 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
                 question,
                 _response,
                 ::fetchAudioUrl,
-                ::fetchImageUrl)
+                ::fetchImageUrl
+            )
             _imageUrl.value = ""
         }
     }
 
-    private fun updateIngredients(text: String){
+    private fun updateIngredients(text: String) {
 //        These ingredients are available: spices, what appears to be ground spices in the two containers with transparent lids.
-        Log.d("RecipeVM.udpateIngredients",text)
+        Log.d("RecipeVM.udpateIngredients", text)
         //TODO: refactor
         CoroutineScope(Dispatchers.Main).launch {
             _info.value = text
 //            onAnswerReady(audio.answer)
-            if(text.contains("These ingredients are available:"))
-                _input.value = text.replace("These ingredients are available:","")
+            if (text.contains("These ingredients are available:"))
+                _input.value = text.replace("These ingredients are available:", "")
         }
 
     }
 
     fun analyzeImage(bitmap: Bitmap) {
         val base64 = BitmapHelper.bitmapToBase64(bitmap)
-        Log.d("RecipeVM.analyze${base64.length}",base64)
+        Log.d("RecipeVM.analyze${base64.length}", base64)
         viewModelScope.launch {
-            fetcher.analyzeImage(base64,::updateIngredients)
+            fetcher.analyzeImage(base64, ::updateIngredients)
             _imageUrl.value = ""
         }
     }
@@ -181,27 +189,35 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
         Log.d("fetchAudioUrl", text)
         viewModelScope.launch {
             // Wait for the last job to complete if it's still active
-            lastFetchJob?.join()
+            //lastFetchJob?.join()
             // Start a new job for fetching audio
-            lastFetchJob = launch {
-                fetcher.fetchAudio(
-                    text.replace("#","").
-                    replace("*","")) { audioUrl ->
-                    enqueueAudioUrl(audioUrl)
-                    playNextAudio()
-                }
+//            lastFetchJob = launch {
+            fetcher.fetchAudio(
+                text.replace("#", "").replace("*", "")
+            ) { audioUrl ->
+                enqueueAudioUrl(audioUrl)
+                playNextAudio()
             }
+//            }
         }
     }
 
     fun process(spokenText: String) {
+        _streamPaused = false
         _isCreating.value = true
         postQuestion(spokenText)
     }
 
+    fun Pause() {
+        _streamPaused = true
+    }
+
     fun initAudioUrl(helloText: String) {
-        if (audioQueue.isEmpty()) {
-            fetchAudioUrl(helloText)
+        viewModelScope.launch(Dispatchers.Main) {
+            if (audioQueue.value.isNullOrEmpty()) {
+                fetchAudioUrl(helloText)
+            }
         }
     }
+
 }

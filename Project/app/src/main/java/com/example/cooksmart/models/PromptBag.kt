@@ -1,7 +1,6 @@
 package com.example.cooksmart.models
 
-data class Recipe(
+data class PromptBag(
     val text: String,
-    val imageUrl: String
+    val promptId: Int
 )
-

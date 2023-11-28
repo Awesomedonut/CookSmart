@@ -7,6 +7,7 @@ import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.example.cooksmart.models.PromptBag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -28,14 +29,16 @@ class TextService(private val openAI: OpenAI) {
     private var summarySent = false
     fun startStream(
         coroutineScope: CoroutineScope,
-        question: String,
-        responseState: MutableLiveData<String>,
-        onAudioTextReady: ((text: String) -> Unit)? = null,  // Made nullable
-        onSummaryReady: ((text: String) -> Unit)? = null,    // Made nullable
-        onCompleted: (() -> Unit)? = null
+        promptBag: PromptBag,
+//        question: String,
+        //responseState: MutableLiveData<String>,
+        onTextUpdated:((text: String, promptId: Int) -> Unit),  // Made nullable
+        onAudioTextReady: ((text: String, promptId: Int) -> Unit)? = null,  // Made nullable
+        onSummaryReady: ((text: String, promptId: Int) -> Unit)? = null,    // Made nullable
+        onCompleted: ((promptId: Int) -> Unit)? = null
     ) {
         coroutineScope.launch(Dispatchers.IO) {
-            println("\n>️ Streaming chat completions...: $question")
+            println("\n>️ Streaming chat completions...: ${promptBag.text}")
             val chatCompletionRequest = ChatCompletionRequest(
                 model = ModelId("gpt-4-1106-preview"),
                 messages = listOf(
@@ -44,7 +47,7 @@ class TextService(private val openAI: OpenAI) {
                         content = "Create a recipe along with cooking instructions based " +
                                 "on the ingredients provided, the instructions should be less than " +
                                 "5 steps, don't return special characters like " +
-                                "#, *, I need to read it, start with here is: $question"
+                                "#, *, I need to read it, start with here is: ${promptBag.text}"
                     )
                 )
             )
@@ -59,12 +62,12 @@ class TextService(private val openAI: OpenAI) {
                     if (firstNewLineIndex > 0) {
                         audioText = fullText.substring(startIndex, firstNewLineIndex)
                         if(audioCount == 0 || audioText.length > 50) {
-                            onAudioTextReady?.invoke(audioText)  // Call only if not null
+                            onAudioTextReady?.invoke(audioText,promptBag.promptId)  // Call only if not null
                             startIndex = firstNewLineIndex + 1
                             tempIndex = startIndex
                             audioCount ++
                             if(audioCount > 1 && !summarySent){
-                                onSummaryReady?.invoke(fullText)  // Call only if not null
+                                onSummaryReady?.invoke(fullText,promptBag.promptId)  // Call only if not null
                                 summarySent = true
                             }
                         }else{
@@ -73,13 +76,15 @@ class TextService(private val openAI: OpenAI) {
                         }
                         Log.d("TextService", "Sending one paragraph of audio")
                     }
-                    responseState.postValue(fullText)
+                    //responseState.postValue(fullText)
+                    onTextUpdated(fullText,promptBag.promptId)
                 }
                 .onCompletion {
-                    onAudioTextReady?.invoke(fullText.substring(startIndex))  // Call only if not null
-                    responseState.postValue(fullText)
+                    onAudioTextReady?.invoke(fullText.substring(startIndex),promptBag.promptId)  // Call only if not null
+                    //responseState.postValue(fullText)
+                    onTextUpdated(fullText,promptBag.promptId)
                     resetText()
-                    onCompleted?.invoke()
+                    onCompleted?.invoke(promptBag.promptId)
                 }
                 .launchIn(coroutineScope)
         }

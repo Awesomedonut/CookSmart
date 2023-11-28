@@ -12,6 +12,7 @@ import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.database.RecipeRepository
 import com.example.cooksmart.infra.services.ImageService
 import com.example.cooksmart.infra.services.OpenAIProvider
+import com.example.cooksmart.models.PromptBag
 import com.example.cooksmart.utils.BitmapHelper
 import com.example.cooksmart.utils.DataFetcher
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +54,7 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
     private val _repository: RecipeRepository
     private var _streamPaused: Boolean = true
 
+    private val _promptId = MutableLiveData<Int>(0)
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
         _repository = RecipeRepository(recipeDao)
@@ -104,6 +106,8 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 //            _responseAudio.value = ""
             resetInputAudio()
             _playerLoaded.value = false
+            if(_promptId.value != null)
+                _promptId.value = _promptId.value!! + 1
         }
     }
 
@@ -111,16 +115,23 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 
         val openAI = OpenAIProvider.instance
         val imageService = ImageService(openAI)
+        val promptBag = PromptBag(
+            "Generate a beautiful dish with these details: $question"
+            ,_promptId.value!!)
         imageService.fetchImage(
             viewModelScope,
-            "Generate a beautiful dish with these details:$question",
-            _imageUrl,
+            promptBag,
+//            _imageUrl,
             ::loadImage
         )
     }
 
-    private suspend fun loadImage() {
-//        saveRecipe()
+    private suspend fun loadImage(url: String?, promptId: Int) {
+        CoroutineScope(Dispatchers.Main).launch {
+            if (promptId == _promptId.value!!) {
+                _imageUrl.value = url ?: ""
+            }
+        }
     }
 
     private suspend fun saveRecipe() {

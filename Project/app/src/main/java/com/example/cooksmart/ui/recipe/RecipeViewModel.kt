@@ -56,6 +56,8 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
     private var _streamPaused: Boolean = true
 
     private val _promptId = MutableLiveData<Int>(0)
+    private var lastFetchJob: Job? = null
+
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
         _repository = RecipeRepository(recipeDao)
@@ -63,7 +65,7 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 
     private fun enqueueAudioUrl(audioUrl: String, promptId: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            if(promptId == _promptId.value!!) {
+            if (promptId == _promptId.value!!) {
                 val currentQueue = _audioQueue.value ?: LinkedList()
                 currentQueue.add(audioUrl)
                 _audioQueue.value = currentQueue
@@ -82,9 +84,11 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 
     fun playNextAudio() {
         viewModelScope.launch(Dispatchers.Main) {
-            if (!_audioQueue.value.isNullOrEmpty() && !isAudioPlaying) {
+            if(isAudioPlaying){
+                _playerLoaded.value = true
+            }
+            else if (!_audioQueue.value.isNullOrEmpty()) {
                 val nextUrl = _audioQueue.value?.poll()
-                _audioQueue.value = _audioQueue.value // Update the LiveData
                 nextUrl?.let {
                     _nextAudioUrl.value = it
                     isAudioPlaying = true
@@ -93,7 +97,6 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
             } else {
                 _nextAudioUrl.value = ""
                 isAudioPlaying = false
-                saveRecipe()
             }
         }
     }
@@ -109,24 +112,29 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 //            _responseAudio.value = ""
             resetInputAudio()
             _playerLoaded.value = false
-            if(_promptId.value != null)
+            if (_promptId.value != null)
                 _promptId.value = _promptId.value!! + 1
         }
     }
 
-    private fun fetchImageUrl(question: String) {
-
+    private fun fetchImageUrl(question: String, promptId: Int) {
+        if (promptId != _promptId.value!!)
+            return
         val openAI = OpenAIProvider.instance
         val imageService = ImageService(openAI)
         val promptBag = PromptBag(
-            "Generate a beautiful dish with these details: $question"
-            ,_promptId.value!!)
-        imageService.fetchImage(
-            viewModelScope,
-            promptBag,
-//            _imageUrl,
-            ::loadImage
+            "Generate a beautiful dish with these details: $question", _promptId.value!!
         )
+        try {
+            imageService.fetchImage(
+                viewModelScope,
+                promptBag,
+//            _imageUrl,
+                ::loadImage
+            )
+        } catch (e: Exception) {
+            _info.value = "API server errors: 001, please try again"
+        }
     }
 
     private suspend fun loadImage(url: String?, promptId: Int) {
@@ -137,14 +145,19 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
         }
     }
 
-    private suspend fun saveRecipe() {
+    private suspend fun saveRecipe(promptId: Int) {
+        if (promptId != _promptId.value!!)
+            return
         if (_input?.value != null && _response?.value != null) {
             val image = _imageUrl.value ?: ""
             Log.d("saveRecipe", image)
             val currentDate = System.currentTimeMillis()
             val title = "AutoGen"
             val recipe =
-                Recipe(0, title, _input!!.value!!, _response!!.value!!, currentDate, false, image)
+                Recipe(
+                    0, title, _input!!.value!!,
+                    _response!!.value!!, currentDate, false, image
+                )
             _repository.insertRecipe(recipe)
         }
     }
@@ -166,19 +179,27 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 
     private fun postQuestion(question: String) {
 
-                val openAI = OpenAIProvider.instance
+        val openAI = OpenAIProvider.instance
         val textService = TextService(openAI)
-
+        val promptBag = PromptBag(question, _promptId.value!!)
         //TODO: fix the logic
         viewModelScope.launch {
+            try {
+                textService.startStream(
+                    viewModelScope,
 
-            //        textService.startStream(
-//            coroutineScope,
-//            question,
-//            responseState,
-//            onAudioTextReady,
-//            onSummaryReady, null
-//        )
+                    promptBag,
+                    ::updateText,
+                    ::fetchAudioUrl,
+                    ::fetchImageUrl,
+                    null,
+                    ::saveRecipe,
+                    ::onError
+                )
+            } catch (e: Exception) {
+                _info.value = "API server errors: 002, please try again"
+            }
+
 //            fetcher.startStreaming(
 //                this,
 //                question,
@@ -199,7 +220,8 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
                 _info.value = text
 //            onAnswerReady(audio.answer)
                 if (text.contains("These ingredients are available:"))
-                    _input.value = text.replace("These ingredients are available:", "")
+                    _input.value =
+                        text.replace("These ingredients are available:", "")
             }
         }
     }
@@ -208,32 +230,60 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
         val base64 = BitmapHelper.bitmapToBase64(bitmap)
         Log.d("RecipeVM.analyze${base64.length}", base64)
         val promptBag = PromptBag(base64, _promptId.value!!)
+
         viewModelScope.launch {
-            fetcher.analyzeImage(promptBag, ::updateIngredients)
-            _imageUrl.value = ""
+            try {
+                fetcher.analyzeImage(promptBag, ::updateIngredients)
+                _imageUrl.value = ""
+            } catch (e: Exception) {
+                _info.value = "API server errors: 003, please try again"
+            }
         }
     }
 
-    private fun fetchAudioUrl(text: String) {
+    private fun updateText(text: String, promptId: Int) {
+        if (promptId != _promptId.value!!)
+            return
+        _response.value = text
+    }
+
+    private fun onError(text: String) {
+        _info.value = text
+    }
+
+    private fun fetchAudioUrl(text: String, promptId: Int) {
+        if (promptId != _promptId.value!!)
+            return
         Log.d("fetchAudioUrl", text)
-        val promptBag = PromptBag(text.replace("#", "").replace("*", ""),_promptId.value!!)
+        val promptBag = PromptBag(
+            text.replace("#", "")
+                .replace("*", ""),
+            _promptId.value!!
+        )
         viewModelScope.launch {
             // Wait for the last job to complete if it's still active
-            //lastFetchJob?.join()
+            lastFetchJob?.join()
             // Start a new job for fetching audio
-//            lastFetchJob = launch {
-            fetcher.fetchAudio(
-                promptBag
-            ) { audioUrl,promptId ->
-                enqueueAudioUrl(audioUrl,promptId)
-                playNextAudio()
+            lastFetchJob = launch {
+            try {
+                fetcher.fetchAudio(
+                    promptBag
+                ) { audioUrl, promptId ->
+                    Log.d("RecipeVM", "audio: $audioUrl")
+                    enqueueAudioUrl(audioUrl, promptId)
+                    playNextAudio()
+                }
+            } catch (e: Exception) {
+                _info.value = "API server errors: 004, please try again"
             }
-//            }
+
+
+            }
         }
     }
 
     fun process(spokenText: String) {
-        if(_promptId.value != null)
+        if (_promptId.value != null)
             _promptId.value = _promptId.value!! + 1
         _streamPaused = false
         _isCreating.value = true
@@ -242,14 +292,18 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 
     fun Pause() {
         _streamPaused = true
-        if(_promptId.value != null)
+        if (_promptId.value != null)
             _promptId.value = _promptId.value!! + 1
     }
 
     fun initAudioUrl(helloText: String) {
         viewModelScope.launch(Dispatchers.Main) {
             if (audioQueue.value.isNullOrEmpty()) {
-                fetchAudioUrl(helloText)
+                try {
+                    fetchAudioUrl(helloText, _promptId.value!!)
+                } catch (e: Exception) {
+                    _info.value = "API server errors: 005, please try again"
+                }
             }
         }
     }

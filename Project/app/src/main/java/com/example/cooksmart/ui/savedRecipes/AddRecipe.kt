@@ -2,6 +2,9 @@ package com.example.cooksmart.ui.savedRecipes
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -9,11 +12,17 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AddRecipe : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
@@ -50,6 +59,44 @@ class AddRecipe : Fragment() {
             }
             favoriteIcon.tag = isFavorite
         }
+
+        // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
+        val menuHost = requireActivity() as MenuHost
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.add_favorite_menu, menu)
+                var favIcon = view.findViewById(R.id.fav_menu)
+                if (isFavorite){
+                    favItem.setIcon(R.drawable.ic_favorite_dark);
+                    Log.d(TAG, "onCreateOptionsMenu: favoriteItemIcon is checked");
+                }
+            }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    // Navigate to update page with the most update version of the current recipe as an argument
+                    R.id.fav_menu -> {
+                        isFavorite = !isFavorite
+
+                        if (isFavorite) {
+                            //favoriteIcon.setImageResource(R.drawable.favorite_icon)
+                        } else {
+                            //favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
+                        }
+                        //favoriteIcon.tag = isFavorite
+//                        CoroutineScope(Dispatchers.Main).launch {
+//                            val recipe = recipeViewModel.getRecipeById(args.currentRecipe.id)
+//                            val action = ViewRecipeDirections.actionNavigationViewRecipeToUpdateRecipe(recipe)
+//                            findNavController().navigate(action)
+//                        }
+                    }
+                    // Delete dialog if user clicks delete button on menu toolbar
+                    //R.id.delete_menu -> deleteRecipe()
+                    // Go back to previous page if user clicks back button on menu toolbar
+                    //android.R.id.home -> findNavController().navigate(R.id.action_navigation_view_recipe_to_navigation_saved_recipes)
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
         // Display each ingredient in ingredientsList in a ListView row
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
         ingredientListView.adapter = adapter

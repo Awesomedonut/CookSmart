@@ -1,0 +1,16 @@
+## This file must *NOT* be checked into Version Control Systems,
+# as it contains information specific to your local configuration.
+#
+# Location of the SDK. This is only used by Gradle.
+# For customization when using a Version Control System, please read the
+# header note.
+#Sun Nov 26 21:37:00 PST 2023
+API_URL="https://54.183.ddd.dd:5050/"
+AUDIO_FILE_WEB_DOMAIN="https://audio.ddd.com/"
+AUDIO_URL="https://bonai.ddd.com/"
+OPEN_AI_API="sk-Q3ddd"
+sdk.dir=C\:\\Users\\jaspe\\AppData\\Local\\Android\\Sdk
+#sdk.dir=C\:\\Users\\jaspe\\AppData\\Local\\Android\\Sdk
+#API_URL="https://54.183.ddd.dd:5050/"
+#AUDIO_FILE_WEB_DOMAIN="https://audio.ddd.com/"
+#AUDIO_URL="https://bonai.ddd.com/"

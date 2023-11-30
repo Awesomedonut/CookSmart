@@ -1,36 +1,26 @@
 package com.example.cooksmart.utils
 
-import androidx.lifecycle.MutableLiveData
 import com.example.cooksmart.infra.services.SmartNetService
-import com.example.cooksmart.infra.services.OpenAIProvider
-import com.example.cooksmart.infra.services.TextService
-import com.example.cooksmart.models.WavAudio
+import com.example.cooksmart.models.PromptBag
+import com.example.cooksmart.models.SmartNetResponse
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
 
 class DataFetcher(private val smartNetService: SmartNetService) {
 
-    fun startStreaming(coroutineScope: CoroutineScope,
-                       question: String,
-                       responseState: MutableLiveData<String>,
-                       onAudioTextReady: (text: String) -> Unit,
-                       onSummaryReady: (text: String) -> Unit,
-                       onCompleted: () -> Unit) {
-        val openAI = OpenAIProvider.instance
-        val textService = TextService(openAI)
-        textService.startStream(coroutineScope,
-            question,
-            responseState,
-            onAudioTextReady,
-            onSummaryReady,
-            onCompleted)
-    }
-
-    fun fetchAudio(question: String, onAudioUrlReady: (text: String) -> Unit) {
-        smartNetService.makeCall("chat/audio", question) { jsonResponse ->
+    fun fetchAudio(promptBag: PromptBag, onAudioUrlReady: (text: String, promptId: Int) -> Unit) {
+        smartNetService.makeCall("chat/audio", promptBag) { jsonResponse, promptId ->
             val gson = Gson()
-            val audio = gson.fromJson(jsonResponse.string(), WavAudio::class.java)
-            onAudioUrlReady(audio.wavFileUrl)
+            val audio = gson.fromJson(jsonResponse.string(), SmartNetResponse::class.java)
+            onAudioUrlReady(audio.wavFileUrl,promptId)
         }
     }
+
+    fun analyzeImage(promptBag: PromptBag, onAnswerReady: (text: String, promptId: Int) -> Unit) {
+        smartNetService.makeCall("chat/vision", promptBag) { jsonResponse, promptId ->
+            val gson = Gson()
+            val image = gson.fromJson(jsonResponse.string(), SmartNetResponse::class.java)
+            onAnswerReady(image.answer,promptId)
+        }
+    }
+
 }

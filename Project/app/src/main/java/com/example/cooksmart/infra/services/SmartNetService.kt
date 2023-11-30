@@ -11,15 +11,18 @@ import okhttp3.Response
 import okio.IOException
 import org.json.JSONObject
 import com.example.cooksmart.BuildConfig
+import com.example.cooksmart.models.PromptBag
 import okhttp3.ResponseBody
 
 class SmartNetService(private val client: OkHttpClient) {
-    fun makeCall(endpoint: String, question: String, onResponse: (ResponseBody) -> Unit) {
+    fun makeCall(endpoint: String, promptBag: PromptBag,
+                 onResponse: (ResponseBody, Int) -> Unit) {
 
         val fullUrl = BuildConfig.AUDIO_URL + endpoint
         Log.d("SmartNet.makecall", "fetch....$fullUrl")
-        val json = JSONObject().apply { put("question", question) }
-        val requestBody = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
+        val json = JSONObject().apply { put("question", promptBag.text) }
+        val requestBody = json.toString()
+            .toRequestBody("application/json; charset=utf-8".toMediaType())
 
         val request = Request.Builder()
             .url(fullUrl)
@@ -39,7 +42,7 @@ class SmartNetService(private val client: OkHttpClient) {
                     }
                     println(response)
                     val result = response.body
-                    result?.let { onResponse(it) }
+                    result?.let { onResponse(it, promptBag.promptId) }
                 }
             }
         })

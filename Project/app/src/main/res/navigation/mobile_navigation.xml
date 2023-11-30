@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_navigation_ingredient_to_ingredient_update"
             app:destination="@id/navigation_ingredient_update" />
+        <action
+            android:id="@+id/action_navigation_ingredient_to_fragment_ingredient_generated_recipe"
+            app:destination="@id/fragment_ingredient_generated_recipe" />
     </fragment>
     <fragment
         android:id="@+id/navigation_calendar"
@@ -94,7 +97,7 @@
     <fragment
         android:id="@+id/navigation_add_recipe"
         android:name="com.example.cooksmart.ui.savedRecipes.AddRecipe"
-        android:label="Add Recipe"
+        android:label="@string/add_recipe"
         tools:layout="@layout/fragment_add_recipe" >
         <action
             android:id="@+id/action_addRecipe_to_navigation_saved_recipes"
@@ -103,7 +106,7 @@
     <fragment
         android:id="@+id/navigation_update_recipe"
         android:name="com.example.cooksmart.ui.savedRecipes.UpdateRecipe"
-        android:label="Update Recipe"
+        android:label="@string/update_recipe"
         tools:layout="@layout/fragment_update_recipe" >
         <action
             android:id="@+id/action_navigation_update_recipe_to_navigation_view_recipe"
@@ -111,6 +114,18 @@
         <argument
             android:name="currentRecipe"
             app:argType="com.example.cooksmart.database.Recipe" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_ingredient_generated_recipe"
+        android:name="com.example.cooksmart.ui.ingredient.IngredientGeneratedRecipe"
+        android:label="@string/generate_recipe"
+        tools:layout="@layout/fragment_ingredient_generated_recipe" >
+        <action
+            android:id="@+id/action_navigation_ingredient_generated_recipe_to_navigation_ingredient"
+            app:destination="@id/navigation_ingredient" />
+        <argument
+            android:name="selectedIngredients"
+            app:argType="com.example.cooksmart.database.Ingredient[]" />
     </fragment>
 
 </navigation>

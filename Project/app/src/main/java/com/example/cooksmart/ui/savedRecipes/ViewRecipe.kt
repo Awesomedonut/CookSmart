@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.savedRecipes
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -24,6 +25,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
 import kotlinx.coroutines.CoroutineScope
@@ -81,6 +83,14 @@ class ViewRecipe : Fragment() {
         view.findViewById<TextView>(R.id.viewRecipeTitle).text = spannableName
         view.findViewById<TextView>(R.id.viewRecipeIngredients).text = args.currentRecipe.ingredients
         view.findViewById<TextView>(R.id.viewRecipeInstructions).text = args.currentRecipe.instructions
+//        view.findViewById<ImageView>(R.id.responseImage).setImageURI(args.currentRecipe.image)
+
+        Glide.with(this /* context */)
+            .load(args.currentRecipe.image)
+            .override(250, 250) // replace with desired dimensions
+            .into(view.findViewById<ImageView>(R.id.responseImage))
+//        Glide.with(this).load(imageUrl).into(binding.responseImage)
+
         favoriteIcon = view.findViewById(R.id.viewRecipeFavoriteIcon)
         
         // Set the favorite icon to filled or unfilled depending on currentRecipe isFavorite

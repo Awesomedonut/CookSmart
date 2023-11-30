@@ -3,6 +3,7 @@ package com.example.cooksmart.ui.ingredient
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,6 +15,7 @@ import com.example.cooksmart.utils.ConvertUtils
 
 class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHolder>(){
     private var ingredientList = emptyList<Ingredient>()
+    private val checkedIngredients = mutableListOf<Ingredient>()
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
@@ -35,14 +37,32 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
         val formattedDate = ConvertUtils.longToDateString(date)
         holder.itemView.findViewById<TextView>(R.id.list_best_before).text = formattedDate
 
+        // Check for clicks on the ingredient and navigate to ingredient update view
         holder.itemView.findViewById<LinearLayout>(R.id.rowLayout).setOnClickListener {
             val action = IngredientFragmentDirections.actionNavigationIngredientToIngredientUpdate(currentIngredient)
             holder.itemView.findNavController().navigate(action)
+        }
+
+        // Check if a box is checked
+        holder.itemView.findViewById<CheckBox>(R.id.list_checkbox).apply {
+            setOnClickListener {
+                val isChecked = isChecked
+                val currentIngredient = ingredientList[position]
+                if (isChecked) {
+                    checkedIngredients.add(currentIngredient)
+                } else {
+                    checkedIngredients.remove(currentIngredient)
+                }
+            }
         }
     }
 
     fun setData(ingredient: List<Ingredient>) {
         this.ingredientList = ingredient
         notifyDataSetChanged()
+    }
+
+    fun getCheckedIngredients(): List<Ingredient> {
+        return checkedIngredients
     }
 }

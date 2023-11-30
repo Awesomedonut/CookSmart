@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -80,6 +81,13 @@ class IngredientFragment : Fragment() {
         // Navigate to IngredientAdd when plus button is pressed
         layout.findViewById<FloatingActionButton>(R.id.ingredient_add).setOnClickListener{
             findNavController().navigate(R.id.action_navigation_ingredient_to_ingredient_add)
+        }
+
+        // Navigate to generate recipes fragment with the checked ingredients
+        layout.findViewById<Button>(R.id.generate_recipes_button).setOnClickListener {
+            val checkedIngredients = adapter.getCheckedIngredients()
+            val action = IngredientFragmentDirections.actionNavigationIngredientToFragmentIngredientGeneratedRecipe(checkedIngredients.toTypedArray())
+            findNavController().navigate(action)
         }
 
         // Spinner

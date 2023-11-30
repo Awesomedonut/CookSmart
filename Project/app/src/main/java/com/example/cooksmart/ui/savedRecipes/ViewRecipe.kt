@@ -71,7 +71,7 @@ class ViewRecipe : Fragment() {
                     // Delete dialog if user clicks delete button on menu toolbar
                     R.id.delete_menu -> deleteRecipe()
                     // Go back to previous page if user clicks back button on menu toolbar
-                    android.R.id.home -> findNavController().navigate(R.id.action_navigation_view_recipe_to_navigation_saved_recipes)
+                    android.R.id.home -> findNavController().navigate(R.id.action_navigation_saved_recipes_to_addRecipe)
                 }
                 return true
             }

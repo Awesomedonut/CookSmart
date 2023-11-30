@@ -34,6 +34,8 @@ class AddRecipe : Fragment() {
     private lateinit var adapter: RecipeIngredientAdapter
     private val ingredientsList = ArrayList<String>()
     private lateinit var confirmButton: Button
+    private lateinit var favIcon : MenuItem
+    private var isFavorite : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,28 +49,19 @@ class AddRecipe : Fragment() {
         ingredientAddButton = view.findViewById(R.id.add_ingredient_recipe)
         ingredientListView = view.findViewById(R.id.recipe_ingredients_listview)
         favoriteIcon = view.findViewById(R.id.favoriteIcon)
-        var isFavorite = false
 
-        favoriteIcon.setOnClickListener {
-            isFavorite = !isFavorite
-
-            if (isFavorite) {
-                favoriteIcon.setImageResource(R.drawable.favorite_icon)
-            } else {
-                favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
-            }
-            favoriteIcon.tag = isFavorite
-        }
 
         // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
         val menuHost = requireActivity() as MenuHost
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.add_favorite_menu, menu)
-                var favIcon = view.findViewById(R.id.fav_menu)
-                if (isFavorite){
-                    favItem.setIcon(R.drawable.ic_favorite_dark);
-                    Log.d(TAG, "onCreateOptionsMenu: favoriteItemIcon is checked");
+                favIcon = menu.findItem(R.id.fav_menu)
+
+                if (isFavorite) {
+                    favIcon.setIcon(R.drawable.favorite_icon)
+                } else {
+                    favIcon.setIcon(R.drawable.favorite_icon_border)
                 }
             }
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -76,23 +69,11 @@ class AddRecipe : Fragment() {
                     // Navigate to update page with the most update version of the current recipe as an argument
                     R.id.fav_menu -> {
                         isFavorite = !isFavorite
-
-                        if (isFavorite) {
-                            //favoriteIcon.setImageResource(R.drawable.favorite_icon)
-                        } else {
-                            //favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
-                        }
-                        //favoriteIcon.tag = isFavorite
-//                        CoroutineScope(Dispatchers.Main).launch {
-//                            val recipe = recipeViewModel.getRecipeById(args.currentRecipe.id)
-//                            val action = ViewRecipeDirections.actionNavigationViewRecipeToUpdateRecipe(recipe)
-//                            findNavController().navigate(action)
-//                        }
+                        activity?.invalidateOptionsMenu() // To redraw the menu and call onCreateMenu
                     }
-                    // Delete dialog if user clicks delete button on menu toolbar
-                    //R.id.delete_menu -> deleteRecipe()
+
                     // Go back to previous page if user clicks back button on menu toolbar
-                    //android.R.id.home -> findNavController().navigate(R.id.action_navigation_view_recipe_to_navigation_saved_recipes)
+                    android.R.id.home -> findNavController().navigate(R.id.action_addRecipe_to_navigation_saved_recipes)
                 }
                 return true
             }
@@ -124,12 +105,12 @@ class AddRecipe : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
+
         return view
     }
 
     private fun insertRecipe() {
         val title = view.findViewById<EditText>(R.id.title_recipe).text.toString()
-        val isFavorite = favoriteIcon.tag as? Boolean ?: false
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions).text.toString()
         val currentDate = System.currentTimeMillis()

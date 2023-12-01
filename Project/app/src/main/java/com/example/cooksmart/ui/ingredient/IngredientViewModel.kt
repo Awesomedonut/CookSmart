@@ -7,10 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.cooksmart.database.CookSmartDatabase
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.database.IngredientRepository
+import com.example.cooksmart.ui.base.RecipeBaseViewModel
+import com.example.cooksmart.utils.DataFetcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class IngredientViewModel(application: Application): AndroidViewModel(application) {
+class IngredientViewModel(private val fetcher: DataFetcher, application: Application):
+    RecipeBaseViewModel(fetcher, application) {
     val readAllIngredients: LiveData<List<Ingredient>>
     private val repository: IngredientRepository
 
@@ -41,6 +44,12 @@ class IngredientViewModel(application: Application): AndroidViewModel(applicatio
     fun deleteAllIngredients() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllIngredients()
+        }
+    }
+
+    fun generateRecipe() {
+        viewModelScope.launch(Dispatchers.IO) {
+//            repository.deleteAllIngredients()
         }
     }
 

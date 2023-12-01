@@ -19,7 +19,7 @@ open class RecipeBaseFragment(private val childViewModelClass: Class<out RecipeB
     protected val cameraHandler = CameraHandler(this)
 
     protected fun initView(){
-        initializeRecipeViewModel()
+        //initializeRecipeViewModel()
         cameraHandler.checkCameraPermission()
         cameraHandler.setUpPhotoLauncher {
             recipebaseViewModel.analyzeImage(it)

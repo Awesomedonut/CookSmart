@@ -5,11 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.databinding.FragmentRecipeBinding
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.util.Log
@@ -19,30 +16,22 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.example.cooksmart.BuildConfig
-import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
-import com.example.cooksmart.infra.services.SmartNetService
-import com.example.cooksmart.infra.net.UnsafeHttpClient
-import com.example.cooksmart.utils.AudioPlaybackCallback
-import com.example.cooksmart.utils.CameraHandler
+import com.example.cooksmart.ui.base.RecipeBaseFragment
+import com.example.cooksmart.ui.ingredient.IngredientViewModel
+import com.example.cooksmart.ui.ingredient.IngredientViewModelFactory
 import com.example.cooksmart.utils.DataFetcher
 import com.example.cooksmart.utils.DebouncedOnClickListener
-import com.example.cooksmart.utils.MediaHandler
 import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
-import java.util.Locale
 
-class RecipeFragment : Fragment() {
+class RecipeFragment : RecipeBaseFragment(RecipeViewModel::class.java) {
 
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var viewModel: RecipeViewModel
-    private val mediaHandler = MediaHandler(this)
-    private val cameraHandler = CameraHandler(this)
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var ingredientsImgUri: Uri
     override fun onCreateView(
@@ -51,37 +40,32 @@ class RecipeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
-        cameraHandler.checkCameraPermission()
-        initializeViewModel()
-        setupActivityResultLaunchers()
-        setupUI()
+        val viewModelFactory = RecipeViewModelFactory(
+            DataFetcher.getDataFetcher(),
+            requireActivity().application
+        )
+        recipebaseViewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
+
+        initView()
         setupObservers()
-        cameraHandler.setUpPhotoLauncher {
-            viewModel.analyzeImage(it)
-        }
+        setupTextToSpeechActivityResultLaunchers()
+        setupUI()
         setIngreImgUri()
         return binding.root
     }
 
-    private fun setupActivityResultLaunchers() {
+    private fun setupTextToSpeechActivityResultLaunchers() {
         speechResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK && result.data != null) {
                     result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                         ?.firstOrNull()?.let { spokenText ->
                         Log.d("Recipe....", spokenText)
-                        viewModel.appendInputAudio(spokenText)
+                            //I need to change it to use it's child ViewModel
+                        recipebaseViewModel.appendInputAudio(spokenText)
                     }
                 }
             }
-    }
-
-    private fun initializeViewModel() {
-        val httpClient = UnsafeHttpClient().getUnsafeOkHttpClient()
-        val smartNetService = SmartNetService(httpClient)
-        val dataFetcher = DataFetcher(smartNetService)
-        val viewModelFactory = RecipeViewModelFactory(dataFetcher, requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
     }
 
     private fun setIngreImgUri() {
@@ -91,20 +75,17 @@ class RecipeFragment : Fragment() {
 
     private fun setupUI() {
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
-            mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-            viewModel.resetInputAudio()
-            viewModel.cleanup()
-            viewModel.initAudioUrl("Reset, please tell me what do you have")
+            resetRecipeViewModel()
         }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
-            viewModel.process(binding.buttonOption1.text.toString())
+            recipebaseViewModel.process(binding.buttonOption1.text.toString())
         }
 
         binding.buttonVision.setOnClickListener { changeIngrePhoto() }
 
         binding.micImageView.setOnClickListener {
-            mediaHandler.stopAndRelease { viewModel.audioCompleted() }
+            mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
             val speechIntent = SpeechIntentHelper.createSpeechIntent()
             try {
                 speechResultLauncher.launch(speechIntent)
@@ -121,26 +102,27 @@ class RecipeFragment : Fragment() {
         }
     }
 
-    private fun setupObservers() {
-        viewModel.input.observe(viewLifecycleOwner) {
+    override fun setupObservers() {
+        super.setupObservers()
+        recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 binding.buttonOption1.text = it
             } else
                 binding.buttonOption1.text = "Beef, Sweet Potatoes, eggs"
         }
-        viewModel.response.observe(viewLifecycleOwner) { text ->
+        recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
-        viewModel.isCreating.observe(viewLifecycleOwner) {
+        recipebaseViewModel.isCreating.observe(viewLifecycleOwner) {
             binding.buttonOption1.isVisible = !it
             binding.micImageView.isVisible = !it
             binding.buttonReset.isVisible = it
         }
-        viewModel.info.observe(viewLifecycleOwner) {
+        recipebaseViewModel.info.observe(viewLifecycleOwner) {
             Toast.makeText(this@RecipeFragment.context, it, Toast.LENGTH_LONG).show()
         }
-        viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
+        recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             if (imageUrl.isEmpty()) {
                 binding.responseImage.isVisible = false
             } else {
@@ -150,9 +132,9 @@ class RecipeFragment : Fragment() {
             }
         }
 
-        viewModel.playerLoaded.observe(viewLifecycleOwner) {
+        recipebaseViewModel.playerLoaded.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = !it
-            if (viewModel.response.value == null || viewModel.response.value?.isEmpty() == true) {
+            if (recipebaseViewModel.response.value == null || recipebaseViewModel.response.value?.isEmpty() == true) {
                 if (it)
                     binding.responseTextView.text =
                         "Click the ingredients to give it a try, " +
@@ -161,51 +143,10 @@ class RecipeFragment : Fragment() {
                     binding.responseTextView.text = "Loading, please wait"
             }
         }
-
-        viewModel.initAudioUrl("hello how may I help you?")
-        viewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
-            if (audioUrl.isNotEmpty()) {
-                playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + audioUrl)
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                cameraHandler.openCamera()
-            }
-        }
-    }
-
-    private fun playAudio(audioUrl: String) {
-        Log.d("RecipeFrag", "playAudio$audioUrl")
-        mediaHandler.playAudioFromUrl(audioUrl, object : AudioPlaybackCallback {
-            override fun onAudioCompleted() {
-                viewModel.audioCompleted()
-            }
-
-            override fun onPlayNextAudio() {
-                viewModel.playNextAudio()
-            }
-        })
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-        viewModel.cleanup()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-        viewModel.cleanup()
         _binding = null
     }
 }

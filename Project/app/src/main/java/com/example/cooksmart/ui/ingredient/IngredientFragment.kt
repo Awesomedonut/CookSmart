@@ -23,7 +23,12 @@ import com.example.cooksmart.R
 import com.example.cooksmart.databinding.FragmentIngredientBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.widget.SearchView
-class IngredientFragment : Fragment() {
+import com.example.cooksmart.ui.base.RecipeBaseFragment
+import com.example.cooksmart.ui.base.RecipeBaseViewModelFactory
+import com.example.cooksmart.ui.recipe.RecipeViewModel
+import com.example.cooksmart.utils.DataFetcher
+
+class IngredientFragment : RecipeBaseFragment(IngredientViewModel::class.java) {
 
     private var _binding: FragmentIngredientBinding? = null
     private lateinit var ingredientViewModel: IngredientViewModel
@@ -36,6 +41,14 @@ class IngredientFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        initView()
+        //YJ
+            val viewModelFactory = IngredientViewModelFactory(
+                DataFetcher.getDataFetcher(),
+                requireActivity().application
+            )
+            ingredientViewModel = ViewModelProvider(this, viewModelFactory)[IngredientViewModel::class.java]
+        recipebaseViewModel = ingredientViewModel
         val layout = inflater.inflate(R.layout.fragment_ingredient,container,false)
 
         // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
@@ -73,7 +86,7 @@ class IngredientFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
+
         ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
             adapter.setData(ingredient)
         }
@@ -127,7 +140,8 @@ class IngredientFragment : Fragment() {
             }
         }
 
-
+        //YJ
+        setupObservers()
         return layout
     }
     private fun showAllIngredients() {

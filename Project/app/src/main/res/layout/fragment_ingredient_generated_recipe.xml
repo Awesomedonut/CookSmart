@@ -14,11 +14,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selected Ingredients:"/>
+        android:text="Selected Ingredients:"
+        android:fontFamily="@font/rye"/>
     <TextView
         android:id="@+id/ingredients_used"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:fontFamily="@font/dancing"/>
     <LinearLayout
         android:id="@+id/topButtonLayout"
         android:layout_width="match_parent"

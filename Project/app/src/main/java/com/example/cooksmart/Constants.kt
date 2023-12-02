@@ -11,4 +11,6 @@ object Constants {
     const val PACKAGE_NAME = "com.example.cooksmart"
     const val INGRE_IMG_FILE_NAME = "ingre_img.jpg"
     const val SELECTED_INGREDIENTS = "selectedIngredients"
+    const val NOTIFICATION_ID = 777
+    const val CALENDAR_CHANNEL_ID = "CalendarNotificationChannel"
 }

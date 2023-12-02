@@ -1,6 +1,7 @@
 package com.example.cooksmart.ui.calendar
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
+import com.example.cooksmart.infra.services.CalendarNotificationService
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -44,6 +46,8 @@ class CalendarFragment : Fragment() {
     var selectedDate = Calendar.getInstance()
 
     private lateinit var calendarViewModel : CalendarViewModel
+
+    private lateinit var calendarNotifIntent : Intent
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,9 +79,11 @@ class CalendarFragment : Fragment() {
             ingredientAdapter.notifyDataSetChanged()
         }
 
-
-        // Initialize add plan button + TODO: update plan
+        // Initialize add plan button
         initAddPlan(root, sharedPreferences)
+
+        // Initialize variables to start notification service
+        calendarNotifIntent = Intent(context, CalendarNotificationService::class.java)
 
         return root
     }

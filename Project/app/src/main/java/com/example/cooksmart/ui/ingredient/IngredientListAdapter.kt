@@ -1,5 +1,6 @@
 package com.example.cooksmart.ui.ingredient
 
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

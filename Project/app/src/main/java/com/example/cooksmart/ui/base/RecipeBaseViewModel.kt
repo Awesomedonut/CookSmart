@@ -1,4 +1,4 @@
-package com.example.cooksmart.ui.recipe
+package com.example.cooksmart.ui.base
 
 import android.app.Application
 import android.graphics.Bitmap
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import java.util.LinkedList
 import java.util.Queue
 
-class RecipeViewModel(private val fetcher: DataFetcher, application: Application) :
+open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Application) :
     AndroidViewModel(application) {
     private val _response = MutableLiveData<String>()
     val response: LiveData<String> get() = _response
@@ -52,7 +52,7 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
     private val _info = MutableLiveData<String>("")
     val info: LiveData<String> get() = _info
 
-    private val _repository: RecipeRepository
+    private val _recipeRepository: RecipeRepository
     private var _streamPaused: Boolean = true
 
     private val _promptId = MutableLiveData<Int>(0)
@@ -60,7 +60,7 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
 
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
-        _repository = RecipeRepository(recipeDao)
+        _recipeRepository = RecipeRepository(recipeDao)
     }
 
     private fun enqueueAudioUrl(audioUrl: String, promptId: Int) {
@@ -158,7 +158,7 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
                     0, title, _input!!.value!!,
                     _response!!.value!!, currentDate, false, image
                 )
-            _repository.insertRecipe(recipe)
+            _recipeRepository.insertRecipe(recipe)
         }
     }
 
@@ -265,17 +265,17 @@ class RecipeViewModel(private val fetcher: DataFetcher, application: Application
             lastFetchJob?.join()
             // Start a new job for fetching audio
             lastFetchJob = launch {
-            try {
-                fetcher.fetchAudio(
-                    promptBag
-                ) { audioUrl, promptId ->
-                    Log.d("RecipeVM", "audio: $audioUrl")
-                    enqueueAudioUrl(audioUrl, promptId)
-                    playNextAudio()
+                try {
+                    fetcher.fetchAudio(
+                        promptBag
+                    ) { audioUrl, promptId ->
+                        Log.d("RecipeVM", "audio: $audioUrl")
+                        enqueueAudioUrl(audioUrl, promptId)
+                        playNextAudio()
+                    }
+                } catch (e: Exception) {
+                    _info.value = "API server errors: 004, please try again"
                 }
-            } catch (e: Exception) {
-                _info.value = "API server errors: 004, please try again"
-            }
 
 
             }

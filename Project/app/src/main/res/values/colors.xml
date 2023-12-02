@@ -10,4 +10,9 @@
     <color name="pastel_red">#ffadad</color>
     <color name="pastel_yellow">#fdffb6</color>
     <color name="pastel_green">#caffbf</color>
+
+    <color name="A200">#84FFFF</color>
+    <color name="A400">#00E5FF</color>
+    <color name="A700">#00B8D4</color>
+    <color name="A800">#00838F</color>
 </resources>

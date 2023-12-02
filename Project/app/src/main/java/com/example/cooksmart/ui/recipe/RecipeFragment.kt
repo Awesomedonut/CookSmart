@@ -24,8 +24,10 @@ import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
+import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
 import com.example.cooksmart.infra.services.SmartNetService
 import com.example.cooksmart.infra.net.UnsafeHttpClient
+import com.example.cooksmart.ui.base.RecipeBaseFragment
 import com.example.cooksmart.utils.AudioPlaybackCallback
 import com.example.cooksmart.utils.CameraHandler
 import com.example.cooksmart.utils.DataFetcher
@@ -35,14 +37,10 @@ import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
 import java.util.Locale
 
-class RecipeFragment : Fragment() {
+class RecipeFragment : RecipeBaseFragment() {
 
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var viewModel: RecipeViewModel
-    private val mediaHandler = MediaHandler(this)
-    private val cameraHandler = CameraHandler(this)
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var ingredientsImgUri: Uri
     override fun onCreateView(
@@ -52,12 +50,39 @@ class RecipeFragment : Fragment() {
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
         cameraHandler.checkCameraPermission()
-        initializeViewModel()
+//        val args = RecipeFragmentArgs.fromBundle(requireArguments())
+//        val selectedIngredients = args.selectedIngredients
+//        // Extract the names from the array of Ingredient objects
+//        val ingredientNames = selectedIngredients?.map { it.name }
+//        val ingredientNamesString = ingredientNames?.joinToString(", ")
+//        if (ingredientNamesString != null) {
+//            Log.d("RecipeFra-ingredientNamesString",ingredientNamesString)
+//        }else{
+//            Log.d("RecipeFra-ingredientNamesString","nulnul")
+//        }
+
+
+        //val selectedIngredients = arguments?.getString(SELECTED_INGREDIENTS)
+
+        val selectedIngredients = requireArguments().getString(SELECTED_INGREDIENTS)
+
+// Use the selectedIngredients parameter as needed
+//        if (selectedIngredients != null) {
+//            // Do something with selectedIngredients
+//        }
+
+        if (selectedIngredients != null) {
+            Log.d("RecipeFra-ingredientNamesString",selectedIngredients)
+        }else{
+            Log.d("RecipeFra-ingredientNamesString","nulnul")
+        }
+
+        initView()
         setupActivityResultLaunchers()
         setupUI()
         setupObservers()
         cameraHandler.setUpPhotoLauncher {
-            viewModel.analyzeImage(it)
+            recipebaseViewModel.analyzeImage(it)
         }
         setIngreImgUri()
         return binding.root
@@ -70,18 +95,10 @@ class RecipeFragment : Fragment() {
                     result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                         ?.firstOrNull()?.let { spokenText ->
                         Log.d("Recipe....", spokenText)
-                        viewModel.appendInputAudio(spokenText)
+                        recipebaseViewModel.appendInputAudio(spokenText)
                     }
                 }
             }
-    }
-
-    private fun initializeViewModel() {
-        val httpClient = UnsafeHttpClient().getUnsafeOkHttpClient()
-        val smartNetService = SmartNetService(httpClient)
-        val dataFetcher = DataFetcher(smartNetService)
-        val viewModelFactory = RecipeViewModelFactory(dataFetcher, requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
     }
 
     private fun setIngreImgUri() {
@@ -91,20 +108,20 @@ class RecipeFragment : Fragment() {
 
     private fun setupUI() {
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
-            mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-            viewModel.resetInputAudio()
-            viewModel.cleanup()
-            viewModel.initAudioUrl("Reset, please tell me what do you have")
+            mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
+            recipebaseViewModel.resetInputAudio()
+            recipebaseViewModel.cleanup()
+            recipebaseViewModel.initAudioUrl("Reset, please tell me what do you have")
         }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
-            viewModel.process(binding.buttonOption1.text.toString())
+            recipebaseViewModel.process(binding.buttonOption1.text.toString())
         }
 
         binding.buttonVision.setOnClickListener { changeIngrePhoto() }
 
         binding.micImageView.setOnClickListener {
-            mediaHandler.stopAndRelease { viewModel.audioCompleted() }
+            mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
             val speechIntent = SpeechIntentHelper.createSpeechIntent()
             try {
                 speechResultLauncher.launch(speechIntent)
@@ -121,26 +138,27 @@ class RecipeFragment : Fragment() {
         }
     }
 
-    private fun setupObservers() {
-        viewModel.input.observe(viewLifecycleOwner) {
+    override fun setupObservers() {
+        super.setupObservers()
+        recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 binding.buttonOption1.text = it
             } else
                 binding.buttonOption1.text = "Beef, Sweet Potatoes, eggs"
         }
-        viewModel.response.observe(viewLifecycleOwner) { text ->
+        recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
-        viewModel.isCreating.observe(viewLifecycleOwner) {
+        recipebaseViewModel.isCreating.observe(viewLifecycleOwner) {
             binding.buttonOption1.isVisible = !it
             binding.micImageView.isVisible = !it
             binding.buttonReset.isVisible = it
         }
-        viewModel.info.observe(viewLifecycleOwner) {
+        recipebaseViewModel.info.observe(viewLifecycleOwner) {
             Toast.makeText(this@RecipeFragment.context, it, Toast.LENGTH_LONG).show()
         }
-        viewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
+        recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             if (imageUrl.isEmpty()) {
                 binding.responseImage.isVisible = false
             } else {
@@ -150,9 +168,9 @@ class RecipeFragment : Fragment() {
             }
         }
 
-        viewModel.playerLoaded.observe(viewLifecycleOwner) {
+        recipebaseViewModel.playerLoaded.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = !it
-            if (viewModel.response.value == null || viewModel.response.value?.isEmpty() == true) {
+            if (recipebaseViewModel.response.value == null || recipebaseViewModel.response.value?.isEmpty() == true) {
                 if (it)
                     binding.responseTextView.text =
                         "Click the ingredients to give it a try, " +
@@ -162,50 +180,17 @@ class RecipeFragment : Fragment() {
             }
         }
 
-        viewModel.initAudioUrl("hello how may I help you?")
-        viewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
+        recipebaseViewModel.initAudioUrl("hello how may I help you?")
+        recipebaseViewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
             if (audioUrl.isNotEmpty()) {
                 playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + audioUrl)
             }
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                cameraHandler.openCamera()
-            }
-        }
-    }
-
-    private fun playAudio(audioUrl: String) {
-        Log.d("RecipeFrag", "playAudio$audioUrl")
-        mediaHandler.playAudioFromUrl(audioUrl, object : AudioPlaybackCallback {
-            override fun onAudioCompleted() {
-                viewModel.audioCompleted()
-            }
-
-            override fun onPlayNextAudio() {
-                viewModel.playNextAudio()
-            }
-        })
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-        viewModel.cleanup()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mediaHandler.stopAndRelease { viewModel.audioCompleted() }
-        viewModel.cleanup()
         _binding = null
     }
 }

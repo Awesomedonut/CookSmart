@@ -96,6 +96,7 @@ class TextService(private val openAI: OpenAI) {
                         )  // Call only if not null
                         //responseState.postValue(fullText)
                         onTextUpdated(fullText, promptBag.promptId)
+                        Log.d("TextService-fullText-1246", fullText.length.toString())
                         resetText()
                         onCompleted?.invoke(promptBag.promptId)
                         onCompletedSuspend?.invoke(promptBag.promptId)

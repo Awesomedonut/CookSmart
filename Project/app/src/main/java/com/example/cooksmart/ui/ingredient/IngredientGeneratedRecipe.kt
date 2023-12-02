@@ -29,6 +29,7 @@ import com.example.cooksmart.ui.savedRecipes.ViewRecipeArgs
 import com.example.cooksmart.utils.DebouncedOnClickListener
 import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
+import androidx.navigation.fragment.findNavController
 
 class IngredientGeneratedRecipe : RecipeBaseFragment() {
     private val args by navArgs<IngredientGeneratedRecipeArgs>()
@@ -72,18 +73,24 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
 //        }
 //        setIngreImgUri()
 
-        if (ingredientNamesString != null) {
-            Log.d("RecipeFra-ingredientNamesString",ingredientNamesString)
-            recipebaseViewModel.process(ingredientNamesString)
-        }else{
+        if (ingredientNamesString.isNullOrEmpty()) {
             Log.d("RecipeFra-ingredientNamesString","nulnul")
             Toast.makeText(this@IngredientGeneratedRecipe.context,
                 "pls tell me what do you have", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp() // Navigate back to the previous fragment (IngredientFragment)
+
+        }else{
+            Log.d("RecipeFra-ingredientNamesString(not null)",ingredientNamesString)
+            recipebaseViewModel.process(ingredientNamesString)
         }
         return binding.root
     }
 
     private fun setupUI() {
+        binding.buttonReset.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     override fun setupObservers() {

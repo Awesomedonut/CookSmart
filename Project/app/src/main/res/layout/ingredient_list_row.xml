@@ -25,22 +25,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/name"
+            android:fontFamily="@font/rye"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <TextView
             android:id="@+id/list_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/dancing"
             android:text="@string/category" />
         <TextView
             android:id="@+id/list_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/dancing"
             android:text="@string/quantity" />
 
         <TextView
             android:id="@+id/list_best_before"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/dancing"
             android:text="@string/best_before" />
     </LinearLayout>
 </LinearLayout>

@@ -20,6 +20,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="20dp"
                 android:text="@string/title"
+                android:fontFamily="@font/rye"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintEnd_toEndOf="@+id/viewRecipeFavoriteIcon"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,11 +41,13 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="@string/title_ingredients"
+            android:fontFamily="@font/rye"
             android:layout_margin="16dp"  />
         <TextView
             android:id="@+id/viewRecipeIngredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/dancing"
             android:layout_margin="10dp"/>
         <ImageView
             android:id="@+id/responseImage"
@@ -59,11 +62,13 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="@string/instructions"
+            android:fontFamily="@font/rye"
             android:layout_margin="16dp"/>
         <TextView
             android:id="@+id/viewRecipeInstructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/dancing"
             android:layout_margin="16dp"/>
     </LinearLayout>
 </ScrollView>

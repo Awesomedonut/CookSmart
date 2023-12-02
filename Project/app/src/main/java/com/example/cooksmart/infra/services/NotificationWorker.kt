@@ -9,8 +9,8 @@ class NotificationWorker(context : Context, workerParams : WorkerParameters) :
     Worker(context, workerParams) {
     override fun doWork(): Result {
         val notificationHelper = NotificationHelper(applicationContext)
-        val title = "test title"
-        val message = "test msg"
+        val title = "An ingredient is about to expire!"
+        val message = "Open CookSmart to determine what to do with your food"
         notificationHelper.showNotification(title, message)
 
         return Result.success()

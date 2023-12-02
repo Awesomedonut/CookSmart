@@ -23,13 +23,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
+import com.example.cooksmart.infra.services.NotificationWorker
 import java.util.Locale
 import com.example.cooksmart.ui.structs.CategoryType
 import com.example.cooksmart.ui.structs.QuantityType
 import com.example.cooksmart.utils.ConvertUtils
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class IngredientUpdate : Fragment() {
     private lateinit var categoriesSpinner: Spinner
@@ -126,9 +134,22 @@ class IngredientUpdate : Fragment() {
         val quantityType = view.findViewById<Spinner>(R.id.update_quantityType).selectedItem.toString()
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
+        var notifID = args.currentIngredient.notifId
+        var daysToExpiry = daysExpiry(bestBefore, currentDate)
+        if(daysToExpiry < 0){
+            daysToExpiry = 0
+        }
+        val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(daysToExpiry, TimeUnit.DAYS)
+            .build()
+        // Cancel the previous notification and queue a new one, replacing
+        // the field in the ingredient
+        WorkManager.getInstance(requireContext()).cancelWorkById(notifID)
+        WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
+        notifID = notificationWorkReq.id
         // Checks if the fields are filled, if not, don't do anything, otherwise, update the ingredient in the database
         if (!isNotValidInput(name, quantity)) {
-            val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, quantityType, currentDate, bestBefore)
+            val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, quantityType, currentDate, bestBefore, notifID)
             ingredientViewModel.updateIngredient(updatedIngredient)
             Toast.makeText(requireContext(), "Ingredient updated!", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
@@ -189,5 +210,17 @@ class IngredientUpdate : Fragment() {
     private fun quantityTypeStringToInt(quantityType: String): Int {
         val quantityTypeEnum = QuantityType.fromString(quantityType)
         return quantityTypeEnum.asInt
+    }
+
+    fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
+        val expiryDate
+                = convertLongtoDate(expiryDateLong)
+        val currentDate = convertLongtoDate(selectedDate)
+        return ChronoUnit.DAYS.between(currentDate, expiryDate)
+    }
+
+    fun convertLongtoDate(dateMilli : Long): LocalDate {
+        val date = Instant.ofEpochMilli(dateMilli)
+        return date.atZone(ZoneId.systemDefault()).toLocalDate()
     }
 }

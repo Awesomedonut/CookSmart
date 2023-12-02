@@ -85,12 +85,12 @@ class CalendarFragment : Fragment() {
 
         // Initialize add plan button
         initAddPlan(root, sharedPreferences)
+
         // Initialize variables to start notification service
         val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
             .setInitialDelay(100, TimeUnit.MILLISECONDS)
             .build()
         WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
-        Toast.makeText(context, notificationWorkReq.id.toString(), Toast.LENGTH_SHORT).show()
 
 
         return root

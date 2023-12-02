@@ -1,6 +1,7 @@
 package com.example.cooksmart.ui.calendar
 
 import android.app.Application
+import android.content.ServiceConnection
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +15,6 @@ import kotlinx.coroutines.launch
 class CalendarViewModel(application: Application): AndroidViewModel(application) {
     val readAllCalendar: LiveData<List<Calendar>>
     private val repository: CalendarRepository
-
     init {
         val calendarDao = CookSmartDatabase.getCookSmartDatabase(application).calendarDao()
         repository = CalendarRepository(calendarDao)
@@ -53,5 +53,4 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllCalendar()
         }
-    }
-}
+    }}

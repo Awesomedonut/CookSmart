@@ -27,12 +27,15 @@ import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import java.util.Locale
 import com.example.cooksmart.ui.structs.CategoryType
+import com.example.cooksmart.ui.structs.QuantityType
 import com.example.cooksmart.utils.ConvertUtils
 import java.util.Calendar
 
 class IngredientUpdate : Fragment() {
     private lateinit var categoriesSpinner: Spinner
     private lateinit var categoriesAdapter: SpinnerAdapter
+    private lateinit var quantityTypeSpinner : Spinner
+    private lateinit var quantityTypeAdapter : SpinnerAdapter
     private lateinit var view: View
     private lateinit var selectedDate: Calendar
     private lateinit var ingredientViewModel: IngredientViewModel
@@ -76,6 +79,15 @@ class IngredientUpdate : Fragment() {
         )
         categoriesSpinner.adapter = categoriesAdapter
 
+        // Set up Quantity spinner
+        quantityTypeSpinner = view.findViewById(R.id.update_quantityType)
+        quantityTypeAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            QuantityType.values().map { it.asString}
+        )
+        quantityTypeSpinner.adapter = quantityTypeAdapter
+
 
         // Get the previously set date and set to calendar object
         val currentBestBefore = args.currentIngredient.bestBefore
@@ -95,6 +107,8 @@ class IngredientUpdate : Fragment() {
         view.findViewById<Spinner>(R.id.update_category).setSelection(position)
         view.findViewById<EditText>(R.id.update_name_ingredient).setText(args.currentIngredient.name)
         view.findViewById<EditText>(R.id.update_quantity).setText(args.currentIngredient.quantity)
+        val qPosition = quantityTypeStringToInt(args.currentIngredient.quantityType)
+        view.findViewById<Spinner>(R.id.update_quantityType).setSelection(qPosition)
         val date = args.currentIngredient.bestBefore
         val formattedDate = ConvertUtils.longToDateString(date)
         view.findViewById<TextView>(R.id.update_date_input_current).text = formattedDate
@@ -109,11 +123,12 @@ class IngredientUpdate : Fragment() {
         val category = view.findViewById<Spinner>(R.id.update_category).selectedItem.toString()
         val name = view.findViewById<EditText>(R.id.update_name_ingredient).text.toString()
         val quantity = view.findViewById<EditText>(R.id.update_quantity).text.toString()
+        val quantityType = view.findViewById<Spinner>(R.id.update_quantityType).selectedItem.toString()
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
         // Checks if the fields are filled, if not, don't do anything, otherwise, update the ingredient in the database
         if (!isNotValidInput(name, quantity)) {
-            val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, currentDate, bestBefore)
+            val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, quantityType, currentDate, bestBefore)
             ingredientViewModel.updateIngredient(updatedIngredient)
             Toast.makeText(requireContext(), "Ingredient updated!", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
@@ -169,5 +184,10 @@ class IngredientUpdate : Fragment() {
     private fun categoryStringToInt(string: String): Int {
         val categoryEnum = CategoryType.fromString(string)
         return categoryEnum.asInt
+    }
+
+    private fun quantityTypeStringToInt(quantityType: String): Int {
+        val quantityTypeEnum = QuantityType.fromString(quantityType)
+        return quantityTypeEnum.asInt
     }
 }

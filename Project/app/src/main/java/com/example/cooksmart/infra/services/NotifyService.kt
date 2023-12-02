@@ -28,7 +28,9 @@ class NotifyService: Service(){
     override fun onCreate() {
         super.onCreate()
         notificationHelper = NotificationHelper(this)
-        notificationHelper.showNotification()
+        val title = "test title"
+        val message = "test msg"
+        notificationHelper.showNotification(title, message)
         myBinder = MyBinder()
         myBroadcastReceiver = MyBroadcastReceiver()
         val intentFilter = IntentFilter()

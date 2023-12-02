@@ -5,11 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.databinding.FragmentRecipeBinding
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.util.Log
@@ -20,22 +17,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import com.example.cooksmart.BuildConfig
-import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
+import com.example.cooksmart.Constants.GENERATE_BUTTON_PREFIX
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
-import com.example.cooksmart.infra.services.SmartNetService
-import com.example.cooksmart.infra.net.UnsafeHttpClient
 import com.example.cooksmart.ui.base.RecipeBaseFragment
-import com.example.cooksmart.utils.AudioPlaybackCallback
-import com.example.cooksmart.utils.CameraHandler
-import com.example.cooksmart.utils.DataFetcher
 import com.example.cooksmart.utils.DebouncedOnClickListener
-import com.example.cooksmart.utils.MediaHandler
 import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
-import java.util.Locale
 
 class RecipeFragment : RecipeBaseFragment() {
 
@@ -79,7 +68,7 @@ class RecipeFragment : RecipeBaseFragment() {
 
         initView()
         setupActivityResultLaunchers()
-        setupUI()
+        setupOnClickListeners()
         setupObservers()
         cameraHandler.setUpPhotoLauncher {
             recipebaseViewModel.analyzeImage(it)
@@ -95,7 +84,7 @@ class RecipeFragment : RecipeBaseFragment() {
                     result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                         ?.firstOrNull()?.let { spokenText ->
                         Log.d("Recipe....", spokenText)
-                        recipebaseViewModel.appendInputAudio(spokenText)
+                        recipebaseViewModel.appendInputValue(spokenText)
                     }
                 }
             }
@@ -106,16 +95,16 @@ class RecipeFragment : RecipeBaseFragment() {
         ingredientsImgUri = FileProvider.getUriForFile(requireContext(), PACKAGE_NAME, tempImgFile)
     }
 
-    private fun setupUI() {
+    private fun setupOnClickListeners() {
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
             mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
-            recipebaseViewModel.resetInputAudio()
+            recipebaseViewModel.resetAll()
             recipebaseViewModel.cleanup()
             recipebaseViewModel.initAudioUrl("Reset, please tell me what do you have")
         }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
-            recipebaseViewModel.process(binding.buttonOption1.text.toString())
+            recipebaseViewModel.process(binding.buttonOption1.text.toString().replace(GENERATE_BUTTON_PREFIX,""))
         }
 
         binding.buttonVision.setOnClickListener { changeIngrePhoto() }
@@ -140,11 +129,16 @@ class RecipeFragment : RecipeBaseFragment() {
 
     override fun setupObservers() {
         super.setupObservers()
+        recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+            val formattedValue = String.format("%.2f", it)
+            binding.progressBarValue.text = "$formattedValue %"
+        }
+
         recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
-                binding.buttonOption1.text = it
+                binding.buttonOption1.text = GENERATE_BUTTON_PREFIX + it
             } else
-                binding.buttonOption1.text = "Beef, Sweet Potatoes, eggs"
+                binding.buttonOption1.text = "$GENERATE_BUTTON_PREFIX Beef, Sweet Potatoes, eggs"
         }
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
@@ -181,11 +175,6 @@ class RecipeFragment : RecipeBaseFragment() {
         }
 
         recipebaseViewModel.initAudioUrl("hello how may I help you?")
-        recipebaseViewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
-            if (audioUrl.isNotEmpty()) {
-                playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + audioUrl)
-            }
-        }
     }
 
 

@@ -13,6 +13,14 @@
         android:padding="2dp"
         android:gravity="right"
         app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/progressBarValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0%"
+            android:textSize="18sp"
+            android:fontFamily="@font/dancing"
+            />
         <Button
             android:id="@+id/buttonVision"
             android:layout_width="wrap_content"
@@ -77,6 +85,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp">
+
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"

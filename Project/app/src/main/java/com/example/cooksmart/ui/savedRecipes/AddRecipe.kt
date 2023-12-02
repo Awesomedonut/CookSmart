@@ -2,6 +2,9 @@ package com.example.cooksmart.ui.savedRecipes
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -9,11 +12,17 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AddRecipe : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
@@ -25,6 +34,8 @@ class AddRecipe : Fragment() {
     private lateinit var adapter: RecipeIngredientAdapter
     private val ingredientsList = ArrayList<String>()
     private lateinit var confirmButton: Button
+    private lateinit var favIcon : MenuItem
+    private var isFavorite : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,18 +49,35 @@ class AddRecipe : Fragment() {
         ingredientAddButton = view.findViewById(R.id.add_ingredient_recipe)
         ingredientListView = view.findViewById(R.id.recipe_ingredients_listview)
         favoriteIcon = view.findViewById(R.id.favoriteIcon)
-        var isFavorite = false
 
-        favoriteIcon.setOnClickListener {
-            isFavorite = !isFavorite
 
-            if (isFavorite) {
-                favoriteIcon.setImageResource(R.drawable.favorite_icon)
-            } else {
-                favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
+        // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
+        val menuHost = requireActivity() as MenuHost
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.add_favorite_menu, menu)
+                favIcon = menu.findItem(R.id.fav_menu)
+
+                if (isFavorite) {
+                    favIcon.setIcon(R.drawable.favorite_icon)
+                } else {
+                    favIcon.setIcon(R.drawable.favorite_icon_border)
+                }
             }
-            favoriteIcon.tag = isFavorite
-        }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    // Navigate to update page with the most update version of the current recipe as an argument
+                    R.id.fav_menu -> {
+                        isFavorite = !isFavorite
+                        activity?.invalidateOptionsMenu() // To redraw the menu and call onCreateMenu
+                    }
+
+                    // Go back to previous page if user clicks back button on menu toolbar
+                    android.R.id.home -> findNavController().navigate(R.id.action_addRecipe_to_navigation_saved_recipes)
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
         // Display each ingredient in ingredientsList in a ListView row
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
         ingredientListView.adapter = adapter
@@ -77,12 +105,12 @@ class AddRecipe : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
+
         return view
     }
 
     private fun insertRecipe() {
         val title = view.findViewById<EditText>(R.id.title_recipe).text.toString()
-        val isFavorite = favoriteIcon.tag as? Boolean ?: false
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions).text.toString()
         val currentDate = System.currentTimeMillis()

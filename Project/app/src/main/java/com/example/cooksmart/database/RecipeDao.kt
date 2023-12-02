@@ -42,8 +42,7 @@ interface RecipeDao {
     @Query("SELECT * FROM recipe_table ORDER BY LOWER(recipe_name)")
     fun getRecipesSortedByName(): LiveData<List<Recipe>>
 
-    @Query("SELECT * FROM recipe_table ORDER BY recipe_dateAdded ASC")
+    @Query("SELECT * FROM recipe_table ORDER BY recipe_dateAdded DESC")
     fun getRecipesSortedByDate(): LiveData<List<Recipe>>
-
 
 }

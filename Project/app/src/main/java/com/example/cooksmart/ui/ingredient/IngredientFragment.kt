@@ -91,15 +91,15 @@ class IngredientFragment : Fragment() {
         layout.findViewById<Button>(R.id.generate_recipes_button).setOnClickListener {
             val checkedIngredients = adapter.getCheckedIngredients()
 
-            val ingredientNames = checkedIngredients?.map { it.name }
-            val ingredientNamesString = ingredientNames?.joinToString(", ")
-
-            // Create a Bundle to hold your parameter
-            val bundle = Bundle()
-            if (ingredientNamesString != null)
-                bundle.putString(SELECTED_INGREDIENTS, ingredientNamesString)
-            else
-                bundle.putString(SELECTED_INGREDIENTS, "")
+//            val ingredientNames = checkedIngredients?.map { it.name }
+//            val ingredientNamesString = ingredientNames?.joinToString(", ")
+//
+//            // Create a Bundle to hold your parameter
+//            val bundle = Bundle()
+//            if (ingredientNamesString != null)
+//                bundle.putString(SELECTED_INGREDIENTS, ingredientNamesString)
+//            else
+//                bundle.putString(SELECTED_INGREDIENTS, "")
 
             val action = IngredientFragmentDirections.actionNavigationIngredientToFragmentIngredientGeneratedRecipe(checkedIngredients.toTypedArray())
 

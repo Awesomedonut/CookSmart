@@ -33,7 +33,7 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
         // Display the row info
         holder.itemView.findViewById<TextView>(R.id.list_category).text = currentIngredient.category
         holder.itemView.findViewById<TextView>(R.id.list_name).text = currentIngredient.name
-        holder.itemView.findViewById<TextView>(R.id.list_quantity).text = currentIngredient.quantity
+        holder.itemView.findViewById<TextView>(R.id.list_quantity).text = currentIngredient.quantity + " " + currentIngredient.quantityType
         val date = currentIngredient.bestBefore
         val formattedDate = ConvertUtils.longToDateString(date)
         holder.itemView.findViewById<TextView>(R.id.list_best_before).text = formattedDate

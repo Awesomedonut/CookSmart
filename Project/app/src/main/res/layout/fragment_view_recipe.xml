@@ -22,18 +22,9 @@
                 android:text="@string/title"
                 android:fontFamily="@font/rye"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintEnd_toEndOf="@+id/viewRecipeFavoriteIcon"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-            <ImageView
-                android:id="@+id/viewRecipeFavoriteIcon"
-                android:layout_width="44dp"
-                android:layout_height="38dp"
-                android:layout_gravity="end"
-                android:src="@drawable/favorite_icon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/favorite_button" />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
             android:id="@+id/viewRecipeIngredientsLabel"

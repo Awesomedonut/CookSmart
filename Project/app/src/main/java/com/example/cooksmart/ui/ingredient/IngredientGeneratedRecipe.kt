@@ -82,6 +82,7 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
 
         }else{
             Log.d("RecipeFra-ingredientNamesString(not null)",ingredientNamesString)
+            recipebaseViewModel.updateInputValue(ingredientNamesString)
             recipebaseViewModel.process(ingredientNamesString)
         }
         return binding.root

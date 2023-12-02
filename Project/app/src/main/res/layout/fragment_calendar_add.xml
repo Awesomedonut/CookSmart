@@ -5,16 +5,21 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/tvCalendarDateSelected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/date"
+            android:fontFamily="@font/rye"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/tvCalendarPlanTitle"
             android:layout_width="wrap_content"
@@ -24,6 +29,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvCalendarDateSelected"
             android:text="@string/write_plan"
+            android:fontFamily="@font/rye"
             android:textSize="16sp"
             android:textColor="@color/black"/>
         <EditText
@@ -34,12 +40,14 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvCalendarPlanTitle"
             android:hint="@string/hint_plan"
+            android:fontFamily="@font/dancing"
             android:inputType="textMultiLine" />
         <Button
             android:id="@+id/btnAddPlanCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_cancel"
+            android:fontFamily="@font/rye"
             android:layout_below="@+id/etCalendarPlan"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="64dp"/>
@@ -48,6 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/save"
+            android:fontFamily="@font/rye"
             android:layout_below="@+id/etCalendarPlan"
             android:layout_alignParentEnd="true"
             android:layout_centerHorizontal="true"

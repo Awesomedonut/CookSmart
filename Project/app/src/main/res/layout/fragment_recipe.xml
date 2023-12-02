@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:text="Camera"
             android:textSize="10sp"
+            android:fontFamily="@font/rye"
             android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:padding="2dp"
@@ -42,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Beef, sweet potatoes, eggs"
+        android:fontFamily="@font/rye"
         android:textSize="14sp"
         android:background="@drawable/button_background"
         android:textColor="#FFFFFF"
@@ -88,6 +90,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textSize="18sp"
+                android:fontFamily="@font/dancing"
                 /> <!-- Initially set to gone -->
 
             <ImageView

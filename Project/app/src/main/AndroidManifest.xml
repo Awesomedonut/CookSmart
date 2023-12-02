@@ -37,6 +37,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
-        <service android:name=".infra.services.CalendarNotificationService"/>
     </application>
 </manifest>

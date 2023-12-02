@@ -18,7 +18,6 @@ import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
-import com.example.cooksmart.infra.services.CalendarNotificationService
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -83,7 +82,7 @@ class CalendarFragment : Fragment() {
         initAddPlan(root, sharedPreferences)
 
         // Initialize variables to start notification service
-        calendarNotifIntent = Intent(context, CalendarNotificationService::class.java)
+        requireContext().startService(calendarNotifIntent)
 
         return root
     }

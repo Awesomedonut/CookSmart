@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title"
+            android:fontFamily="@font/rye"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <EditText
@@ -23,6 +24,7 @@
             android:importantForAutofill="no"
             android:layout_height="48dp"
             android:inputType="textCapWords|textAutoCorrect"
+            android:fontFamily="@font/dancing"
             android:hint="@string/title_hint" />
 
         <ImageView
@@ -36,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_ingredients"
+            android:fontFamily="@font/rye"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <ListView
             android:id="@+id/recipe_ingredients_listview"

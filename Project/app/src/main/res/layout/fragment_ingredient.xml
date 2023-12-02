@@ -18,7 +18,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sort_by"/>
+                android:text="@string/sort_by"
+                android:fontFamily="@font/rye"/>
             <Spinner
                 android:id="@+id/ingredient_sort"
                 android:layout_width="wrap_content"
@@ -41,6 +42,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="@string/generate_recipes"
+        android:fontFamily="@font/rye"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,7 @@
 package com.example.cooksmart.ui.ingredient
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -23,6 +24,9 @@ import com.example.cooksmart.R
 import com.example.cooksmart.databinding.FragmentIngredientBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.widget.SearchView
+import androidx.viewpager2.widget.ViewPager2
+import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
+
 class IngredientFragment : Fragment() {
 
     private var _binding: FragmentIngredientBinding? = null
@@ -86,8 +90,29 @@ class IngredientFragment : Fragment() {
         // Navigate to generate recipes fragment with the checked ingredients
         layout.findViewById<Button>(R.id.generate_recipes_button).setOnClickListener {
             val checkedIngredients = adapter.getCheckedIngredients()
+
+//            val ingredientNames = checkedIngredients?.map { it.name }
+//            val ingredientNamesString = ingredientNames?.joinToString(", ")
+//
+//            // Create a Bundle to hold your parameter
+//            val bundle = Bundle()
+//            if (ingredientNamesString != null)
+//                bundle.putString(SELECTED_INGREDIENTS, ingredientNamesString)
+//            else
+//                bundle.putString(SELECTED_INGREDIENTS, "")
+
             val action = IngredientFragmentDirections.actionNavigationIngredientToFragmentIngredientGeneratedRecipe(checkedIngredients.toTypedArray())
+
+            // Navigate to the IngredientFragment with the Bundle
+//            findNavController().navigate(R.id.navigation_recipe, bundle)
+
             findNavController().navigate(action)
+
+//            val viewPager: ViewPager2 = requireActivity().findViewById(R.id.navigation_recipe)
+//            viewPager.currentItem = 0 // Switch to the RecipeFragment tab
+//
+//            requireFragmentManager().fragments[0].arguments = bundle
+
         }
 
         // Spinner

@@ -8,7 +8,12 @@
         android:id="@+id/navigation_recipe"
         android:name="com.example.cooksmart.ui.recipe.RecipeFragment"
         android:label="@string/title_recipe"
-        tools:layout="@layout/fragment_recipe" />
+        tools:layout="@layout/fragment_recipe">
+        <argument
+            android:name="selectedIngredients"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_ingredient"
         android:name="com.example.cooksmart.ui.ingredient.IngredientFragment"
@@ -23,6 +28,9 @@
         <action
             android:id="@+id/action_navigation_ingredient_to_fragment_ingredient_generated_recipe"
             app:destination="@id/fragment_ingredient_generated_recipe" />
+        <action
+            android:id="@+id/action_navigation_ingredient_to_fragment_recipe"
+            app:destination="@id/navigation_recipe" />
     </fragment>
     <fragment
         android:id="@+id/navigation_calendar"

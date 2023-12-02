@@ -90,7 +90,6 @@ class IngredientFragment : Fragment() {
         // Navigate to generate recipes fragment with the checked ingredients
         layout.findViewById<Button>(R.id.generate_recipes_button).setOnClickListener {
             val checkedIngredients = adapter.getCheckedIngredients()
-            //val action = IngredientFragmentDirections.actionNavigationIngredientToFragmentRecipe(checkedIngredients.toTypedArray())
 
             val ingredientNames = checkedIngredients?.map { it.name }
             val ingredientNamesString = ingredientNames?.joinToString(", ")
@@ -102,10 +101,12 @@ class IngredientFragment : Fragment() {
             else
                 bundle.putString(SELECTED_INGREDIENTS, "")
 
-            // Navigate to the IngredientFragment with the Bundle
-            findNavController().navigate(R.id.navigation_recipe, bundle)
+            val action = IngredientFragmentDirections.actionNavigationIngredientToFragmentIngredientGeneratedRecipe(checkedIngredients.toTypedArray())
 
-            //findNavController().navigate(action)
+            // Navigate to the IngredientFragment with the Bundle
+//            findNavController().navigate(R.id.navigation_recipe, bundle)
+
+            findNavController().navigate(action)
 
 //            val viewPager: ViewPager2 = requireActivity().findViewById(R.id.navigation_recipe)
 //            viewPager.currentItem = 0 // Switch to the RecipeFragment tab

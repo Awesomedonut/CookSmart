@@ -1,7 +1,5 @@
 package com.example.cooksmart.ui.base
 
-import com.example.cooksmart.ui.recipe.RecipeViewModel
-import com.example.cooksmart.ui.recipe.RecipeViewModelFactory
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import android.content.pm.PackageManager
@@ -13,7 +11,7 @@ import com.example.cooksmart.utils.CameraHandler
 import com.example.cooksmart.utils.DataFetcher
 import com.example.cooksmart.utils.MediaHandler
 
-open class RecipeBaseFragment(private val childViewModelClass: Class<out RecipeBaseViewModel>) : Fragment() {
+open class RecipeBaseFragment() : Fragment() {
     protected lateinit var recipebaseViewModel: RecipeBaseViewModel
     protected val mediaHandler = MediaHandler(this)
     protected val cameraHandler = CameraHandler(this)
@@ -26,9 +24,11 @@ open class RecipeBaseFragment(private val childViewModelClass: Class<out RecipeB
         }
     }
     private fun initializeRecipeViewModel() {
-        val viewModelFactory = RecipeBaseViewModelFactory(DataFetcher.getDataFetcher(), requireActivity().application, childViewModelClass)
-        recipebaseViewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
+        val viewModelFactory = RecipeBaseViewModelFactory(
+            DataFetcher.getDataFetcher(), requireActivity().application)
+        recipebaseViewModel = ViewModelProvider(this, viewModelFactory)[RecipeBaseViewModel::class.java]
     }
+
     protected open fun setupObservers() {
         recipebaseViewModel.initAudioUrl("hello how may I help you?")
         recipebaseViewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->

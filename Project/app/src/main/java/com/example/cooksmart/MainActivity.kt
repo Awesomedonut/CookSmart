@@ -13,6 +13,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.cooksmart.databinding.ActivityMainBinding
 import com.example.cooksmart.infra.services.NotificationWorker
+import com.example.cooksmart.utils.PermissionCheck
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        PermissionCheck.checkPermissions(this)
 
     }
 

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.CalendarView
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -84,8 +85,12 @@ class CalendarFragment : Fragment() {
 
         // Initialize add plan button
         initAddPlan(root, sharedPreferences)
-
         // Initialize variables to start notification service
+        val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(100, TimeUnit.MILLISECONDS)
+            .build()
+        WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
+        Toast.makeText(context, notificationWorkReq.id.toString(), Toast.LENGTH_SHORT).show()
 
 
         return root

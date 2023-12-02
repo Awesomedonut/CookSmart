@@ -21,7 +21,7 @@ class NotificationHelper (private val context: Context) {
         private const val NOTIFICATION_ID = 777
     }
 
-    fun showNotification() {
+    fun showNotification(title : String, message : String) {
         val intent = Intent(context, RecipeFragment::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         val pendingIntent = PendingIntent.getActivity(
@@ -33,8 +33,8 @@ class NotificationHelper (private val context: Context) {
             CHANNEL_ID
         )
         notificationBuilder.setSmallIcon(R.drawable.grocery_24px)
-        notificationBuilder.setContentTitle("Yan Jin Song MyRuns")
-        notificationBuilder.setContentText("Recording your path now")
+        notificationBuilder.setContentTitle(title)
+        notificationBuilder.setContentText(message)
         notificationBuilder.setContentIntent(pendingIntent)
         notificationBuilder.setAutoCancel(true)
         val notification = notificationBuilder.build()
@@ -46,7 +46,9 @@ class NotificationHelper (private val context: Context) {
             )
             notificationManager.createNotificationChannel(notificationChannel)
         }
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        with(notificationManager) {
+            notify(NOTIFICATION_ID, notification)
+        }
     }
     fun cleanupTasks(){
         notificationManager.cancel(NOTIFICATION_ID)

@@ -14,10 +14,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
+import com.example.cooksmart.infra.services.NotificationWorker
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -26,6 +29,7 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 
 private const val COOKSMART = "COOKSMART"
@@ -82,7 +86,7 @@ class CalendarFragment : Fragment() {
         initAddPlan(root, sharedPreferences)
 
         // Initialize variables to start notification service
-        requireContext().startService(calendarNotifIntent)
+
 
         return root
     }

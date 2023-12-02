@@ -37,16 +37,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
     </LinearLayout>
+
     <Button
         android:id="@+id/generate_recipes_button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="@string/generate_recipes"
+        android:layout_marginBottom="65dp"
         android:fontFamily="@font/rye"
+        android:text="@string/generate_recipes"
+        android:background="@drawable/generate_recipe_btn"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="65dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ingredient_add"

@@ -32,7 +32,6 @@ class TextService(private val openAI: OpenAI) {
         onTextUpdated:((text: String, promptId: Int) -> Unit),  // Made nullable
         onAudioTextReady: ((text: String, promptId: Int) -> Unit)? = null,  // Made nullable
         onSummaryReady: ((text: String, promptId: Int) -> Unit)? = null,    // Made nullable
-        onCompleted: ((promptId: Int) -> Unit)? = null,
         onCompletedSuspend: (KSuspendFunction1<Int, Unit>)? = null,
         onError: ((text: String) -> Unit)? = null,
         ) {
@@ -91,14 +90,12 @@ class TextService(private val openAI: OpenAI) {
                         onTextUpdated(fullText, promptBag.promptId)
                         Log.d("TextService-fullText-1246", fullText.length.toString())
                         resetText()
-                        onCompleted?.invoke(promptBag.promptId)
                         onCompletedSuspend?.invoke(promptBag.promptId)
                     }
                     .launchIn(coroutineScope)
             }catch (e: Exception){
                 onError?.invoke(e.message.toString())
             }
-
         }
     }
 

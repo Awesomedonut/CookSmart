@@ -54,9 +54,6 @@ class CameraHandler(private val fragment: Fragment) {
             if (result.resultCode == Activity.RESULT_OK) {
                 val bitmap = BitmapHelper.getBitmap(fragment.requireContext(), ingredientsImgUri)
                 if (bitmap != null && bitmap.width > 0 && bitmap.height > 0) {
-                    // TODO: ask why observe doesnt seem to change
-                    //viewModel.userProfileLiveData.value?.profilePhotoString = BitmapHelper.bitmapToString(bitmap)
-                    //viewModel.analyzeImage(bitmap)//.photoLiveData.value = bitmap
                     onImageReady(bitmap)
                 }
             }

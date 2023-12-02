@@ -10,15 +10,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.reflect.KSuspendFunction1
 import kotlin.reflect.KSuspendFunction2
 
 class ImageService(private val openAI: OpenAI) {
     fun fetchImage(
         coroutineScope: CoroutineScope,
         promptBag: PromptBag,
-        callback: KSuspendFunction2<String?, Int, Unit>
-
-    ) {
+        callback: ((text: String?, promptId: Int) -> Unit)
+        ) {
         coroutineScope.launch(Dispatchers.IO) {
             try {
                 val creationResponse = openAI.imageURL(

@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.structs.CategoryType
+import com.example.cooksmart.ui.structs.QuantityType
 import com.example.cooksmart.utils.ConvertUtils
 import java.util.Calendar
 import java.util.Locale
@@ -25,6 +26,8 @@ import java.util.Locale
 class IngredientAdd : Fragment() {
     private lateinit var categoriesSpinner: Spinner
     private lateinit var categoriesAdapter: SpinnerAdapter
+    private lateinit var quantityTypeSpinner : Spinner
+    private lateinit var quantityTypeAdapter : SpinnerAdapter
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var view: View
     private lateinit var selectedDate: Calendar
@@ -50,6 +53,15 @@ class IngredientAdd : Fragment() {
             CategoryType.values().map { it.asString }
         )
         categoriesSpinner.adapter = categoriesAdapter
+
+        // Set up Quantity spinner
+        quantityTypeSpinner = view.findViewById(R.id.quantityType)
+        quantityTypeAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            QuantityType.values().map { it.asString}
+        )
+        quantityTypeSpinner.adapter = quantityTypeAdapter
 
         // Set date picker to the button
         selectedDate = Calendar.getInstance()
@@ -84,11 +96,12 @@ class IngredientAdd : Fragment() {
         val category = view.findViewById<Spinner>(R.id.category).selectedItem.toString()
         val name = view.findViewById<EditText>(R.id.name_ingredient).text.toString()
         val quantity = view.findViewById<EditText>(R.id.quantity).text.toString()
+        val quantityType = view.findViewById<Spinner>(R.id.quantityType).selectedItem.toString()
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
 //        println("cat: $category, name: $name, quantity: $quantity, best: $bestBefore, curDate: $currentDate")
         if (!isNotValidInput(name, quantity)) {
-            val ingredient = Ingredient(0, name, category, quantity, currentDate, bestBefore)
+            val ingredient = Ingredient(0, name, category, quantity, quantityType, currentDate, bestBefore)
             ingredientViewModel.insertIngredient(ingredient)
             Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_navigation_ingredient_add_to_navigation_ingredient)

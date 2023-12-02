@@ -17,7 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import com.example.cooksmart.BuildConfig
+import com.example.cooksmart.Constants.GENERATE_BUTTON_PREFIX
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
@@ -84,7 +84,7 @@ class RecipeFragment : RecipeBaseFragment() {
                     result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                         ?.firstOrNull()?.let { spokenText ->
                         Log.d("Recipe....", spokenText)
-                        recipebaseViewModel.appendInputAudio(spokenText)
+                        recipebaseViewModel.appendInputValue(spokenText)
                     }
                 }
             }
@@ -98,13 +98,13 @@ class RecipeFragment : RecipeBaseFragment() {
     private fun setupOnClickListeners() {
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
             mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
-            recipebaseViewModel.resetInputAudio()
+            recipebaseViewModel.resetAll()
             recipebaseViewModel.cleanup()
             recipebaseViewModel.initAudioUrl("Reset, please tell me what do you have")
         }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
-            recipebaseViewModel.process(binding.buttonOption1.text.toString())
+            recipebaseViewModel.process(binding.buttonOption1.text.toString().replace(GENERATE_BUTTON_PREFIX,""))
         }
 
         binding.buttonVision.setOnClickListener { changeIngrePhoto() }
@@ -131,9 +131,9 @@ class RecipeFragment : RecipeBaseFragment() {
         super.setupObservers()
         recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
-                binding.buttonOption1.text = it
+                binding.buttonOption1.text = GENERATE_BUTTON_PREFIX + it
             } else
-                binding.buttonOption1.text = "Beef, Sweet Potatoes, eggs"
+                binding.buttonOption1.text = "$GENERATE_BUTTON_PREFIX Beef, Sweet Potatoes, eggs"
         }
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text

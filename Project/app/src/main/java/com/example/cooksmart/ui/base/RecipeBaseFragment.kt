@@ -76,7 +76,7 @@ open class RecipeBaseFragment() : Fragment() {
 
     protected fun resetRecipeViewModel(){
         mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
-        recipebaseViewModel.resetInputAudio()
+        recipebaseViewModel.resetAll()
         recipebaseViewModel.cleanup()
         recipebaseViewModel.initAudioUrl("Reset, please tell me what do you have")
     }

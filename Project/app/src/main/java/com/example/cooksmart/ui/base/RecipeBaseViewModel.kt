@@ -20,6 +20,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.LinkedList
 import java.util.Queue
 
@@ -54,9 +56,11 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
     private val _recipeRepository: RecipeRepository
     private var _streamPaused: Boolean = true
+    private var _saved: Boolean = false
 
     private val _promptId = MutableLiveData<Int>(0)
     private var lastFetchJob: Job? = null
+
 
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
@@ -84,10 +88,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
     fun playNextAudio() {
         viewModelScope.launch(Dispatchers.Main) {
-            if(isAudioPlaying){
+            if (isAudioPlaying) {
                 _playerLoaded.value = true
-            }
-            else if (!_audioQueue.value.isNullOrEmpty()) {
+            } else if (!_audioQueue.value.isNullOrEmpty()) {
                 val nextUrl = _audioQueue.value?.poll()
                 nextUrl?.let {
                     _nextAudioUrl.value = it
@@ -110,7 +113,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             _response.value = ""
             _imageUrl.value = ""
 //            _responseAudio.value = ""
-            resetInputAudio()
+            resetAll()
             _playerLoaded.value = false
             if (_promptId.value != null)
                 _promptId.value = _promptId.value!! + 1
@@ -148,27 +151,42 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private suspend fun saveRecipe(promptId: Int) {
         if (promptId != _promptId.value!!)
             return
-        if (_input?.value != null && _response?.value != null) {
+        if (_response?.value != null) {
             val image = _imageUrl.value ?: ""
             Log.d("saveRecipe", image)
             val currentDate = System.currentTimeMillis()
-            val title = "AutoGen"
+            // Get the current date and time
+            // Define the date format you want, e.g., "yyyyMMdd"
+            val dateFormat = SimpleDateFormat("yyyyMMdd")
+            // Format the current date to a string
+            val formattedDate = dateFormat.format(Date())
+
+            var title = "AutoGen$formattedDate"
+            if(_input?.value != null)
+                title = _input!!.value!!
             val recipe =
                 Recipe(
                     0, title, _input!!.value!!,
                     _response!!.value!!, currentDate, false, image
                 )
-            _recipeRepository.insertRecipe(recipe)
+            if(!_saved) {
+                _recipeRepository.insertRecipe(recipe)
+                _saved = true
+            }
         }
     }
 
-    fun appendInputAudio(text: String) {
+    fun appendInputValue(text: String) {
         viewModelScope.launch {
             _input.value += text
         }
     }
-
-    fun resetInputAudio() {
+    fun updateInputValue(text: String) {
+        viewModelScope.launch {
+            _input.value = text
+        }
+    }
+    fun resetAll() {
         viewModelScope.launch {
             _input.value = ""
             _response.value = ""
@@ -286,6 +304,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         if (_promptId.value != null)
             _promptId.value = _promptId.value!! + 1
         _streamPaused = false
+        _saved = false
         _isCreating.value = true
         postQuestion(spokenText)
     }

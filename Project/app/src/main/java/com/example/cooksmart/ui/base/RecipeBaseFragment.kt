@@ -30,7 +30,6 @@ open class RecipeBaseFragment() : Fragment() {
     }
 
     protected open fun setupObservers() {
-        recipebaseViewModel.initAudioUrl("hello how may I help you?")
         recipebaseViewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
             if (audioUrl.isNotEmpty()) {
                 playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + audioUrl)

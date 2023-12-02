@@ -87,6 +87,7 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
     }
 
     override fun setupObservers() {
+        Toast.makeText(this@IngredientGeneratedRecipe.context, "dada!!", Toast.LENGTH_LONG).show()
         super.setupObservers()
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
@@ -102,11 +103,6 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
                 binding.responseImage.isVisible = true
                 Glide.with(this).load(imageUrl).into(binding.responseImage)
                 binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
-            }
-        }
-        recipebaseViewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
-            if (audioUrl.isNotEmpty()) {
-                playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + audioUrl)
             }
         }
     }

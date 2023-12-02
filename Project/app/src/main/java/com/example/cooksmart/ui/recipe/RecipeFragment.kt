@@ -5,11 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.cooksmart.databinding.FragmentRecipeBinding
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.util.Log
@@ -21,21 +18,13 @@ import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.example.cooksmart.BuildConfig
-import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
-import com.example.cooksmart.infra.services.SmartNetService
-import com.example.cooksmart.infra.net.UnsafeHttpClient
 import com.example.cooksmart.ui.base.RecipeBaseFragment
-import com.example.cooksmart.utils.AudioPlaybackCallback
-import com.example.cooksmart.utils.CameraHandler
-import com.example.cooksmart.utils.DataFetcher
 import com.example.cooksmart.utils.DebouncedOnClickListener
-import com.example.cooksmart.utils.MediaHandler
 import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
-import java.util.Locale
 
 class RecipeFragment : RecipeBaseFragment() {
 
@@ -79,7 +68,7 @@ class RecipeFragment : RecipeBaseFragment() {
 
         initView()
         setupActivityResultLaunchers()
-        setupUI()
+        setupOnClickListeners()
         setupObservers()
         cameraHandler.setUpPhotoLauncher {
             recipebaseViewModel.analyzeImage(it)
@@ -106,7 +95,7 @@ class RecipeFragment : RecipeBaseFragment() {
         ingredientsImgUri = FileProvider.getUriForFile(requireContext(), PACKAGE_NAME, tempImgFile)
     }
 
-    private fun setupUI() {
+    private fun setupOnClickListeners() {
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
             mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
             recipebaseViewModel.resetInputAudio()
@@ -181,11 +170,6 @@ class RecipeFragment : RecipeBaseFragment() {
         }
 
         recipebaseViewModel.initAudioUrl("hello how may I help you?")
-        recipebaseViewModel.nextAudioUrl.observe(viewLifecycleOwner) { audioUrl ->
-            if (audioUrl.isNotEmpty()) {
-                playAudio(BuildConfig.AUDIO_FILE_WEB_DOMAIN + audioUrl)
-            }
-        }
     }
 
 

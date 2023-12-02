@@ -166,15 +166,16 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             val dateFormat = SimpleDateFormat("yyyyMMdd")
             // Format the current date to a string
             val formattedDate = dateFormat.format(Date())
-
             var title = "AutoGen$formattedDate"
-            if(_input?.value != null)
+            if (!_input?.value.isNullOrEmpty()) {
                 title = _input!!.value!!
+            }
             val recipe =
-                Recipe(
-                    0, title, _input!!.value!!,
-                    _response!!.value!!, currentDate, false, image
+                Recipe(0, title, title,
+                    _response!!.value!!, currentDate,
+                    false, image
                 )
+
             if(!_saved) {
                 _recipeRepository.insertRecipe(recipe)
                 _saved = true

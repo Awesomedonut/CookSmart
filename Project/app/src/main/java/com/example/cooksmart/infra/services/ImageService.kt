@@ -1,7 +1,6 @@
 package com.example.cooksmart.infra.services
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.image.ImageURL
@@ -14,40 +13,30 @@ import kotlinx.coroutines.withContext
 import kotlin.reflect.KSuspendFunction2
 
 class ImageService(private val openAI: OpenAI) {
-//    private val promptId = promptBag.promptId
     fun fetchImage(
         coroutineScope: CoroutineScope,
         promptBag: PromptBag,
-//        userText: String,
-//        imageUrlState: MutableLiveData<String>,
-//        callback: KSuspendFunction0<Unit>
         callback: KSuspendFunction2<String?, Int, Unit>
 
     ) {
-        Log.d("ImageService", "fetchimage ......")
         coroutineScope.launch(Dispatchers.IO) {
             try {
-                val creationResponse = openAI.imageURL( // or openAi.imageJSON
+                val creationResponse = openAI.imageURL(
                     creation = ImageCreation(
                         prompt = promptBag.text,
                         n = NUMBER_OF_IMAGE,
                         size = ImageSize.is512x512
                     )
                 )
-                // Assuming the imageURL function returns a list of URLs
                 val imageUrl:ImageURL? = creationResponse.firstOrNull()
                 withContext(Dispatchers.Main) {
-
                     Log.d("ImageService", imageUrl.toString())
                     if(imageUrl != null){
-                        //imageUrlState.postValue(imageUrl.url)
                         callback(imageUrl.url,promptBag.promptId)
                     }
                 }
             } catch (e: Exception) {
-                // Handle exception, maybe post an error message to imageUrlState
                 withContext(Dispatchers.Main) {
-                    Log.d("ImageService", e.toString())
                     callback("",promptBag.promptId)
                 }
             }

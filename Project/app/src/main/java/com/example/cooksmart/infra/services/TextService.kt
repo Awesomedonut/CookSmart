@@ -22,17 +22,13 @@ class TextService(private val openAI: OpenAI) {
 
     private var fullText: String = ""
     private var audioText: String = ""
-//    private var introCompleted: Boolean = false
     private var startIndex: Int = 0
     private var tempIndex: Int = 0
-    private val audioTextChannel = Channel<String>(Channel.UNLIMITED)
     private var audioCount = 0
     private var summarySent = false
     fun startStream(
         coroutineScope: CoroutineScope,
         promptBag: PromptBag,
-//        question: String,
-        //responseState: MutableLiveData<String>,
         onTextUpdated:((text: String, promptId: Int) -> Unit),  // Made nullable
         onAudioTextReady: ((text: String, promptId: Int) -> Unit)? = null,  // Made nullable
         onSummaryReady: ((text: String, promptId: Int) -> Unit)? = null,    // Made nullable
@@ -81,20 +77,17 @@ class TextService(private val openAI: OpenAI) {
                                     summarySent = true
                                 }
                             } else {
-                                //force to move to the next paragraph
                                 tempIndex = firstNewLineIndex + 1
                             }
                             Log.d("TextService", "Sending one paragraph of audio")
                         }
-                        //responseState.postValue(fullText)
                         onTextUpdated(fullText, promptBag.promptId)
                     }
                     .onCompletion {
                         onAudioTextReady?.invoke(
                             fullText.substring(startIndex),
                             promptBag.promptId
-                        )  // Call only if not null
-                        //responseState.postValue(fullText)
+                        )
                         onTextUpdated(fullText, promptBag.promptId)
                         Log.d("TextService-fullText-1246", fullText.length.toString())
                         resetText()
@@ -117,27 +110,4 @@ class TextService(private val openAI: OpenAI) {
         audioCount = 0
         summarySent = false
     }
-//
-//    fun get(coroutineScope: CoroutineScope, prompt: String) {
-//        coroutineScope.launch {
-//            println("\n> Create chat completions...")
-//            val chatCompletionRequest = ChatCompletionRequest(
-//                model = ModelId("gpt-3.5-turbo"),
-//                messages = listOf(
-//                    ChatMessage(
-//                        role = ChatRole.System,
-//                        content = "You are a very helpful assistant."),
-//                    ChatMessage(role = ChatRole.User, content = prompt)
-//                )
-//            )
-//            val completion = openAI.chatCompletion(chatCompletionRequest)
-//            completion.choices.forEach(::println)
-//
-//            println("\n>️ Creating chat completions stream...")
-//            openAI.chatCompletions(chatCompletionRequest)
-//                .onEach { print(it.choices.firstOrNull()?.delta?.content.orEmpty()) }
-//                .onCompletion { println("Stream completed.") }
-//                .launchIn(coroutineScope)
-//        }
-//    }
 }

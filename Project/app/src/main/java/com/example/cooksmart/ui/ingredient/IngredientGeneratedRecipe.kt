@@ -54,7 +54,6 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
     }
 
     override fun setupObservers() {
-        Toast.makeText(this@IngredientGeneratedRecipe.context, "dada!!", Toast.LENGTH_LONG).show()
         super.setupObservers()
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text

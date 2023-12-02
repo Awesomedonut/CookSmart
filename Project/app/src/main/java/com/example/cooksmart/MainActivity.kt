@@ -1,12 +1,8 @@
 package com.example.cooksmart
 
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.view.Menu
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -33,6 +29,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_ingredient, R.id.navigation_recipe, R.id.navigation_saved_recipes, R.id.navigation_calendar
             )
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 

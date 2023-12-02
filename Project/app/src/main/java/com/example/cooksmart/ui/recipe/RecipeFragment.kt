@@ -24,6 +24,7 @@ import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
+import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
 import com.example.cooksmart.infra.services.SmartNetService
 import com.example.cooksmart.infra.net.UnsafeHttpClient
 import com.example.cooksmart.utils.AudioPlaybackCallback
@@ -52,6 +53,33 @@ class RecipeFragment : Fragment() {
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
         cameraHandler.checkCameraPermission()
+//        val args = RecipeFragmentArgs.fromBundle(requireArguments())
+//        val selectedIngredients = args.selectedIngredients
+//        // Extract the names from the array of Ingredient objects
+//        val ingredientNames = selectedIngredients?.map { it.name }
+//        val ingredientNamesString = ingredientNames?.joinToString(", ")
+//        if (ingredientNamesString != null) {
+//            Log.d("RecipeFra-ingredientNamesString",ingredientNamesString)
+//        }else{
+//            Log.d("RecipeFra-ingredientNamesString","nulnul")
+//        }
+
+
+        //val selectedIngredients = arguments?.getString(SELECTED_INGREDIENTS)
+
+        val selectedIngredients = requireArguments().getString(SELECTED_INGREDIENTS)
+
+// Use the selectedIngredients parameter as needed
+//        if (selectedIngredients != null) {
+//            // Do something with selectedIngredients
+//        }
+
+        if (selectedIngredients != null) {
+            Log.d("RecipeFra-ingredientNamesString",selectedIngredients)
+        }else{
+            Log.d("RecipeFra-ingredientNamesString","nulnul")
+        }
+
         initializeViewModel()
         setupActivityResultLaunchers()
         setupUI()

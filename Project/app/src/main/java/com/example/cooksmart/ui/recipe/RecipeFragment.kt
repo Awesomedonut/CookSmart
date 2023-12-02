@@ -130,7 +130,7 @@ class RecipeFragment : RecipeBaseFragment() {
     override fun setupObservers() {
         super.setupObservers()
         recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner){
-            binding.progressBarValue.text = "$it?.toString()%"
+            binding.progressBarValue.text = "$it %"
         }
         recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {

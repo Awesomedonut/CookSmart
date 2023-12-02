@@ -13,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/category"
+            android:fontFamily="@font/rye"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <Spinner
@@ -24,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/name"
+            android:fontFamily="@font/rye"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <EditText
@@ -31,6 +33,7 @@
             android:layout_width="match_parent"
             android:importantForAutofill="no"
             android:layout_height="48dp"
+            android:fontFamily="@font/dancing"
             android:inputType="textCapWords|textAutoCorrect"
             android:hint="@string/example_name" />
 
@@ -38,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/quantity"
+            android:fontFamily="@font/rye"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <EditText
@@ -46,11 +50,13 @@
             android:layout_height="48dp"
             android:importantForAutofill="no"
             android:inputType="text"
+            android:fontFamily="@font/dancing"
             android:hint="@string/example_quantity" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/best_before"
+            android:fontFamily="@font/rye"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <LinearLayout
             android:layout_width="wrap_content"
@@ -60,6 +66,7 @@
                 android:id="@+id/date_input_current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/dancing"
                 android:text="@string/date_not_set"/>
             <Space
                 android:layout_width="150dp"
@@ -69,7 +76,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/darker_gray"
-                android:hint="@string/change_date" />
+                android:text="@string/change_date"
+                android:fontFamily="@font/rye"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,6 +89,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:text="@string/add"
+                android:fontFamily="@font/rye"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>

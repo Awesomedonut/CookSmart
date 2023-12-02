@@ -12,6 +12,7 @@
         android:layout_height="47dp"
         android:layout_marginEnd="180dp"
         android:hint="@string/enter_ingredient"
+        android:fontFamily="@font/dancing"
         android:inputType="textCapWords|textAutoCorrect"
         android:maxLines="1"
         app:layout_constraintEnd_toStartOf="@+id/deleteIngredient"

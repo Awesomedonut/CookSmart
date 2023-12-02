@@ -239,7 +239,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
     private fun updateIngredients(text: String, promptId: Int) {
 //        These ingredients are available: spices, what appears to be ground spices in the two containers with transparent lids.
-        Log.d("RecipeVM.udpateIngredients", text)
+        Log.d("RecipeVM.udpateIngre", text)
         //TODO: refactor
         CoroutineScope(Dispatchers.Main).launch {
             if (promptId == _promptId.value!!) {

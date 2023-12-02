@@ -129,9 +129,11 @@ class RecipeFragment : RecipeBaseFragment() {
 
     override fun setupObservers() {
         super.setupObservers()
-        recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner){
-            binding.progressBarValue.text = "$it %"
+        recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+            val formattedValue = String.format("%.2f", it)
+            binding.progressBarValue.text = "$formattedValue %"
         }
+
         recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 binding.buttonOption1.text = GENERATE_BUTTON_PREFIX + it

@@ -41,6 +41,7 @@ class ViewRecipe : Fragment() {
     private lateinit var recipeViewModel: SavedRecipeViewModel
     private lateinit var favoriteIcon: ImageView
     private var isFavorite = false
+    private lateinit var favIcon : MenuItem
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +58,15 @@ class ViewRecipe : Fragment() {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.update_delete_menu, menu)
+
+                favIcon = menu.findItem(R.id.fav_menu)
+                isFavorite = args.currentRecipe.isFavorite
+
+                if (isFavorite) {
+                    favIcon.setIcon(R.drawable.favorite_icon)
+                } else {
+                    favIcon.setIcon(R.drawable.favorite_icon_border)
+                }
             }
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
@@ -70,8 +80,19 @@ class ViewRecipe : Fragment() {
                     }
                     // Delete dialog if user clicks delete button on menu toolbar
                     R.id.delete_menu -> deleteRecipe()
+
+                    R.id.fav_menu -> {
+                        isFavorite = !isFavorite
+                        if (isFavorite) {
+                            favIcon.setIcon(R.drawable.favorite_icon)
+                        } else {
+                            favIcon.setIcon(R.drawable.favorite_icon_border)
+                        }
+                        updateFavorite()
+                    }
+
                     // Go back to previous page if user clicks back button on menu toolbar
-                    android.R.id.home -> findNavController().navigate(R.id.action_navigation_saved_recipes_to_addRecipe)
+                    android.R.id.home -> findNavController().navigate(R.id.action_navigation_view_recipe_to_navigation_saved_recipes)
                 }
                 return true
             }
@@ -91,26 +112,26 @@ class ViewRecipe : Fragment() {
             .into(view.findViewById<ImageView>(R.id.responseImage))
 //        Glide.with(this).load(imageUrl).into(binding.responseImage)
 
-        favoriteIcon = view.findViewById(R.id.viewRecipeFavoriteIcon)
-        
-        // Set the favorite icon to filled or unfilled depending on currentRecipe isFavorite
-        isFavorite = args.currentRecipe.isFavorite
-        if (isFavorite) {
-            favoriteIcon.setImageResource(R.drawable.favorite_icon)
-        } else {
-            favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
-        }
+//        favoriteIcon = view.findViewById(R.id.viewRecipeFavoriteIcon)
+//
+//        // Set the favorite icon to filled or unfilled depending on currentRecipe isFavorite
+//        isFavorite = args.currentRecipe.isFavorite
+//        if (isFavorite) {
+//            favoriteIcon.setImageResource(R.drawable.favorite_icon)
+//        } else {
+//            favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
+//        }
 
-        // Listen for clicks on the heart icon and if pressed, make isFavorite the opposite of current isFavorite state and update to database
-        favoriteIcon.setOnClickListener {
-            isFavorite = !isFavorite
-            if (isFavorite) {
-                favoriteIcon.setImageResource(R.drawable.favorite_icon)
-            } else {
-                favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
-            }
-            updateFavorite()
-        }
+//        // Listen for clicks on the heart icon and if pressed, make isFavorite the opposite of current isFavorite state and update to database
+//        favoriteIcon.setOnClickListener {
+//            isFavorite = !isFavorite
+//            if (isFavorite) {
+//                favoriteIcon.setImageResource(R.drawable.favorite_icon)
+//            } else {
+//                favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
+//            }
+//            updateFavorite()
+//        }
 
         return view
     }

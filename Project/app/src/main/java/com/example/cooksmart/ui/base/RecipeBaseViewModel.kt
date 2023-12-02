@@ -30,6 +30,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private val _response = MutableLiveData<String>()
     val response: LiveData<String> get() = _response
 
+    private val _progressBarValue = MutableLiveData<Int>(0)
+    val progressBarValue: LiveData<Int> get() = _progressBarValue
+
     private val _imageUrl = MutableLiveData<String>()
     val imageUrl: LiveData<String> get() = _imageUrl
 
@@ -151,6 +154,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private suspend fun saveRecipe(promptId: Int) {
         if (promptId != _promptId.value!!)
             return
+
+        _progressBarValue.value = 100
+
         if (_response?.value != null) {
             val image = _imageUrl.value ?: ""
             Log.d("saveRecipe", image)
@@ -192,6 +198,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             _response.value = ""
             _imageUrl.value = ""
             _isCreating.value = false
+            _progressBarValue.value = 0
         }
     }
 
@@ -263,6 +270,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         if (promptId != _promptId.value!!)
             return
         _response.value = text
+        _progressBarValue.value = if (text.length / 1300 > 1) 98 else 100 * text.length / 1300
     }
 
     private fun onError(text: String) {
@@ -305,6 +313,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             _promptId.value = _promptId.value!! + 1
         _streamPaused = false
         _saved = false
+        _progressBarValue.value = 0
         _isCreating.value = true
         postQuestion(spokenText)
     }

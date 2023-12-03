@@ -48,6 +48,10 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
 
     override fun setupObservers() {
         super.setupObservers()
+        recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+            val formattedValue = String.format("%.2f", it)
+            binding.progressPercentage.text = "$formattedValue %"
+        }
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }

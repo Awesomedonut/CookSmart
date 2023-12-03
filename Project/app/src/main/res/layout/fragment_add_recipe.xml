@@ -11,6 +11,24 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp">
 
+        <ImageView
+            android:id="@+id/recipeImage"
+            android:src="@drawable/recipe_default_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="0dp">
+        </ImageView>
+
+        <Button
+            android:id="@+id/change_button"
+            android:layout_width="75dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="160dp"
+            android:layout_marginTop="0dp"
+            android:text="change"
+            android:textSize="8dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.util.UUID
 
 @Parcelize
 @Entity(tableName = "ingredient_table")
@@ -28,5 +29,8 @@ data class Ingredient (
     var dateAdded: Long,
 
     @ColumnInfo(name= "ingredient_bestBefore")
-    var bestBefore: Long
+    var bestBefore: Long,
+
+    @ColumnInfo(name= "notification_id")
+    var notifId : UUID
 ): Parcelable

@@ -12,6 +12,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.cooksmart.databinding.ActivityMainBinding
+import com.example.cooksmart.infra.services.NotificationWorker
+import com.example.cooksmart.utils.PermissionCheck
+import java.util.concurrent.TimeUnit
 import com.example.cooksmart.ui.ingredient.IngredientFragment
 
 class MainActivity : AppCompatActivity() {
@@ -60,6 +63,8 @@ class MainActivity : AppCompatActivity() {
             allowed = true
         }
         return allowed
+        PermissionCheck.checkPermissions(this)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

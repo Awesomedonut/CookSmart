@@ -22,9 +22,7 @@ object PermissionCheck {
                     Manifest.permission.READ_MEDIA_AUDIO,
                     Manifest.permission.READ_MEDIA_VIDEO,
                     Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.POST_NOTIFICATIONS,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION), reqCode)
+                    Manifest.permission.POST_NOTIFICATIONS), reqCode)
         }
     }
 }

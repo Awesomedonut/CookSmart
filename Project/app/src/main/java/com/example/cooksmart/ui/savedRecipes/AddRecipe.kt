@@ -196,7 +196,6 @@ class AddRecipe : Fragment() {
             }
             recipeImgSrc = ""
             recipeImgSrc = doc.select("div.wprm-recipe-image img").attr("src")
-            println("IMAGE: $recipeImgSrc")
             if (recipeImgSrc.isNullOrEmpty()) {
                 recipeImgSrc = doc.select("div.tasty-recipes-image img").attr("src")
             }

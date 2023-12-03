@@ -21,7 +21,7 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val selectedIngredients = args.selectedIngredients
         // Extract the names from the array of Ingredient objects
         val ingredientNames = selectedIngredients?.map { it.name }

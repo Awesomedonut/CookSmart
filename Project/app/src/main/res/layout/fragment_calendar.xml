@@ -48,11 +48,12 @@
                 android:text="@string/ingredients"
                 android:fontFamily="@font/raleway"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <ListView
                 android:id="@+id/lvIngredients"
                 android:layout_width="wrap_content"
+                android:nestedScrollingEnabled="true"
                 android:layout_height="100dp"
                 android:layout_below="@+id/tvIngredientsList"
                 android:layout_marginStart="8dp"
@@ -69,7 +70,7 @@
                 android:text="@string/plan"
                 android:fontFamily="@font/raleway"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tvPlanPlaceholder"

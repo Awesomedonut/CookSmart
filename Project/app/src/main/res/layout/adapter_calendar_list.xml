@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <TextView
         android:id="@+id/tvCalendarListExpiryDate"
         android:layout_width="match_parent"
@@ -11,8 +10,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:textSize="14sp"
-        android:fontFamily="@font/cabin"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
         android:textAlignment="center"/>
-
 </RelativeLayout>

@@ -30,7 +30,6 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         _binding = FragmentIngredientGeneratedRecipeBinding.inflate(inflater, container, false)
 
         initView()
-        setupUI()
         setupObservers()
         if (ingredientNamesString != null) {
             Log.d("RecipeFra-ingredientNamesString(not null)",ingredientNamesString)
@@ -38,12 +37,6 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
             recipebaseViewModel.process(ingredientNamesString)
         }
         return binding.root
-    }
-
-    private fun setupUI() {
-        binding.buttonReset.setOnClickListener {
-            findNavController().navigateUp()
-        }
     }
 
     override fun setupObservers() {

@@ -75,6 +75,7 @@ class AddRecipe : Fragment() {
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         // Display each ingredient in ingredientsList in a ListView row
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
         ingredientListView.adapter = adapter

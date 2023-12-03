@@ -221,6 +221,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         var ingredientsStartIndex = -1
         var instructionsStartIndex = -1
 
+        // Get the ending index when the ingredients text starts
         for (keyword in ingredientKeywords) {
             val index = inputText.indexOf(keyword)
             if (index != -1) {
@@ -229,6 +230,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             }
         }
 
+        // Get the ending index when the instructions text starts
         for (keyword in instructionKeywords) {
             val index = inputText.indexOf(keyword)
             if (index != -1) {
@@ -241,8 +243,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             // Get the substring containing only the ingredients
             val ingredientsText = inputText.substring(ingredientsStartIndex, instructionsStartIndex)
             var ingredientsArray = ingredientsText.split("\n")
-            // Get rid of blank entries and remove the dashes for each item
+            // Get rid of blank/bad entries and remove the dashes for each item
             ingredientsArray = ingredientsArray.filter { it.isNotBlank() }
+            ingredientsArray = ingredientsArray.filter { !it.contains("**") }
             ingredientsArray = ingredientsArray.mapNotNull { it.removePrefix("- ").trim() }
             return ingredientsArray.toString()
         }

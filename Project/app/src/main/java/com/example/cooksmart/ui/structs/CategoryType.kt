@@ -6,18 +6,19 @@ enum class CategoryType (val asInt:Int, val asString:String){
     Dairy_Cheese_Eggs(2,"Dairy/Cheese/Eggs"),
     Bakery(3,"Bakery"),
     Deli(4,"Deli"),
-    Nuts_Seeds_DriedFruit(5,"Nuts/Seeds/Dried Fruit"),
-    Butter_Honey_Jam(6,"Butter/Honey/Jam"),
-    Baking_Spices(7,"Baking/Spices"),
-    Beverages(8,"Beverages"),
-    Coffee_Tea(9,"Coffee/Tea"),
-    Frozen(10,"Frozen"),
-    Rices_Grains_Beans(11,"Rices/Grains/Beans"),
-    Canned_goods(12,"Canned Goods"),
-    Oils_Sauces_Condiments(13,"Oils/Sauces/Condiments"),
-    International(14,"International"),
-    Snacks(15,"Snacks"),
-    Other(16,"Other");
+    Oils_Sauces_Condiments(5,"Oils/Sauces/Condiments"),
+    Rices_Grains_Beans(6,"Rices/Grains/Beans"),
+    Pasta_Noodles(7, "Pasta/Noodles"),
+    Baking_Spices(8,"Baking/Spices"),
+    Canned_goods(9,"Canned Goods"),
+    Nuts_Seeds_DriedFruit(10,"Nuts/Seeds/Dried Fruit"),
+    International(11,"International"),
+    Butter_Honey_Jam(12,"Butter/Honey/Jam"),
+    Beverages(13,"Beverages"),
+    Coffee_Tea(14,"Coffee/Tea"),
+    Frozen(15,"Frozen"),
+    Snacks(16,"Snacks"),
+    Other(17,"Other");
 
     companion object{
         fun stringFromInt(int: Int) : String {return fromInt(int).asString}

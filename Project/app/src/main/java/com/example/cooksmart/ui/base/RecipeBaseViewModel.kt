@@ -17,6 +17,7 @@ import com.example.cooksmart.infra.services.OpenAIProvider
 import com.example.cooksmart.infra.services.TextService
 import com.example.cooksmart.models.PromptBag
 import com.example.cooksmart.utils.BitmapHelper
+import com.example.cooksmart.utils.ConvertUtils
 import com.example.cooksmart.utils.DataFetcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -157,14 +158,19 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             val image = _imageUrl.value ?: ""
             Log.d("saveRecipe", image)
             val currentDate = System.currentTimeMillis()
-            val dateFormat = SimpleDateFormat("yyyyMMdd")
-            val formattedDate = dateFormat.format(Date())
+            val formattedDate = ConvertUtils.longToDateString(currentDate)
             var title = "AutoGen$formattedDate"
             if (!_input?.value.isNullOrEmpty()) {
                 title = _input!!.value!!
             }
+            // Parse the entire text output from API into strings of Title, Ingredients and Instructions
+            val wholeRecipeOutput: String = _response!!.value!!.trimIndent()
+            title = parseTitle(wholeRecipeOutput)
+
+            val ingredients = parseIngredients(wholeRecipeOutput)
+            println(wholeRecipeOutput)
             val recipe =
-                Recipe(0, title, title,
+                Recipe(0, title, ingredients,
                     _response!!.value!!, currentDate,
                     false, image
                 )
@@ -174,6 +180,52 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
                 _saved = true
             }
         }
+    }
+    private fun parseTitle(input: String): String {
+        val keywords = listOf("recipe for a comforting", "recipe for a simple", "simple recipe for", "comforting recipe for", "recipe for a", "recipe for")
+        var recipeName = ""
+
+        // Check each keyword and if it matches, get the text that occurs after it until the next line
+        for (keyword in keywords) {
+            val index = input.indexOf(keyword)
+            if (index != -1) {
+                val substring = input.substring(index + keyword.length)
+                val endOfTitleIndex = substring.indexOf("\n")
+                // Populate recipeName with the substring after the keyword and trim the ':' character if it's there
+                recipeName = if (endOfTitleIndex != -1) {
+                    substring.substring(0, endOfTitleIndex).trimEnd(':').trim()
+                } else {
+                    substring.trimEnd(':').trim()
+                }
+                break
+            }
+        }
+        // If the keywords aren't found in the generated recipe
+        if (recipeName.isEmpty()) {
+            val currentDate = System.currentTimeMillis()
+            val formattedDate = ConvertUtils.longToDateString(currentDate)
+            recipeName = "AutoGen$formattedDate"
+            if (!_input?.value.isNullOrEmpty()) {
+                recipeName = _input!!.value!!
+            }
+        }
+
+        return recipeName
+    }
+    private fun parseIngredients(inputText: String): String {
+        val ingredientsStartIndex = inputText.indexOf("Ingredients:")
+        val instructionsStartIndex = inputText.indexOf("Instructions:")
+
+        if (ingredientsStartIndex != -1 && instructionsStartIndex != -1) {
+            // Get the substring containing only the ingredients
+            val ingredientsText = inputText.substring(ingredientsStartIndex + "Ingredients:".length, instructionsStartIndex)
+            var ingredientsArray = ingredientsText.split("\n")
+            // Remove the dashes for each item
+            ingredientsArray = ingredientsArray.filter { it.isNotBlank() }
+            ingredientsArray = ingredientsArray.mapNotNull { it.removePrefix("- ").trim() }
+            return ingredientsArray.toString()
+        }
+        return "[]"
     }
 
     fun appendInputValue(text: String) {

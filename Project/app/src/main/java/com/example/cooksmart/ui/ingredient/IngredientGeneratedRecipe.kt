@@ -32,14 +32,7 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         initView()
         setupUI()
         setupObservers()
-        if (ingredientNamesString.isNullOrEmpty()) {
-            Log.d("RecipeFra-ingredientNamesString","nulnul")
-            Toast.makeText(this@IngredientGeneratedRecipe.context,
-                "pls tell me what do you have", Toast.LENGTH_LONG).show()
-
-            findNavController().navigateUp() // Navigate back to the previous fragment (IngredientFragment)
-
-        }else{
+        if (ingredientNamesString != null) {
             Log.d("RecipeFra-ingredientNamesString(not null)",ingredientNamesString)
             recipebaseViewModel.updateInputValue(ingredientNamesString)
             recipebaseViewModel.process(ingredientNamesString)

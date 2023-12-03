@@ -116,7 +116,7 @@ class ViewRecipe : Fragment() {
         Glide.with(this /* context */)
             .load(args.currentRecipe.image)
             .override(250, 250) // replace with desired dimensions
-            .into(view.findViewById<ImageView>(R.id.responseImage))
+            .into(view.findViewById(R.id.responseImage))
 //        Glide.with(this).load(imageUrl).into(binding.responseImage)
 
 //        favoriteIcon = view.findViewById(R.id.viewRecipeFavoriteIcon)

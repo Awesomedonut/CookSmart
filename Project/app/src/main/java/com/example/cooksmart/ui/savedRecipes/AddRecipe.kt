@@ -30,7 +30,6 @@ class AddRecipe : Fragment() {
     private lateinit var ingredientEditText: EditText
     private lateinit var ingredientAddButton: Button
     private lateinit var ingredientListView: ListView
-    private lateinit var favoriteIcon : ImageView
     private lateinit var adapter: RecipeIngredientAdapter
     private val ingredientsList = ArrayList<String>()
     private lateinit var confirmButton: Button

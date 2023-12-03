@@ -1,14 +1,17 @@
 package com.example.cooksmart.ui.structs
 
 enum class QuantityType (val asInt:Int, val asString:String){
-    Kilograms(0,"kg"),
-    Grams(1,"g"),
-    Litres(2,"L"),
-    Millilitres(3,"mL"),
-    Pounds(4,"lbs"),
-    Ounces(5,"oz"),
-    Fluid_Ounce(6,"fl oz"),
-    Other(7,"Other");
+    Grams(0,"g"),
+    Kilograms(1,"kg"),
+    Millilitres(2,"mL"),
+    Litres(3,"L"),
+    Quantity(4, "quantity"),
+    Pounds(5,"lb"),
+    Cups(6, "cup"),
+    Pints(7, "pint"),
+    Ounces(8,"oz"),
+    Fluid_Ounce(9,"fl oz"),
+    Other(10,"Other");
 
     companion object{
         fun stringFromInt(int: Int) : String {return fromInt(int).asString}

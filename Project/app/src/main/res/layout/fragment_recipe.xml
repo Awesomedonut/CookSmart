@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="0%"
             android:textSize="18sp"
-            android:fontFamily="@font/dancing"
+            android:fontFamily="@font/cabin"
             />
         <Button
             android:id="@+id/buttonVision"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:text="Camera"
             android:textSize="10sp"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:padding="2dp"
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Beef, sweet potatoes, eggs"
-        android:fontFamily="@font/rye"
+        android:fontFamily="@font/raleway"
         android:textSize="14sp"
         android:background="@drawable/button_background"
         android:textColor="#FFFFFF"
@@ -61,15 +61,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
 
-    <ImageView
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/micImageView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/speaker"
-        app:layout_constraintTop_toBottomOf="@+id/buttonOption1"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_mic_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonOption1" />
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -100,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textSize="18sp"
-                android:fontFamily="@font/dancing"
+                android:fontFamily="@font/cabin"
                 /> <!-- Initially set to gone -->
 
             <ImageView

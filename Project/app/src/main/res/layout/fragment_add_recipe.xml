@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <EditText
@@ -24,21 +24,14 @@
             android:importantForAutofill="no"
             android:layout_height="48dp"
             android:inputType="textCapWords|textAutoCorrect"
-            android:fontFamily="@font/dancing"
+            android:fontFamily="@font/cabin"
             android:hint="@string/title_hint" />
-
-        <ImageView
-            android:id="@+id/favoriteIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/favorite_icon"
-            android:src="@drawable/favorite_icon_border" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_ingredients"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <ListView
             android:id="@+id/recipe_ingredients_listview"
@@ -56,11 +49,13 @@
             android:id="@+id/add_ingredient_recipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/raleway"
             android:hint="@string/add_ingredient"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/instructions"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <EditText
             android:id="@+id/recipe_instructions"
@@ -79,7 +74,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:text="@string/add"
-                android:textStyle="bold" />
+                android:fontFamily="@font/raleway"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -36,7 +36,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/date_placeholder"
-                android:fontFamily="@font/rye"
+                android:fontFamily="@font/raleway"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
             <TextView
@@ -46,13 +46,14 @@
                 android:layout_below="@+id/tvDateSelected"
                 android:layout_margin="8dp"
                 android:text="@string/ingredients"
-                android:fontFamily="@font/rye"
+                android:fontFamily="@font/raleway"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <ListView
                 android:id="@+id/lvIngredients"
                 android:layout_width="wrap_content"
+                android:nestedScrollingEnabled="true"
                 android:layout_height="100dp"
                 android:layout_below="@+id/tvIngredientsList"
                 android:layout_marginStart="8dp"
@@ -67,9 +68,9 @@
                 android:layout_below="@+id/lvIngredients"
                 android:layout_margin="8dp"
                 android:text="@string/plan"
-                android:fontFamily="@font/rye"
+                android:fontFamily="@font/raleway"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tvPlanPlaceholder"
@@ -78,7 +79,7 @@
                 android:layout_below="@+id/tvPlanCalendar"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="8dp"
-                android:fontFamily="@font/dancing"
+                android:fontFamily="@font/cabin"
                 android:text="@string/no_plan_detected" />
 
             <Button
@@ -88,7 +89,7 @@
                 android:layout_below="@+id/tvPlanPlaceholder"
                 android:layout_centerHorizontal="true"
                 android:text="@string/add_plan"
-                android:fontFamily="@font/rye"/>
+                android:fontFamily="@font/raleway"/>
         </RelativeLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

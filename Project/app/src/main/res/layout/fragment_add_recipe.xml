@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,25 +22,19 @@
             android:importantForAutofill="no"
             android:layout_height="48dp"
             android:inputType="textCapWords|textAutoCorrect"
-            android:fontFamily="@font/cabin"
             android:hint="@string/title_hint" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_ingredients"
             android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-        <ListView
-            android:id="@+id/recipe_ingredients_listview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
         <EditText
             android:id="@+id/recipe_ingredients_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
+            android:imeOptions="actionDone"
             android:inputType="textCapSentences|textAutoCorrect"
             android:hint="@string/enter_ingredient"/>
         <Button
@@ -51,6 +43,12 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/raleway"
             android:hint="@string/add_ingredient"/>
+        <ListView
+            android:id="@+id/recipe_ingredients_listview"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:transcriptMode="alwaysScroll"
+            android:nestedScrollingEnabled="true"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +65,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom">
+            android:layout_gravity="bottom"
+            android:paddingBottom="90dp">
             <Button
                 android:id="@+id/button_confirm"
                 android:layout_width="match_parent"
@@ -77,4 +76,4 @@
                 android:fontFamily="@font/raleway"/>
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

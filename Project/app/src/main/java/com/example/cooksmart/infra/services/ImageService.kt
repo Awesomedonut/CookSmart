@@ -1,6 +1,5 @@
 package com.example.cooksmart.infra.services
 
-import android.util.Log
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.image.ImageURL
@@ -10,8 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.reflect.KSuspendFunction1
-import kotlin.reflect.KSuspendFunction2
 
 class ImageService(private val openAI: OpenAI) {
     fun fetchImage(

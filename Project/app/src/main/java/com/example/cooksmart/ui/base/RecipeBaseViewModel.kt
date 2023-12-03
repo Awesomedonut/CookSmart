@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.cooksmart.Constants.AVAILABLE_INGREDIENTS
+import com.example.cooksmart.Constants.IMAGE_PROMPT
 import com.example.cooksmart.database.CookSmartDatabase
 import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.database.RecipeRepository
@@ -30,12 +32,13 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private val _response = MutableLiveData<String>()
     val response: LiveData<String> get() = _response
 
+    private val _progressBarValue = MutableLiveData<Double>(0.0)
+    val progressBarValue: LiveData<Double> get() = _progressBarValue
+
     private val _imageUrl = MutableLiveData<String>()
     val imageUrl: LiveData<String> get() = _imageUrl
 
-    //    private val audioQueue: Queue<String> = LinkedList()
     private val _audioQueue = MutableLiveData<Queue<String>>(LinkedList())
-    val audioQueue: LiveData<Queue<String>> get() = _audioQueue
 
     private val _nextAudioUrl = MutableLiveData<String>()
     val nextAudioUrl: LiveData<String> get() = _nextAudioUrl
@@ -60,7 +63,6 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
     private val _promptId = MutableLiveData<Int>(0)
     private var lastFetchJob: Job? = null
-
 
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
@@ -107,12 +109,10 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     fun cleanup() {
         viewModelScope.launch(Dispatchers.Main) {
             _audioQueue.value?.clear()
-//            _audioQueue.value = _audioQueue.value // Update the LiveData
             _nextAudioUrl.value = ""
             isAudioPlaying = false
             _response.value = ""
             _imageUrl.value = ""
-//            _responseAudio.value = ""
             resetAll()
             _playerLoaded.value = false
             if (_promptId.value != null)
@@ -126,13 +126,12 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         val openAI = OpenAIProvider.instance
         val imageService = ImageService(openAI)
         val promptBag = PromptBag(
-            "Generate a beautiful dish with these details: $question", _promptId.value!!
+            IMAGE_PROMPT + question, _promptId.value!!
         )
         try {
             imageService.fetchImage(
                 viewModelScope,
                 promptBag,
-//            _imageUrl,
                 ::loadImage
             )
         } catch (e: Exception) {
@@ -140,7 +139,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
-    private suspend fun loadImage(url: String?, promptId: Int) {
+    private fun loadImage(url: String?, promptId: Int) {
         CoroutineScope(Dispatchers.Main).launch {
             if (promptId == _promptId.value!!) {
                 _imageUrl.value = url ?: ""
@@ -151,24 +150,25 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private suspend fun saveRecipe(promptId: Int) {
         if (promptId != _promptId.value!!)
             return
+
+        _progressBarValue.value = 100.0
+
         if (_response?.value != null) {
             val image = _imageUrl.value ?: ""
             Log.d("saveRecipe", image)
             val currentDate = System.currentTimeMillis()
-            // Get the current date and time
-            // Define the date format you want, e.g., "yyyyMMdd"
             val dateFormat = SimpleDateFormat("yyyyMMdd")
-            // Format the current date to a string
             val formattedDate = dateFormat.format(Date())
-
             var title = "AutoGen$formattedDate"
-            if(_input?.value != null)
+            if (!_input?.value.isNullOrEmpty()) {
                 title = _input!!.value!!
+            }
             val recipe =
-                Recipe(
-                    0, title, _input!!.value!!,
-                    _response!!.value!!, currentDate, false, image
+                Recipe(0, title, title,
+                    _response!!.value!!, currentDate,
+                    false, image
                 )
+
             if(!_saved) {
                 _recipeRepository.insertRecipe(recipe)
                 _saved = true
@@ -192,6 +192,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             _response.value = ""
             _imageUrl.value = ""
             _isCreating.value = false
+            _progressBarValue.value = 0.0
         }
     }
 
@@ -200,46 +201,32 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         val openAI = OpenAIProvider.instance
         val textService = TextService(openAI)
         val promptBag = PromptBag(question, _promptId.value!!)
-        //TODO: fix the logic
         viewModelScope.launch {
             try {
                 textService.startStream(
                     viewModelScope,
-
                     promptBag,
                     ::updateText,
                     ::fetchAudioUrl,
                     ::fetchImageUrl,
-                    null,
                     ::saveRecipe,
                     ::onError
                 )
             } catch (e: Exception) {
                 _info.value = "API server errors: 002, please try again"
             }
-
-//            fetcher.startStreaming(
-//                this,
-//                question,
-//                _response,
-//                ::fetchAudioUrl,
-//                ::fetchImageUrl
-//            )
-//            _imageUrl.value = ""
         }
     }
 
     private fun updateIngredients(text: String, promptId: Int) {
-//        These ingredients are available: spices, what appears to be ground spices in the two containers with transparent lids.
-        Log.d("RecipeVM.udpateIngredients", text)
+        Log.d("RecipeVM.udpateIngre", text)
         //TODO: refactor
         CoroutineScope(Dispatchers.Main).launch {
             if (promptId == _promptId.value!!) {
                 _info.value = text
-//            onAnswerReady(audio.answer)
-                if (text.contains("These ingredients are available:"))
+                if (text.contains(AVAILABLE_INGREDIENTS))
                     _input.value =
-                        text.replace("These ingredients are available:", "")
+                        text.replace(AVAILABLE_INGREDIENTS, "")
             }
         }
     }
@@ -263,6 +250,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         if (promptId != _promptId.value!!)
             return
         _response.value = text
+        _progressBarValue.value =
+            if (text.length / 1300.1 > 1.0) 98.0
+            else 100.0 * text.length / 1300
     }
 
     private fun onError(text: String) {
@@ -294,8 +284,6 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
                 } catch (e: Exception) {
                     _info.value = "API server errors: 004, please try again"
                 }
-
-
             }
         }
     }
@@ -305,6 +293,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             _promptId.value = _promptId.value!! + 1
         _streamPaused = false
         _saved = false
+        _progressBarValue.value = 0.0
         _isCreating.value = true
         postQuestion(spokenText)
     }
@@ -317,7 +306,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
     fun initAudioUrl(helloText: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            if (audioQueue.value.isNullOrEmpty()) {
+            if (_audioQueue.value.isNullOrEmpty()) {
                 try {
                     fetchAudioUrl(helloText, _promptId.value!!)
                 } catch (e: Exception) {

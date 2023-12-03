@@ -14,19 +14,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
-
             <TextView
                 android:id="@+id/viewRecipeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/rye"
                 android:paddingBottom="20dp"
                 android:text="@string/title"
+                android:fontFamily="@font/rye"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
             android:id="@+id/viewRecipeIngredientsLabel"

@@ -39,33 +39,12 @@ class RecipeFragment : RecipeBaseFragment() {
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
         cameraHandler.checkCameraPermission()
-//        val args = RecipeFragmentArgs.fromBundle(requireArguments())
-//        val selectedIngredients = args.selectedIngredients
-//        // Extract the names from the array of Ingredient objects
-//        val ingredientNames = selectedIngredients?.map { it.name }
-//        val ingredientNamesString = ingredientNames?.joinToString(", ")
-//        if (ingredientNamesString != null) {
-//            Log.d("RecipeFra-ingredientNamesString",ingredientNamesString)
-//        }else{
-//            Log.d("RecipeFra-ingredientNamesString","nulnul")
-//        }
-
-
-        //val selectedIngredients = arguments?.getString(SELECTED_INGREDIENTS)
-
         val selectedIngredients = requireArguments().getString(SELECTED_INGREDIENTS)
-
-// Use the selectedIngredients parameter as needed
-//        if (selectedIngredients != null) {
-//            // Do something with selectedIngredients
-//        }
-
         if (selectedIngredients != null) {
             Log.d("RecipeFra-ingredientNamesString",selectedIngredients)
         }else{
             Log.d("RecipeFra-ingredientNamesString","nulnul")
         }
-
         initView()
         setupActivityResultLaunchers()
         setupOnClickListeners()
@@ -129,6 +108,11 @@ class RecipeFragment : RecipeBaseFragment() {
 
     override fun setupObservers() {
         super.setupObservers()
+        recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+            val formattedValue = String.format("%.2f", it)
+            binding.progressBarValue.text = "$formattedValue %"
+        }
+
         recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 binding.buttonOption1.text = GENERATE_BUTTON_PREFIX + it
@@ -159,7 +143,8 @@ class RecipeFragment : RecipeBaseFragment() {
 
         recipebaseViewModel.playerLoaded.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = !it
-            if (recipebaseViewModel.response.value == null || recipebaseViewModel.response.value?.isEmpty() == true) {
+            if (recipebaseViewModel.response.value == null
+                || recipebaseViewModel.response.value?.isEmpty() == true) {
                 if (it)
                     binding.responseTextView.text =
                         "Click the ingredients to give it a try, " +

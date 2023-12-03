@@ -46,7 +46,7 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
         } else {
             // Hide the favorite icon
             favoriteIcon.visibility = View.GONE
-            borderFavIcon.visibility = View.VISIBLE
+            borderFavIcon.visibility = View.GONE
         }
 
         holder.itemView.findViewById<LinearLayout>(R.id.recipeRowLayout).setOnClickListener {

@@ -21,6 +21,9 @@ data class Ingredient (
     @ColumnInfo(name= "ingredient_quantity")
     var quantity: String,
 
+    @ColumnInfo(name= "ingredient_quantity_type")
+    var quantityType: String,
+
     @ColumnInfo(name= "ingredient_dateAdded")
     var dateAdded: Long,
 

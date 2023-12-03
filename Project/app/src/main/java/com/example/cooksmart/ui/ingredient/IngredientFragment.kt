@@ -12,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -90,29 +91,12 @@ class IngredientFragment : Fragment() {
         // Navigate to generate recipes fragment with the checked ingredients
         layout.findViewById<Button>(R.id.generate_recipes_button).setOnClickListener {
             val checkedIngredients = adapter.getCheckedIngredients()
-
-//            val ingredientNames = checkedIngredients?.map { it.name }
-//            val ingredientNamesString = ingredientNames?.joinToString(", ")
-//
-//            // Create a Bundle to hold your parameter
-//            val bundle = Bundle()
-//            if (ingredientNamesString != null)
-//                bundle.putString(SELECTED_INGREDIENTS, ingredientNamesString)
-//            else
-//                bundle.putString(SELECTED_INGREDIENTS, "")
-
-            val action = IngredientFragmentDirections.actionNavigationIngredientToFragmentIngredientGeneratedRecipe(checkedIngredients.toTypedArray())
-
-            // Navigate to the IngredientFragment with the Bundle
-//            findNavController().navigate(R.id.navigation_recipe, bundle)
-
-            findNavController().navigate(action)
-
-//            val viewPager: ViewPager2 = requireActivity().findViewById(R.id.navigation_recipe)
-//            viewPager.currentItem = 0 // Switch to the RecipeFragment tab
-//
-//            requireFragmentManager().fragments[0].arguments = bundle
-
+            if (checkedIngredients.isEmpty()) {
+                Toast.makeText(context, "No ingredients chosen!\nPlease select some ingredients!", Toast.LENGTH_SHORT).show()
+            } else {
+                val action = IngredientFragmentDirections.actionNavigationIngredientToFragmentIngredientGeneratedRecipe(checkedIngredients.toTypedArray())
+                findNavController().navigate(action)
+            }
         }
 
         // Spinner

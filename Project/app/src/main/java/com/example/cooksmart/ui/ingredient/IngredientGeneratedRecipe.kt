@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -17,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 class IngredientGeneratedRecipe : RecipeBaseFragment() {
     private val args by navArgs<IngredientGeneratedRecipeArgs>()
     private var _binding: FragmentIngredientGeneratedRecipeBinding? = null
+    private lateinit var progressBar: ProgressBar
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +30,7 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         val ingredientNamesString = ingredientNames?.joinToString(", ")
 
         _binding = FragmentIngredientGeneratedRecipeBinding.inflate(inflater, container, false)
+        progressBar = _binding!!.generationProgressBar
 
         initView()
         setupObservers()
@@ -44,6 +47,8 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
             val formattedValue = String.format("%.2f", it)
             binding.progressPercentage.text = "$formattedValue %"
+            val progressInt = it.toInt()
+            progressBar.progress = progressInt
         }
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text

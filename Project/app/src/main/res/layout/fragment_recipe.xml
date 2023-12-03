@@ -13,6 +13,16 @@
         android:padding="2dp"
         android:gravity="right"
         app:layout_constraintTop_toTopOf="parent">
+        <ProgressBar
+            android:id="@+id/generationProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:max="100"
+            android:minHeight="20dp"
+            android:minWidth="100dp"
+            android:progress="1"/>
         <TextView
             android:id="@+id/progressBarValue"
             android:layout_width="wrap_content"

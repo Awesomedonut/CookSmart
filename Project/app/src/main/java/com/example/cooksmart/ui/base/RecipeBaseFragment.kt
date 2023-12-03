@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.ProgressBar
 import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
 import com.example.cooksmart.utils.AudioPlaybackCallback

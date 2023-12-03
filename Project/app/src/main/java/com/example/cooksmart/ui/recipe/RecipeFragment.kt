@@ -10,6 +10,7 @@ import android.content.Intent
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.util.Log
+import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -32,12 +33,14 @@ class RecipeFragment : RecipeBaseFragment() {
     private val binding get() = _binding!!
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var ingredientsImgUri: Uri
+    private lateinit var progressBar: ProgressBar
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
+        progressBar = _binding!!.generationProgressBar
         cameraHandler.checkCameraPermission()
         val selectedIngredients = requireArguments().getString(SELECTED_INGREDIENTS)
         if (selectedIngredients != null) {
@@ -79,7 +82,7 @@ class RecipeFragment : RecipeBaseFragment() {
             mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
             recipebaseViewModel.resetAll()
             recipebaseViewModel.cleanup()
-            recipebaseViewModel.initAudioUrl("Reset, please tell me what do you have")
+            recipebaseViewModel.initAudioUrl("Reset, please tell me what ingredients you have")
         }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
@@ -111,6 +114,8 @@ class RecipeFragment : RecipeBaseFragment() {
         recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
             val formattedValue = String.format("%.2f", it)
             binding.progressBarValue.text = "$formattedValue %"
+            val progressInt = it.toInt()
+            progressBar.progress = progressInt
         }
 
         recipebaseViewModel.input.observe(viewLifecycleOwner) {

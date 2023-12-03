@@ -13,7 +13,7 @@ import com.example.cooksmart.utils.MediaHandler
 
 open class RecipeBaseFragment() : Fragment() {
     protected lateinit var recipebaseViewModel: RecipeBaseViewModel
-    protected val mediaHandler = MediaHandler(this)
+    protected val mediaHandler = MediaHandler()
     protected val cameraHandler = CameraHandler(this)
 
     protected fun initView(){

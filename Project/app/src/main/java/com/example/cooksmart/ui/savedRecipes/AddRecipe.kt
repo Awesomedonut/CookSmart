@@ -48,7 +48,7 @@ class AddRecipe : Fragment() {
         ingredientEditText = view.findViewById(R.id.recipe_ingredients_edittext)
         ingredientAddButton = view.findViewById(R.id.add_ingredient_recipe)
         ingredientListView = view.findViewById(R.id.recipe_ingredients_listview)
-        favoriteIcon = view.findViewById(R.id.favoriteIcon)
+        //favoriteIcon = view.findViewById(R.id.favoriteIcon)
 
 
         // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment

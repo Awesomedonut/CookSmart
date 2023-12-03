@@ -135,7 +135,8 @@ class IngredientUpdate : Fragment() {
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
         var notifID = args.currentIngredient.notifId
-        var daysToExpiry = daysExpiry(bestBefore, currentDate)
+        // Schedule a notification for the day before expected expiry
+        var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
         if(daysToExpiry < 0){
             daysToExpiry = 0
         }

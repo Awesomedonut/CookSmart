@@ -109,7 +109,7 @@ class IngredientAdd : Fragment() {
         val bestBefore = selectedDate.timeInMillis
 
         // Add notification to the queue
-        var daysToExpiry = daysExpiry(bestBefore, currentDate)
+        var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
         if(daysToExpiry < 0){
             daysToExpiry = 0
         }

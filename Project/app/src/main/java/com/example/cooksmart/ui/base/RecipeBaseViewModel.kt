@@ -166,12 +166,11 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             // Parse the entire text output from API into strings of Title, Ingredients and Instructions
             val wholeRecipeOutput: String = _response!!.value!!.trimIndent()
             title = parseTitle(wholeRecipeOutput)
-
             val ingredients = parseIngredients(wholeRecipeOutput)
-            println(wholeRecipeOutput)
+            val instructions = parseInstructions(wholeRecipeOutput)
             val recipe =
                 Recipe(0, title, ingredients,
-                    _response!!.value!!, currentDate,
+                    instructions!!, currentDate,
                     false, image
                 )
 
@@ -182,7 +181,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
     private fun parseTitle(input: String): String {
-        val keywords = listOf("recipe for a comforting", "recipe for a simple", "simple recipe for", "comforting recipe for", "recipe for a", "recipe for")
+        // Possible words by the API before they say the recipe title, from more restrictive to less specific. We want to get the words after these strings
+        val keywords = listOf("recipe for a comforting", "recipe for a simple", "recipe for a delicious", "simple recipe for a", "delicious recipe for a", "comforting recipe for a",
+            "simple recipe for", "delicious recipe for", "comforting recipe for", "recipe for a", "recipe for")
         var recipeName = ""
 
         // Check each keyword and if it matches, get the text that occurs after it until the next line
@@ -212,21 +213,60 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
         return recipeName
     }
+
     private fun parseIngredients(inputText: String): String {
-        val ingredientsStartIndex = inputText.indexOf("Ingredients:")
-        val instructionsStartIndex = inputText.indexOf("Instructions:")
+        val ingredientKeywords = listOf("Ingredients:", "**Ingredients:**")
+        val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "Instructions:")
+
+        var ingredientsStartIndex = -1
+        var instructionsStartIndex = -1
+
+        for (keyword in ingredientKeywords) {
+            val index = inputText.indexOf(keyword)
+            if (index != -1) {
+                ingredientsStartIndex = index + keyword.length
+                break
+            }
+        }
+
+        for (keyword in instructionKeywords) {
+            val index = inputText.indexOf(keyword)
+            if (index != -1) {
+                instructionsStartIndex = index
+                break
+            }
+        }
 
         if (ingredientsStartIndex != -1 && instructionsStartIndex != -1) {
             // Get the substring containing only the ingredients
-            val ingredientsText = inputText.substring(ingredientsStartIndex + "Ingredients:".length, instructionsStartIndex)
+            val ingredientsText = inputText.substring(ingredientsStartIndex, instructionsStartIndex)
             var ingredientsArray = ingredientsText.split("\n")
-            // Remove the dashes for each item
+            // Get rid of blank entries and remove the dashes for each item
             ingredientsArray = ingredientsArray.filter { it.isNotBlank() }
             ingredientsArray = ingredientsArray.mapNotNull { it.removePrefix("- ").trim() }
             return ingredientsArray.toString()
         }
-        return "[]"
+        return inputText
     }
+
+
+    private fun parseInstructions(input: String): String? {
+        val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "Instructions:")
+        var instructions = ""
+        for (keyword in instructionKeywords) {
+            val index = input.indexOf(keyword)
+            if (index != -1) {
+                val substring = input.substring(index + keyword.length)
+                instructions = substring.trim()
+            }
+        }
+        if (instructions.isNullOrEmpty()) {
+            return ""
+        } else {
+            return instructions
+        }
+    }
+
 
     fun appendInputValue(text: String) {
         viewModelScope.launch {

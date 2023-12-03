@@ -8,6 +8,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="90dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:orientation="vertical">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -20,46 +23,40 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="20dp"
                 android:text="@string/title"
-                android:fontFamily="@font/rye"
+                android:fontFamily="@font/raleway"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/responseImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="image_desc" />
         <TextView
             android:id="@+id/viewRecipeIngredientsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="@string/title_ingredients"
-            android:fontFamily="@font/rye"
-            android:layout_margin="16dp"  />
+            android:fontFamily="@font/raleway"/>
         <TextView
             android:id="@+id/viewRecipeIngredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/dancing"
-            android:layout_margin="10dp"/>
-        <ImageView
-            android:id="@+id/responseImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="image_desc"
-            />
+            android:fontFamily="@font/cabin"/>
         <TextView
             android:id="@+id/viewRecipeInstructionsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="@string/instructions"
-            android:fontFamily="@font/rye"
-            android:layout_margin="16dp"/>
+            android:fontFamily="@font/raleway"/>
         <TextView
             android:id="@+id/viewRecipeInstructions"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/dancing"
-            android:layout_margin="16dp"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </ScrollView>

@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.utils.ConvertUtils
@@ -35,6 +36,10 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
 //        val date = currentRecipe.dateAdded
 //        val formattedDate = ConvertUtils.longToDateString(date)
 //        holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
+        Glide.with(holder.itemView /* context */)
+            .load(currentRecipe.image)
+            .override(80, 80) // replace with desired dimensions
+            .into(holder.itemView.findViewById<ImageView>(R.id.responseImageRecipe))
 
         var favoriteIcon = holder.itemView.findViewById<ImageView>(R.id.list_isFavorite)
         var borderFavIcon = holder.itemView.findViewById<ImageView>(R.id.list_isNotFavorite)

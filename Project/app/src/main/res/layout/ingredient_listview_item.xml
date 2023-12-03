@@ -12,11 +12,8 @@
         android:layout_height="47dp"
         android:layout_marginEnd="180dp"
         android:hint="@string/enter_ingredient"
-        android:fontFamily="@font/dancing"
         android:inputType="textCapWords|textAutoCorrect"
         android:maxLines="1"
-        app:layout_constraintEnd_toStartOf="@+id/deleteIngredient"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,6 +26,7 @@
         android:drawableBottom="@drawable/baseline_delete_24"
         android:drawableTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextIngredient"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

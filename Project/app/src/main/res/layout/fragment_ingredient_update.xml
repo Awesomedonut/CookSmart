@@ -7,13 +7,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/category"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <Spinner
@@ -25,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/name"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <EditText
@@ -35,13 +37,13 @@
             android:layout_height="48dp"
             android:inputType="textCapWords|textAutoCorrect"
             android:hint="@string/example_name"
-            android:fontFamily="@font/dancing"/>
+            android:fontFamily="@font/cabin"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/quantity"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <LinearLayout
             android:layout_width="wrap_content"
@@ -49,25 +51,25 @@
             android:orientation="horizontal">
             <EditText
                 android:id="@+id/update_quantity"
-                android:layout_width="match_parent"
+                android:layout_width="250dp"
                 android:layout_height="48dp"
                 android:importantForAutofill="no"
-                android:inputType="text"
-                android:fontFamily="@font/dancing"
-                android:hint="@string/example_quantity" />
+                android:inputType="numberDecimal|text"
+                android:fontFamily="@font/cabin"
+                android:hint="Number" />
             <Space
-                android:layout_width="20dp"
+                android:layout_width="15dp"
                 android:layout_height="wrap_content"/>
             <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/update_quantityType"/>
+                android:id="@+id/update_quantityType"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content" />
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/best_before"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <LinearLayout
             android:layout_width="wrap_content"
@@ -77,19 +79,18 @@
                 android:id="@+id/update_date_input_current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date_not_set"
-                android:fontFamily="@font/dancing"/>
+                android:fontFamily="@font/cabin"
+                android:text="@string/date_not_set"/>
             <Space
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"/>
             <Button
                 android:id="@+id/update_best_before_date_picker"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/darker_gray"
-                android:layout_weight="1"
                 android:text="@string/change_date"
-                android:fontFamily="@font/rye" />
+                android:fontFamily="@font/raleway"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -101,7 +102,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:text="@string/update"
-                android:fontFamily="@font/rye"
+                android:fontFamily="@font/raleway"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>

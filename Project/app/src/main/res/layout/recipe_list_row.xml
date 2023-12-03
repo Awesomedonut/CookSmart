@@ -8,33 +8,30 @@
     android:orientation="horizontal"
     android:padding="20dp"
     android:foreground="?android:attr/selectableItemBackground">
-
-
-<!--    <ImageView-->
-<!--        android:id="@+id/list_isNotFavorite"-->
-<!--        android:layout_width="48dp"-->
-<!--        android:layout_height="34dp"-->
-<!--        android:contentDescription="@string/favorite_button"-->
-<!--        android:src="@drawable/favorite_icon_border" />-->
-
+    <ImageView
+        android:id="@+id/responseImageRecipe"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginRight="20dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="Recipe image" />
+    <TextView
+        android:id="@+id/list_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway"
+        android:text="@string/name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     <ImageView
         android:id="@+id/list_isFavorite"
         android:layout_width="48dp"
         android:layout_height="34dp"
         android:contentDescription="@string/favorite_button"
         android:src="@drawable/favorite_icon" />
-
-    <TextView
-        android:id="@+id/list_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/rye"
-        android:text="@string/name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-<!--    <TextView-->
-<!--        android:id="@+id/list_date_added"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/_2023_sep_02"/>-->
+    <ImageView
+        android:id="@+id/list_isNotFavorite"
+        android:layout_width="48dp"
+        android:layout_height="34dp"
+        android:contentDescription="@string/favorite_button"
+        android:src="@drawable/favorite_icon_border" />
 </LinearLayout>

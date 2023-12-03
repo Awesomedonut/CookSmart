@@ -28,6 +28,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
+import com.example.cooksmart.utils.ConvertUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -102,14 +103,20 @@ class ViewRecipe : Fragment() {
         val spannableName = SpannableString(args.currentRecipe.name)
         spannableName.setSpan(UnderlineSpan(), 0, spannableName.length, 0)
         view.findViewById<TextView>(R.id.viewRecipeTitle).text = spannableName
-        view.findViewById<TextView>(R.id.viewRecipeIngredients).text = args.currentRecipe.ingredients
+        // Convert ingredients string into array list and parse into newlines for each item
+        val ingredientsList = ConvertUtils.stringToArrayList(args.currentRecipe.ingredients)
         view.findViewById<TextView>(R.id.viewRecipeInstructions).text = args.currentRecipe.instructions
+        val formattedIngredients = StringBuilder()
+        for (ingredient in ingredientsList) {
+            formattedIngredients.append("- $ingredient\n")
+        }
+        view.findViewById<TextView>(R.id.viewRecipeIngredients).text = formattedIngredients.toString()
 //        view.findViewById<ImageView>(R.id.responseImage).setImageURI(args.currentRecipe.image)
 
         Glide.with(this /* context */)
             .load(args.currentRecipe.image)
             .override(250, 250) // replace with desired dimensions
-            .into(view.findViewById<ImageView>(R.id.responseImage))
+            .into(view.findViewById(R.id.responseImage))
 //        Glide.with(this).load(imageUrl).into(binding.responseImage)
 
 //        favoriteIcon = view.findViewById(R.id.viewRecipeFavoriteIcon)

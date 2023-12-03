@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -17,29 +18,23 @@ import androidx.navigation.fragment.findNavController
 class IngredientGeneratedRecipe : RecipeBaseFragment() {
     private val args by navArgs<IngredientGeneratedRecipeArgs>()
     private var _binding: FragmentIngredientGeneratedRecipeBinding? = null
+    private lateinit var progressBar: ProgressBar
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val selectedIngredients = args.selectedIngredients
         // Extract the names from the array of Ingredient objects
         val ingredientNames = selectedIngredients?.map { it.name }
         val ingredientNamesString = ingredientNames?.joinToString(", ")
 
         _binding = FragmentIngredientGeneratedRecipeBinding.inflate(inflater, container, false)
+        progressBar = _binding!!.generationProgressBar
 
         initView()
-        setupUI()
         setupObservers()
-        if (ingredientNamesString.isNullOrEmpty()) {
-            Log.d("RecipeFra-ingredientNamesString","nulnul")
-            Toast.makeText(this@IngredientGeneratedRecipe.context,
-                "pls tell me what do you have", Toast.LENGTH_LONG).show()
-
-            findNavController().navigateUp() // Navigate back to the previous fragment (IngredientFragment)
-
-        }else{
+        if (ingredientNamesString != null) {
             Log.d("RecipeFra-ingredientNamesString(not null)",ingredientNamesString)
             recipebaseViewModel.updateInputValue(ingredientNamesString)
             recipebaseViewModel.process(ingredientNamesString)
@@ -47,14 +42,14 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         return binding.root
     }
 
-    private fun setupUI() {
-        binding.buttonReset.setOnClickListener {
-            findNavController().navigateUp()
-        }
-    }
-
     override fun setupObservers() {
         super.setupObservers()
+        recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+            val formattedValue = String.format("%.2f", it)
+            binding.progressPercentage.text = "$formattedValue %"
+            val progressInt = it.toInt()
+            progressBar.progress = progressInt
+        }
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }

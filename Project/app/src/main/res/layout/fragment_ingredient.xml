@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sort_by"
-                android:fontFamily="@font/rye"/>
+                android:fontFamily="@font/raleway"/>
             <Spinner
                 android:id="@+id/ingredient_sort"
                 android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
             android:id="@+id/ingredients_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="48dp"
+            android:paddingBottom="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -37,18 +37,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
     </LinearLayout>
-
     <Button
         android:id="@+id/generate_recipes_button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="65dp"
-        android:fontFamily="@font/rye"
         android:text="@string/generate_recipes"
-        android:background="@drawable/generate_recipe_btn"
+        android:fontFamily="@font/raleway"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginBottom="65dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ingredient_add"

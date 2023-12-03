@@ -1,39 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp">
-
-        <ImageView
-            android:id="@+id/recipeImage"
-            android:src="@drawable/recipe_default_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginStart="120dp"
-            android:layout_marginTop="0dp">
-        </ImageView>
-
-        <Button
-            android:id="@+id/change_button"
-            android:layout_width="75dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="160dp"
-            android:layout_marginTop="0dp"
-            android:text="change"
-            android:textSize="8dp"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <EditText
@@ -42,36 +22,38 @@
             android:importantForAutofill="no"
             android:layout_height="48dp"
             android:inputType="textCapWords|textAutoCorrect"
-            android:fontFamily="@font/dancing"
             android:hint="@string/title_hint" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_ingredients"
-            android:fontFamily="@font/rye"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-        <ListView
-            android:id="@+id/recipe_ingredients_listview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
         <EditText
             android:id="@+id/recipe_ingredients_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
+            android:imeOptions="actionDone"
             android:inputType="textCapSentences|textAutoCorrect"
             android:hint="@string/enter_ingredient"/>
         <Button
             android:id="@+id/add_ingredient_recipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/raleway"
             android:hint="@string/add_ingredient"/>
+        <ListView
+            android:id="@+id/recipe_ingredients_listview"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:transcriptMode="alwaysScroll"
+            android:nestedScrollingEnabled="true"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/instructions"
+            android:fontFamily="@font/raleway"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <EditText
             android:id="@+id/recipe_instructions"
@@ -83,14 +65,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom">
+            android:layout_gravity="bottom"
+            android:paddingBottom="90dp">
             <Button
                 android:id="@+id/button_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:text="@string/add"
-                android:textStyle="bold" />
+                android:fontFamily="@font/raleway"/>
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

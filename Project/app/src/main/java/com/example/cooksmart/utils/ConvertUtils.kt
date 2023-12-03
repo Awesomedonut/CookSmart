@@ -10,7 +10,8 @@ class ConvertUtils {
         fun stringToArrayList(str: String): List<String> {
             // Discard the starting and ending square brackets
             val strNoArray = str.substring(1, str.length-1)
-            val list = strNoArray.trim().splitToSequence(',').filter{it.isNotEmpty()}.toList()
+            // Only split if the letters following the comma and space is not a lowercase letter
+            val list = strNoArray.trim().split(", (?![a-z])".toRegex()).filter { it.isNotEmpty() }
             // Trim leading and trailing whitespace
             val trimmedSpacesList = list.map {it.trim()}
             return ArrayList<String>(trimmedSpacesList)

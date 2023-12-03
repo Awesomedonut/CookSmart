@@ -15,13 +15,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
+import com.example.cooksmart.infra.services.NotificationWorker
 import com.example.cooksmart.ui.structs.CategoryType
 import com.example.cooksmart.ui.structs.QuantityType
 import com.example.cooksmart.utils.ConvertUtils
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class IngredientAdd : Fragment() {
     private lateinit var categoriesSpinner: Spinner
@@ -99,9 +107,20 @@ class IngredientAdd : Fragment() {
         val quantityType = view.findViewById<Spinner>(R.id.quantityType).selectedItem.toString()
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
+
+        // Add notification to the queue
+        var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
+        if(daysToExpiry < 0){
+            daysToExpiry = 0
+        }
+        val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(daysToExpiry, TimeUnit.DAYS)
+            .build()
+        WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
+        val notifID = notificationWorkReq.id
 //        println("cat: $category, name: $name, quantity: $quantity, best: $bestBefore, curDate: $currentDate")
         if (!isNotValidInput(name, quantity)) {
-            val ingredient = Ingredient(0, name, category, quantity, quantityType, currentDate, bestBefore)
+            val ingredient = Ingredient(0, name, category, quantity, quantityType, currentDate, bestBefore, notifID)
             ingredientViewModel.insertIngredient(ingredient)
             Toast.makeText(requireContext(), "Ingredient added!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_navigation_ingredient_add_to_navigation_ingredient)
@@ -122,5 +141,17 @@ class IngredientAdd : Fragment() {
         val bestBeforeText = view.findViewById<TextView>(R.id.date_input_current)
         val formattedDate = ConvertUtils.longToDateString(selectedDate.timeInMillis)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
+    }
+
+    fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
+        val expiryDate
+                = convertLongtoDate(expiryDateLong)
+        val currentDate = convertLongtoDate(selectedDate)
+        return ChronoUnit.DAYS.between(currentDate, expiryDate)
+    }
+
+    fun convertLongtoDate(dateMilli : Long): LocalDate {
+        val date = Instant.ofEpochMilli(dateMilli)
+        return date.atZone(ZoneId.systemDefault()).toLocalDate()
     }
 }

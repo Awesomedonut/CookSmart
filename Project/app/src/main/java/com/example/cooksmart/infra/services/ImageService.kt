@@ -30,7 +30,6 @@ class ImageService(private val openAI: OpenAI) {
                 )
                 val imageUrl:ImageURL? = creationResponse.firstOrNull()
                 withContext(Dispatchers.Main) {
-                    Log.d("ImageService", imageUrl.toString())
                     if(imageUrl != null){
                         callback(imageUrl.url,promptBag.promptId)
                     }

@@ -1,16 +1,18 @@
 package com.example.cooksmart.infra.services
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.example.cooksmart.Constants.AUDIO_TEXT_SIZE
+import com.example.cooksmart.Constants.MODEL_NAME
+import com.example.cooksmart.Constants.TEXT_PROMPT
 import com.example.cooksmart.models.PromptBag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -29,74 +31,95 @@ class TextService(private val openAI: OpenAI) {
     fun startStream(
         coroutineScope: CoroutineScope,
         promptBag: PromptBag,
-        onTextUpdated:((text: String, promptId: Int) -> Unit),  // Made nullable
-        onAudioTextReady: ((text: String, promptId: Int) -> Unit)? = null,  // Made nullable
-        onSummaryReady: ((text: String, promptId: Int) -> Unit)? = null,    // Made nullable
+        onTextUpdated: ((text: String, promptId: Int) -> Unit),
+        onAudioTextReady: ((text: String, promptId: Int) -> Unit)? = null,
+        onSummaryReady: ((text: String, promptId: Int) -> Unit)? = null,
         onCompletedSuspend: (KSuspendFunction1<Int, Unit>)? = null,
-        onError: ((text: String) -> Unit)? = null,
-        ) {
+        onError: ((text: String) -> Unit)? = null
+    ) {
         coroutineScope.launch(Dispatchers.IO) {
-            println("\n>️ Streaming chat completions...: ${promptBag.text}")
-            val chatCompletionRequest = ChatCompletionRequest(
-                model = ModelId("gpt-4-1106-preview"),
-                messages = listOf(
-                    ChatMessage(
-                        role = ChatRole.User,
-                        content = "Create a recipe along with cooking instructions based " +
-                                "on the ingredients provided, the instructions should be less than " +
-                                "5 steps, don't return special characters like " +
-                                "#, *, I need to read it, start with here is: ${promptBag.text}"
-                    )
-                )
-            )
             try {
-                openAI.chatCompletions(chatCompletionRequest)
-                    .onStart {
-                        resetText()
-                    }
+                sendChatCompletionRequest(promptBag)
+                    .onStart { resetText() }
                     .onEach { response ->
-                        val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
-                        fullText += text
-                        val firstNewLineIndex = fullText.indexOf("\n\n", tempIndex)
-                        if (firstNewLineIndex > 0) {
-                            audioText = fullText.substring(startIndex, firstNewLineIndex)
-                            if (audioCount == 0 || audioText.length > 50) {
-                                onAudioTextReady?.invoke(
-                                    audioText,
-                                    promptBag.promptId
-                                )  // Call only if not null
-                                startIndex = firstNewLineIndex + 1
-                                tempIndex = startIndex
-                                audioCount++
-                                if (audioCount > 1 && !summarySent) {
-                                    onSummaryReady?.invoke(
-                                        fullText,
-                                        promptBag.promptId
-                                    )  // Call only if not null
-                                    summarySent = true
-                                }
-                            } else {
-                                tempIndex = firstNewLineIndex + 1
-                            }
-                            Log.d("TextService", "Sending one paragraph of audio")
-                        }
-                        onTextUpdated(fullText, promptBag.promptId)
+                        processResponse(
+                            response,
+                            promptBag,
+                            onTextUpdated,
+                            onAudioTextReady,
+                            onSummaryReady
+                        )
                     }
                     .onCompletion {
-                        onAudioTextReady?.invoke(
-                            fullText.substring(startIndex),
-                            promptBag.promptId
+                        handleCompletion(
+                            promptBag,
+                            onAudioTextReady,
+                            onTextUpdated,
+                            onCompletedSuspend
                         )
-                        onTextUpdated(fullText, promptBag.promptId)
-                        Log.d("TextService-fullText-1246", fullText.length.toString())
-                        resetText()
-                        onCompletedSuspend?.invoke(promptBag.promptId)
                     }
                     .launchIn(coroutineScope)
-            }catch (e: Exception){
-                onError?.invoke(e.message.toString())
+            } catch (e: Exception) {
+                handleError(e, onError)
             }
         }
+    }
+
+    private fun sendChatCompletionRequest(promptBag: PromptBag): Flow<ChatCompletionChunk> {
+        val chatCompletionRequest = ChatCompletionRequest(
+            model = ModelId(MODEL_NAME),
+            messages = listOf(
+                ChatMessage(
+                    role = ChatRole.User,
+                    content = TEXT_PROMPT + promptBag.text
+                )
+            )
+        )
+        return openAI.chatCompletions(chatCompletionRequest)
+    }
+
+    private fun processResponse(
+        response: ChatCompletionChunk,
+        promptBag: PromptBag,
+        onTextUpdated: (String, Int) -> Unit,
+        onAudioTextReady: ((String, Int) -> Unit)?,
+        onSummaryReady: ((String, Int) -> Unit)?
+    ) {
+        val text = response.choices.firstOrNull()?.delta?.content.orEmpty()
+        fullText += text
+        val firstNewLineIndex = fullText.indexOf("\n\n", tempIndex)
+        if (firstNewLineIndex > 0) {
+            audioText = fullText.substring(startIndex, firstNewLineIndex)
+            if (audioCount == 0 || audioText.length > AUDIO_TEXT_SIZE) {
+                onAudioTextReady?.invoke(audioText, promptBag.promptId)
+                startIndex = firstNewLineIndex + 1
+                tempIndex = startIndex
+                audioCount++
+                if (audioCount > 1 && !summarySent) {
+                    onSummaryReady?.invoke(fullText, promptBag.promptId)
+                    summarySent = true
+                }
+            } else {
+                tempIndex = firstNewLineIndex + 1
+            }
+        }
+        onTextUpdated(fullText, promptBag.promptId)
+    }
+
+    private suspend fun handleCompletion(
+        promptBag: PromptBag,
+        onAudioTextReady: ((String, Int) -> Unit)?,
+        onTextUpdated: (String, Int) -> Unit,
+        onCompletedSuspend: (KSuspendFunction1<Int, Unit>)?
+    ) {
+        onAudioTextReady?.invoke(fullText.substring(startIndex), promptBag.promptId)
+        onTextUpdated(fullText, promptBag.promptId)
+        resetText()
+        onCompletedSuspend?.invoke(promptBag.promptId)
+    }
+
+    private fun handleError(e: Exception, onError: ((String) -> Unit)?) {
+        onError?.invoke(e.message.toString())
     }
 
     private fun resetText() {

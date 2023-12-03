@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.cooksmart.Constants.AVAILABLE_INGREDIENTS
+import com.example.cooksmart.Constants.IMAGE_PROMPT
 import com.example.cooksmart.database.CookSmartDatabase
 import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.database.RecipeRepository
@@ -37,7 +39,6 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     val imageUrl: LiveData<String> get() = _imageUrl
 
     private val _audioQueue = MutableLiveData<Queue<String>>(LinkedList())
-//    private val audioQueue: LiveData<Queue<String>> get() = _audioQueue
 
     private val _nextAudioUrl = MutableLiveData<String>()
     val nextAudioUrl: LiveData<String> get() = _nextAudioUrl
@@ -62,7 +63,6 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
     private val _promptId = MutableLiveData<Int>(0)
     private var lastFetchJob: Job? = null
-
 
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
@@ -126,7 +126,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         val openAI = OpenAIProvider.instance
         val imageService = ImageService(openAI)
         val promptBag = PromptBag(
-            "Generate a beautiful dish with these details: $question", _promptId.value!!
+            IMAGE_PROMPT + question, _promptId.value!!
         )
         try {
             imageService.fetchImage(
@@ -201,7 +201,6 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         val openAI = OpenAIProvider.instance
         val textService = TextService(openAI)
         val promptBag = PromptBag(question, _promptId.value!!)
-        //TODO: fix the logic
         viewModelScope.launch {
             try {
                 textService.startStream(
@@ -225,9 +224,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         CoroutineScope(Dispatchers.Main).launch {
             if (promptId == _promptId.value!!) {
                 _info.value = text
-                if (text.contains("These ingredients are available:"))
+                if (text.contains(AVAILABLE_INGREDIENTS))
                     _input.value =
-                        text.replace("These ingredients are available:", "")
+                        text.replace(AVAILABLE_INGREDIENTS, "")
             }
         }
     }

@@ -250,7 +250,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     }
 
 
-    private fun parseInstructions(input: String): String? {
+    private fun parseInstructions(input: String): String {
         val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "Instructions:")
         var instructions = ""
         for (keyword in instructionKeywords) {
@@ -260,13 +260,13 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
                 instructions = substring.trim()
             }
         }
-        if (instructions.isNullOrEmpty()) {
-            return ""
+        // Return whole string if errors
+        return if (instructions.isNullOrEmpty()) {
+            input
         } else {
-            return instructions
+            instructions
         }
     }
-
 
     fun appendInputValue(text: String) {
         viewModelScope.launch {

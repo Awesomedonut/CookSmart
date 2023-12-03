@@ -1,7 +1,11 @@
 package com.example.cooksmart.ui.savedRecipes
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.Menu
@@ -25,6 +29,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.cooksmart.Constants
+import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
+import com.example.cooksmart.Constants.GALLERY_REQUEST_CODE
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
 import kotlinx.coroutines.CoroutineScope
@@ -38,6 +44,9 @@ import java.net.URL
 class AddRecipe : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
     private lateinit var view: View
+    private lateinit var recipeImage:ImageView
+    private var selectedImage: String? = null
+    private lateinit var changeBtn:Button
     private lateinit var ingredientEditText: EditText
     private lateinit var ingredientAddButton: Button
     private lateinit var ingredientListView: ListView
@@ -92,6 +101,14 @@ class AddRecipe : Fragment() {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
+
+        recipeImage = view.findViewById(R.id.recipeImage)
+        changeBtn = view.findViewById(R.id.change_button)
+        changeBtn.setOnClickListener {
+            showImageSourceDialog()
+        }
+
+
         // Display each ingredient in ingredientsList in a ListView row
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
         ingredientListView.adapter = adapter
@@ -108,6 +125,7 @@ class AddRecipe : Fragment() {
                 ingredientEditText.text.clear()
             }
         }
+
         // Add the recipe using all the user input when they press add ingredient button
         confirmButton.setOnClickListener {
             insertRecipe()
@@ -123,6 +141,63 @@ class AddRecipe : Fragment() {
         return view
     }
 
+    private fun showImageSourceDialog() {
+        val options = arrayOf("Select from Gallery", "Take a Photo")
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Choose an option")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> openImagePicker()
+                    1 -> openImagePicker()
+                }
+            }
+        builder.create().show()
+    }
+    private fun openImagePicker() {
+        // SELECT FROM THE GALLARY
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        galleryIntent.type = "image/*"
+        startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            val selectedImageUri: Uri? = data.data
+            if (selectedImageUri != null) {
+                recipeImage.setImageURI(selectedImageUri)
+            }
+        }
+    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode == Activity.RESULT_OK) {
+//            when (requestCode) {
+//                IMAGE_PICK_REQUEST_CODE -> handleGalleryImage(data)
+//                //CAMERA_CAPTURE_REQUEST_CODE -> handleCameraImage(data)
+//            }
+//        }
+//    }
+//    private fun handleGalleryImage(data: Intent?) {
+//        val selectedImageUri: Uri = data?.data ?: return
+//        selectedImage = getRealPathFromURI(selectedImageUri)
+//        loadImage(selectedImage)
+//    }
+//    private fun getRealPathFromURI(uri: Uri): String {
+//        val projection = arrayOf(MediaStore.Images.Media.DATA)
+//        val cursor = activity?.contentResolver?.query(uri, projection, null, null, null)
+//        cursor?.use {
+//            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+//            it.moveToFirst()
+//            return it.getString(columnIndex)
+//        }
+//        return ""
+//    }
+//    private fun loadImage(imagePath: String?) {
+//        imagePath?.let {
+//            Glide.with(this).load(imagePath).into(recipeImageView)
+//        }
+//    }
+
     private fun insertRecipe() {
         val title = view.findViewById<EditText>(R.id.title_recipe).text.toString()
         val ingredients = ingredientsList.toString()
@@ -131,7 +206,7 @@ class AddRecipe : Fragment() {
         // Check all fields have input and then save into database as Recipe entity
         if (!isNotValidInput(title, ingredientsList, instructions)) {
             if (recipeImgSrc.isNullOrEmpty()) {
-                val recipe = Recipe(0, title, ingredients, instructions, currentDate, isFavorite)
+                val recipe = Recipe(0, title, ingredients, instructions, currentDate, isFavorite, selectedImage?:"")
                 savedRecipeViewModel.insertRecipe(recipe)
             }
             else {

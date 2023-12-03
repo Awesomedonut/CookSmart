@@ -18,7 +18,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sort_by"
-                android:fontFamily="@font/rye"/>
+                android:fontFamily="@font/raleway"/>
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="wrap_content"

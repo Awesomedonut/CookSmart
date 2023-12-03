@@ -5,5 +5,5 @@
     android:singleLine="true"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    android:fontFamily="@font/dancing"
+    android:fontFamily="@font/cabin"
     android:ellipsize="marquee"/>

@@ -14,18 +14,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
-        <Button
-            android:id="@+id/buttonReset"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Restart"
-            android:textSize="10sp"
-            android:background="@drawable/button_background"
-            android:textColor="#FFFFFF"
-            android:padding="2dp"
-            android:layout_weight="1" />
-
         <TextView
             android:id="@+id/progressPercentage"
             android:layout_width="wrap_content"

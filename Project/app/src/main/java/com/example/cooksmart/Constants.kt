@@ -2,7 +2,7 @@ package com.example.cooksmart
 
 object Constants {
     const val CAMERA_PERMISSION_REQUEST_CODE = 101
-    const val RECORD_AUDIO_PERMISSION_REQUEST_CODE = 123
+    const val PERMISSION_REQUEST_CODE = 123
     const val AUDIO_TEXT_SIZE = 50
     const val PACKAGE_NAME = "com.example.cooksmart"
     const val INGRE_IMG_FILE_NAME = "ingre_img.jpg"

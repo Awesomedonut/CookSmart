@@ -388,6 +388,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         _streamPaused = false
         _saved = false
         _progressBarValue.value = 0.0
+        _playerLoaded.value = false
         _isCreating.value = true
         postQuestion(spokenText)
     }

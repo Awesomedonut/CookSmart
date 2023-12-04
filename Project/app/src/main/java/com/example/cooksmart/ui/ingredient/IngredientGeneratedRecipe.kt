@@ -45,7 +45,7 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
     override fun setupObservers() {
         super.setupObservers()
         recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
-            val formattedValue = String.format("%.2f", it)
+            val formattedValue = String.format("%.0f", it)
             binding.progressPercentage.text = "$formattedValue %"
             val progressInt = it.toInt()
             progressBar.progress = progressInt

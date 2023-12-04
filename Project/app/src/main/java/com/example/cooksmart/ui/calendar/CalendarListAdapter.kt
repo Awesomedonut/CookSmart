@@ -1,3 +1,9 @@
+/** "CalendarListAdapter.kt"
+ *  Description: Creates entries for a list view of ingredient objects.
+ *               Entries change colours depending on their proximity to
+ *               their expiry date
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.ui.calendar
 
 import android.content.Context
@@ -21,14 +27,11 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
-
-private const val COOK_SMART = "CookSmart"
-private const val SELECTED_DATE = "SELECTED DATE"
 class CalendarListAdapter(private val context: Context,
                           private var ingredientList : List<Ingredient>,
                           private val calendarViewModel: CalendarViewModel,
                           private val lifecycleOwner : LifecycleOwner) : BaseAdapter() {
-    private lateinit var sharedPreferences: SharedPreferences
+    // Generic BaseAdapter functions
     override fun getCount(): Int {
         return ingredientList.size
     }
@@ -41,18 +44,29 @@ class CalendarListAdapter(private val context: Context,
         return ingredientList.get(position).id
     }
 
+    fun replace(newList : List<Ingredient>){
+        ingredientList = newList
+    }
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view : View = View.inflate(context, adapter_calendar_list, null)
 
+        // If ingredients exist, begin populating the ListView
         if(ingredientList.isNotEmpty()){
+            // Retrieve the text view
             val tvExpiryDate : TextView = view.findViewById(R.id.tvCalendarListExpiryDate)
+            // Find the given ingredient
             val ingredient = ingredientList[position]
+            // Retrieve the expiryDate Long from the ingredient object
             val expiryDate = ingredient.bestBefore
+            // Create the string for the text view and change the text
             var ingredientString = ingredient.name + " — expires " + dateString(expiryDate)
             tvExpiryDate.text = ingredientString
             tvExpiryDate.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
             calendarViewModel.getSelectedDate().observe(lifecycleOwner){
+                // Change the background of the ingredient depending on its proximity
+                // to its expiry date
                 val selectedDate = it
                 val expiryDays = daysExpiry(expiryDate, selectedDate)
                 if(expiryDays <= 0){
@@ -65,6 +79,7 @@ class CalendarListAdapter(private val context: Context,
                     tvExpiryDate.setBackgroundResource(R.drawable.lv_green_circular)
                 }
 
+                // Navigate to the IngredientUpdate page for the specified ingredient
                 tvExpiryDate.setOnClickListener{
                     val action = CalendarFragmentDirections.actionNavigationCalendarToNavigationIngredientUpdate(ingredient)
                     view?.let {
@@ -78,6 +93,9 @@ class CalendarListAdapter(private val context: Context,
         return view
     }
 
+    /** "daysExpiry"
+     *  Description: Determine the days until expiry between the current date and object date
+     * */
     fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
         val expiryDate
                 = convertLongtoDate(expiryDateLong)
@@ -85,27 +103,20 @@ class CalendarListAdapter(private val context: Context,
         return ChronoUnit.DAYS.between(currentDate, expiryDate)
     }
 
+    /** "convertLongtoDate"
+     *  Description: Convert a Long object into a LocalDate object
+     * */
     fun convertLongtoDate(dateMilli : Long): LocalDate {
         val date = Instant.ofEpochMilli(dateMilli)
         return date.atZone(ZoneId.systemDefault()).toLocalDate()
     }
 
-    fun convertLocalDatetoLong(date : LocalDate) : Long{
-        val dateStart = date.atStartOfDay(ZoneOffset.UTC)
-        return dateStart.toInstant().toEpochMilli()
-    }
-
-    fun convertCalendartoLong(calendar : Calendar): Long {
-        return calendar.timeInMillis
-    }
-
+    /** "dateString"
+     *  Description: Format and return a string based on a given Long date
+     * */
     fun dateString (date : Long) : String{
         val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         return dateFormat.format(date).uppercase(Locale.getDefault())
-    }
-
-    fun replace(newList : List<Ingredient>){
-        ingredientList = newList
     }
 
 

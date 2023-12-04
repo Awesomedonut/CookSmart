@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.util.Base64
+import android.util.Log
 import java.io.ByteArrayOutputStream
 
 object BitmapHelper {
@@ -50,12 +51,13 @@ object BitmapHelper {
                 byteArray = this.toByteArray()
 
                 // Decrease quality and scale for the next iteration if size is too large
-                if (byteArray.size > 10_000) {
+                if (byteArray.size > 150_000) {
                     currentQuality -= 10
                     currentScale -= scaleStep
                 }
             }
-        } while (byteArray.size > 10_000 && currentQuality > 0 && currentScale > 0)
+        } while (byteArray.size > 150_000 && currentQuality > 0 && currentScale > 0)
+            Log.d("BitmapHelper", byteArray.size.toString())
             return "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.DEFAULT)
         }
 }

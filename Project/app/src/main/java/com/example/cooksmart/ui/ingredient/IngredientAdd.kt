@@ -108,7 +108,7 @@ class IngredientAdd : Fragment() {
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
 
-        // Add notification to the queue --> TODO: make it opt in
+        // Add notification to the queue
         var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
         if(daysToExpiry < 0){
             daysToExpiry = 0
@@ -118,7 +118,7 @@ class IngredientAdd : Fragment() {
             .build()
         WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
         val notifID = notificationWorkReq.id
-//        println("cat: $category, name: $name, quantity: $quantity, best: $bestBefore, curDate: $currentDate")
+
         if (!isNotValidInput(name, quantity)) {
             val ingredient = Ingredient(0, name, category, quantity, quantityType, currentDate, bestBefore, notifID)
             ingredientViewModel.insertIngredient(ingredient)

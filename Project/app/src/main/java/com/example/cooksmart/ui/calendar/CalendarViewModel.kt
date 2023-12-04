@@ -1,3 +1,7 @@
+/** "CalendarViewModel.kt"
+ *  Description: Allows transfer of Calendar object data between UI and database
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.ui.calendar
 
 import android.app.Application
@@ -13,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class CalendarViewModel(application: Application): AndroidViewModel(application) {
+    // Initialize calendar list and calendar database objects
     val readAllCalendar: LiveData<List<Calendar>>
     private val repository: CalendarRepository
     init {
@@ -21,8 +26,12 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
         readAllCalendar = repository.allCalendar
     }
 
+    // Initialize the current selected date from the user
     private val selectedDate = MutableLiveData<Long>()
 
+    /** "getSelectedDate + setSelectedDate"
+     * Allows users to set the selected and retrieve the selected date
+     * */
     fun setSelectedDate(date : Long){
         selectedDate.value = date
     }
@@ -31,6 +40,12 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
         return selectedDate
     }
 
+    /** Calendar database operations
+     *  Description: Allow users to perform the given
+     *               SQL operations from the application.
+     *               Utilizes coroutines.
+     *
+     */
     fun insertCalendar(calendar: Calendar) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertCalendar(calendar)
@@ -49,7 +64,7 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun deleteAllIngredients() {
+    fun deleteAllCalendars() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllCalendar()
         }

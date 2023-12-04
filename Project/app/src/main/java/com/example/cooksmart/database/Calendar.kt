@@ -1,3 +1,6 @@
+/** "Calendar.kt"
+ *  Description: Calendar entity class for the Calendar fragment
+ * */
 package com.example.cooksmart.database
 
 import android.os.Parcelable

@@ -160,7 +160,7 @@ class RecipeFragment : RecipeBaseFragment() {
             if (it.isNotEmpty()) {
                 binding.buttonOption1.text = GENERATE_BUTTON_PREFIX + it
             } else
-                binding.buttonOption1.text = "$GENERATE_BUTTON_PREFIX Beef, Sweet Potatoes, eggs"
+                binding.buttonOption1.text = "$GENERATE_BUTTON_PREFIX Cheese, Ham, Eggs"
         }
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text

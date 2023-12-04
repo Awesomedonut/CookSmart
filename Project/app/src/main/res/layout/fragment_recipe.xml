@@ -90,13 +90,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp">
-
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -109,6 +107,7 @@
                 android:id="@+id/responseTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text=""
                 android:textSize="18sp"
                 android:fontFamily="@font/cabin"

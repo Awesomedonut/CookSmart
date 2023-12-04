@@ -55,7 +55,8 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
         recipebaseViewModel.info.observe(viewLifecycleOwner) {
-            Toast.makeText(this@IngredientGeneratedRecipe.context, it, Toast.LENGTH_LONG).show()
+            if(!it.isNullOrEmpty())
+                Toast.makeText(this@IngredientGeneratedRecipe.context, it, Toast.LENGTH_LONG).show()
         }
         recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             if (imageUrl.isEmpty()) {

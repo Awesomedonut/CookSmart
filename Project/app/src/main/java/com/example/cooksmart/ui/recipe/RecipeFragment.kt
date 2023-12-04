@@ -135,7 +135,8 @@ class RecipeFragment : RecipeBaseFragment() {
             binding.buttonReset.isVisible = it
         }
         recipebaseViewModel.info.observe(viewLifecycleOwner) {
-            Toast.makeText(this@RecipeFragment.context, it, Toast.LENGTH_LONG).show()
+            if(!it.isNullOrEmpty())
+                Toast.makeText(this@RecipeFragment.context, it, Toast.LENGTH_LONG).show()
         }
         recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             if (imageUrl.isEmpty()) {

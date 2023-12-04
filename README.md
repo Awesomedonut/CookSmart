@@ -44,8 +44,6 @@ Hello, we are group 15 in SFU CMPT 362 2023 Fall and we developed an application
 6. Refined design for handling expiration dates.
 7. Implemented notification feature for the calendar fragment.
 
-# Screenshots of our app
-ADD PICTURE LATER
 
 ###  Contributor
 1. Sarah Li

@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -55,10 +56,6 @@ class CalendarAdd: Fragment() {
         // Initialize buttons
         calendarViewModel = ViewModelProvider(this)[CalendarViewModel::class.java]
         initButtons(view, formattedDate, calendarViewModel, planExists)
-
-        if(planExists){
-            initDataFromCalendar(view, calendarViewModel, formattedDate, sharedPreferences)
-        }
 
         return view
     }

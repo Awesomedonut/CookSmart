@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -77,12 +76,15 @@ class UpdateRecipe : Fragment() {
         return view
     }
 
+    /**
+     * Using the current input in textViews, update the current recipe ID with those values
+     */
     private fun updateRecipe() {
         val title = view.findViewById<EditText>(R.id.title_recipe_update).text.toString()
         val isFavorite = args.currentRecipe.isFavorite
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions_update).text.toString()
-        val currentDate = System.currentTimeMillis()
+        val currentDate = args.currentRecipe.dateAdded
         // Check all fields have input and then save into database as Recipe entity
         if (!isNotValidInput(title, ingredientsList, instructions)) {
             val recipe = Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite)

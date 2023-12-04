@@ -12,28 +12,21 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.ListView
-import android.widget.ScrollView
 import android.widget.Toast
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
-import com.example.cooksmart.Constants
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
-import java.net.URL
 
 class AddRecipe : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
@@ -57,6 +50,7 @@ class AddRecipe : Fragment() {
         view = inflater.inflate(R.layout.fragment_add_recipe, container, false)
         confirmButton = view.findViewById(R.id.button_confirm)
 
+        // Get the views for user input
         ingredientEditText = view.findViewById(R.id.recipe_ingredients_edittext)
         ingredientAddButton = view.findViewById(R.id.add_ingredient_recipe)
         ingredientListView = view.findViewById(R.id.recipe_ingredients_listview)
@@ -69,8 +63,10 @@ class AddRecipe : Fragment() {
                 favIcon = menu.findItem(R.id.fav_menu)
 
                 if (isFavorite) {
+                    // Set heart icon to filled in if the recipe is favourited
                     favIcon.setIcon(R.drawable.favorite_icon)
                 } else {
+                    // Set drawable to unfilled heart icon if not favourited
                     favIcon.setIcon(R.drawable.favorite_icon_border)
                 }
             }
@@ -81,10 +77,10 @@ class AddRecipe : Fragment() {
                         isFavorite = !isFavorite
                         activity?.invalidateOptionsMenu() // To redraw the menu and call onCreateMenu
                     }
+                    // Open URL input dialog if user clicks on import link button on menu bar
                     R.id.import_link -> {
                         getUrl()
                     }
-
                     // Go back to previous page if user clicks back button on menu toolbar
                     android.R.id.home -> findNavController().navigate(R.id.action_addRecipe_to_navigation_saved_recipes)
                 }
@@ -96,14 +92,16 @@ class AddRecipe : Fragment() {
         adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
         ingredientListView.adapter = adapter
 
+        // Get the saved recipe view model
         savedRecipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
-        // Update the new ingredient the user added from the add ingredient button to the ingredientsList
+        // Update the new ingredient the user added to the ingredientsList
         ingredientAddButton.setOnClickListener {
             val newIngredient = ingredientEditText.text.toString()
             if (newIngredient.isNotEmpty()) {
                 adapter.updateIngredients(ingredientListView)
                 ingredientsList.add(newIngredient)
+                // Update the view of the listview once notified that there an ingredient was added
                 adapter.notifyDataSetChanged()
                 ingredientEditText.text.clear()
             }
@@ -119,28 +117,34 @@ class AddRecipe : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
-
         return view
     }
 
+    /**
+     * Inserts the user inputted recipe into the database
+     */
     private fun insertRecipe() {
+        // Get the current values in all the user input to put into Recipe entity
         val title = view.findViewById<EditText>(R.id.title_recipe).text.toString()
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions).text.toString()
         val currentDate = System.currentTimeMillis()
-        // Check all fields have input and then save into database as Recipe entity
+        // Check all fields have valid input and then save into database as Recipe entity
         if (!isNotValidInput(title, ingredientsList, instructions)) {
-            if (recipeImgSrc.isNullOrEmpty()) {
+            if (recipeImgSrc.isEmpty()) {
+                // Don't insert photo if recipeImgSrc is empty
                 val recipe = Recipe(0, title, ingredients, instructions, currentDate, isFavorite)
                 savedRecipeViewModel.insertRecipe(recipe)
             }
             else {
+                // Include the recipeImgSrc in Recipe entity if not null
                 val recipe = Recipe(0, title, ingredients, instructions, currentDate, isFavorite, recipeImgSrc)
                 savedRecipeViewModel.insertRecipe(recipe)
             }
             Toast.makeText(requireContext(), "Recipe added!", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_addRecipe_to_navigation_saved_recipes)
         } else {
+            // Do not add to database if not all fields are filled
             Toast.makeText(requireContext(), "Please fill all the fields!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -153,6 +157,9 @@ class AddRecipe : Fragment() {
         return (title == "" || ingredients.isEmpty() || instructions == "")
     }
 
+    /**
+     * Opens dialog to get user's URL for recipe
+     */
     private fun getUrl() {
         // Show alert dialog to get user input of recipe URL
         val builder = AlertDialog.Builder(context)
@@ -171,59 +178,66 @@ class AddRecipe : Fragment() {
                 Toast.makeText(context, "URL is invalid!", Toast.LENGTH_SHORT).show()
             }
         }
+        // Close the dialog if user clicks cancel
         builder.setNegativeButton("Cancel") { dialog, _ ->
             dialog.cancel()
         }
 
+        // Show the dialog
         val urlDialog = builder.create()
         urlDialog.show()
     }
 
+    /**
+     * Uses jsoup to scrape webpage and parse recipe related information
+     */
     private fun parseURL(url: String) {
         CoroutineScope(IO).launch {
-            // Use JSoup to scrape website from user URL
+            // Use jsoup to scrape website from user URL
             val doc = Jsoup.connect(url).get()
+            // Get the title of the recipe
             val title = doc.select("h1").text()
-            // Look for ingredients unordered lists
+            // Look for ingredient unordered lists
             var ingredients = doc.select("ul.wprm-recipe-ingredients li").map { it.text()}
             println(ingredients)
-            if (ingredients.isNullOrEmpty()) {
+            if (ingredients.isEmpty()) {
                 ingredients = doc.select("div.tasty-recipe-ingredients ul li, div.tasty-recipes-ingredients ul li").map { it.text() }
             }
+            // Look for instruction unordered and ordered lists
             var instructions = doc.select("ul.wprm-recipe-instructions li").map { it.text()}
-            if (instructions.isNullOrEmpty()) {
+            if (instructions.isEmpty()) {
                 instructions = doc.select("div.tasty-recipe-instructions ol li, div.tasty-recipes-instructions div.tasty-recipes-instructions-body ol li").map { it.text() }
             }
+            // Get recipe image if available
             recipeImgSrc = ""
             recipeImgSrc = doc.select("div.wprm-recipe-image img").attr("src")
-            if (recipeImgSrc.isNullOrEmpty()) {
+            if (recipeImgSrc.isEmpty()) {
                 recipeImgSrc = doc.select("div.tasty-recipes-image img").attr("src")
             }
-            println("IMAGE: $recipeImgSrc")
-            ingredientsList = ArrayList(ingredients)
+//            println("IMAGE: $recipeImgSrc")
             var step = 1
             val formattedInstructions = instructions.joinToString("\n") { instruction ->
                 "${step++}. $instruction\n"
             }
 
-            // Coroutine to update the UI with the new parsed recipe components
+            // Coroutine to update the UI with the new parsed recipe components once loaded
             CoroutineScope(Main).launch {
+                // Get the user input views and populate with the found values
                 view.findViewById<EditText>(R.id.title_recipe).setText(title)
                 val instructionsEditText = view.findViewById<EditText>(R.id.recipe_instructions)
                 instructionsEditText.setText(formattedInstructions)
 
-                // Update the ingredientsList
+                // Populate ingredientsList with the found ingredients arraylist
                 adapter = RecipeIngredientAdapter(requireContext(), ingredientsList)
                 ingredientListView.adapter = adapter
                 ingredientsList.clear()
                 ingredientsList.addAll(ingredients)
                 adapter.notifyDataSetChanged()
-                // Delete ingredient row if delete button is clicked
+                // Set delete listener for ingredient row if delete button is clicked
                 adapter.setOnDeleteClickListener {
                     ingredientsList.removeAt(it)
                     adapter.notifyDataSetChanged()
                 }
-
             }
         }
     }

@@ -3,6 +3,7 @@ package com.example.cooksmart.ui.savedRecipes
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.cooksmart.database.CookSmartDatabase
 import com.example.cooksmart.database.Recipe
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class SavedRecipeViewModel(application: Application): AndroidViewModel(application) {
     val readAllRecipes: LiveData<List<Recipe>>
     private val repository: RecipeRepository
+    val progressBarValue = MutableLiveData<Double>(0.0)
 
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
@@ -23,6 +25,13 @@ class SavedRecipeViewModel(application: Application): AndroidViewModel(applicati
         readAllRecipes = repository.allRecipes
     }
 
+    /**
+     * setProgress
+     * Description: Sets the progress bar value to the given double
+     */
+    fun setProgress(double: Double) {
+        progressBarValue.value = double
+    }
     fun insertRecipe(recipe: Recipe) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertRecipe(recipe)

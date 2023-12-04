@@ -22,12 +22,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.cooksmart.Constants
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
+import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
@@ -78,6 +82,8 @@ class AddRecipe : Fragment() {
         "div.primary-image img", // Food.com
         "img.primary-image__image" // Simply Recipes & Serious Eats
     )
+
+    private lateinit var dialog: RecipeGenerationDialog
 
 
     override fun onCreateView(
@@ -196,7 +202,8 @@ class AddRecipe : Fragment() {
     }
 
     /**
-     * Opens dialog to get user's URL for recipe
+     * getUrl
+     * Description: Opens dialog to get user's URL for recipe. If it's a valid URL, scape the URL for recipe data
      */
     private fun getUrl() {
         // Show alert dialog to get user input of recipe URL
@@ -205,12 +212,23 @@ class AddRecipe : Fragment() {
 
         val input = EditText(context)
         input.inputType = InputType.TYPE_CLASS_TEXT
+        input.hint = "Paste URL here"
         builder.setView(input)
 
         // If they click OK, check if it's a valid URL then proceed if so
         builder.setPositiveButton("OK") { _, _ ->
             recipeLink = input.text.toString()
             if (URLUtil.isValidUrl(recipeLink)) {
+                dialog = RecipeGenerationDialog()
+                dialog.show(requireActivity().supportFragmentManager, RecipeGenerationDialog.TAG)
+                dialog.isCancelable = false
+                savedRecipeViewModel.progressBarValue.observe(viewLifecycleOwner) {
+                    dialog.updateProgress(it)
+                    val progressInt = it.toInt()
+                    if(progressInt == 100){
+                        dialog.dismiss()
+                    }
+                }
                 parseURL(recipeLink)
             } else {
                 Toast.makeText(context, "URL is invalid!", Toast.LENGTH_SHORT).show()
@@ -229,26 +247,44 @@ class AddRecipe : Fragment() {
     /**
      * parseURL
      * Description: Uses jsoup to scrape webpage and parse recipe related information
+     *              Increments the progressBarValue while processing text
      */
     private fun parseURL(url: String) {
         CoroutineScope(IO).launch {
             // Use jsoup to scrape website from user URL
             // Return if access error encountered
+            withContext(Main) {
+                savedRecipeViewModel.setProgress(3.3)
+            }
             try {
                 doc = Jsoup.connect(url).get()
             } catch (e: Exception) {
                 Handler(Looper.getMainLooper()).post{
-                    Toast.makeText(context, "Error retrieving recipe! Error: 403 - Access forbidden.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error retrieving recipe!", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
                 }
                 return@launch
+            }
+            withContext(Main) {
+                savedRecipeViewModel.setProgress(9.8)
             }
 
             // Get the title of the recipe
             val title = doc.select("h1").text()
+            withContext(Main) {
+                savedRecipeViewModel.setProgress(13.6)
+            }
 
             // Look for ingredients with the selectors
             var ingredients: List<String> = emptyList()
+            withContext(Main) {
+                savedRecipeViewModel.setProgress(15.2)
+            }
+
             for (selector in ingredientsSelectors) {
+                withContext(Main) {
+                    savedRecipeViewModel.setProgress(savedRecipeViewModel.progressBarValue.value!! + 1.7)
+                }
                 ingredients = doc.select(selector).map { it.text() }
                 if (ingredients.isNotEmpty()) {
                     break
@@ -259,6 +295,9 @@ class AddRecipe : Fragment() {
             // Check all the selectors for a match
             var instructions: List<String> = emptyList()
             for (selector in instructionsSelectors) {
+                withContext(Main) {
+                    savedRecipeViewModel.setProgress(savedRecipeViewModel.progressBarValue.value!! + 1.7)
+                }
                 instructions = doc.select(selector).map { it.text() }
                 if (instructions.isNotEmpty()) {
                     break
@@ -269,17 +308,33 @@ class AddRecipe : Fragment() {
             for (selector in imageSelectors) {
                 val imgElement = doc.select(selector).firstOrNull()
                 if (imgElement != null) {
+                    withContext(Main) {
+                        savedRecipeViewModel.setProgress(savedRecipeViewModel.progressBarValue.value!! + 1.7)
+                    }
+                    instructions = doc.select(selector).map { it.text() }
                     recipeImgSrc = imgElement.attr("src")
                     if (recipeImgSrc.isNotEmpty()) {
+                        withContext(Main) {
+                            savedRecipeViewModel.setProgress(79.3)
+                        }
                         break
                     }
                 }
+            }
+            withContext(Main) {
+                savedRecipeViewModel.setProgress(85.9)
             }
 
             // Format the instructions to have step numbers and each step on a new line
             var step = 1
             val formattedInstructions = instructions.joinToString("\n") { instruction ->
                 "${step++}. $instruction\n"
+            }
+            withContext(Main) {
+                savedRecipeViewModel.setProgress(97.3)
+            }
+            withContext(Main) {
+                savedRecipeViewModel.setProgress(100.0)
             }
 
             // Coroutine to update the UI with the new parsed recipe components once loaded
@@ -295,6 +350,7 @@ class AddRecipe : Fragment() {
                 ingredientsList.clear()
                 ingredientsList.addAll(ingredients)
                 adapter.notifyDataSetChanged()
+
                 // Set delete listener for ingredient row if delete button is clicked
                 adapter.setOnDeleteClickListener {
                     ingredientsList.removeAt(it)

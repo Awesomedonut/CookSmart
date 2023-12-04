@@ -27,6 +27,7 @@ class UpdateRecipe : Fragment() {
     private var ingredientsList = ArrayList<String>()
     private lateinit var confirmButton: Button
     private val args by navArgs<ViewRecipeArgs>()
+    private lateinit var recipe: Recipe
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,7 +88,12 @@ class UpdateRecipe : Fragment() {
         val currentDate = args.currentRecipe.dateAdded
         // Check all fields have input and then save into database as Recipe entity
         if (!isNotValidInput(title, ingredientsList, instructions)) {
-            val recipe = Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite)
+            // Check if the recipe has an image or not. If not, don't add the image field
+            recipe = if (args.currentRecipe.image.isNullOrEmpty()) {
+                Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite)
+            } else {
+                Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite, args.currentRecipe.image)
+            }
             savedRecipeViewModel.updateRecipe(recipe)
             Toast.makeText(requireContext(), "Recipe updated!", Toast.LENGTH_SHORT).show()
             val action = UpdateRecipeDirections.actionNavigationUpdateRecipeToNavigationViewRecipe(recipe)

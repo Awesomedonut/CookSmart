@@ -1,7 +1,13 @@
+/** "CalendarFragment.kt"
+ *  Description: Allows users to interact with a calendar view and pick a date.
+ *               The chosen date is used to inform users on the expiry dates of
+ *               their ingredients, and allows users to add notes for the plan of
+ *               a chosen date.
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.ui.calendar
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,16 +17,13 @@ import android.widget.Button
 import android.widget.CalendarView
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.work.OneTimeWorkRequestBuilder
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
-import com.example.cooksmart.infra.services.NotificationWorker
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -29,9 +32,8 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
-
+// Class constants
 private const val COOKSMART = "COOKSMART"
 private const val DATE_KEY = "DATE KEY"
 private const val CALENDAR_PLAN_EXISTS_KEY = "CALENDAR_PLAN_EXISTS_KEY"
@@ -43,14 +45,19 @@ class CalendarFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    // Initialize 'Ingredient' related items
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var ingredientList : ArrayList<Ingredient>
+
+    // Initialize shared preference item
     private lateinit var sharedPreferences : SharedPreferences
+
+    // Initialize date item
     var selectedDate = Calendar.getInstance()
 
+    // Initialize 'Calendar' (database object) items
     private lateinit var calendarViewModel : CalendarViewModel
-
-    private lateinit var calendarNotifIntent : Intent
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +67,7 @@ class CalendarFragment : Fragment() {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // Initialize shared preferences
         sharedPreferences = requireActivity().getSharedPreferences(COOKSMART, Context.MODE_PRIVATE)
 
         // Initialize date/calendar related items
@@ -68,14 +76,16 @@ class CalendarFragment : Fragment() {
         initCalendar(root, calendarViewModel)
         callUpdatePlanText(root, calendarViewModel)
 
-        // Accessing Ingredient table in database
+        // Initialize ingredients list in Calendar
         val ingredientListView : ListView = root.findViewById(R.id.lvIngredients)
         ingredientList = ArrayList()
         val ingredientAdapter =
             CalendarListAdapter(requireContext().applicationContext,
                 ingredientList, calendarViewModel, viewLifecycleOwner)
         ingredientListView.adapter = ingredientAdapter
+        // Accessing Ingredient table in database through the ingredient view model
 
+        // Display ingredients in a list view
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
         ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredient ->
             ingredientAdapter.replace(ingredient.sortedBy { it.bestBefore })
@@ -83,19 +93,27 @@ class CalendarFragment : Fragment() {
         }
 
         // Initialize add plan button
-        initAddPlan(root, sharedPreferences)
+        initPlanButton(root, sharedPreferences)
 
 
         return root
     }
 
+    /** "callUpdatePlanText"
+     *  Description: calls the update plan text given a view and a calendarViewModel objects.
+     *               Must be called in this manner as two view models cannot be observed simultaneously
+     * */
     private fun callUpdatePlanText(view : View, calendarViewModel: CalendarViewModel) {
-        calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){calendars ->
+        calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){ calendars ->
             updatePlanText(view, calendars)
         }
 
     }
 
+    /** "updatePlanText"
+     *  Description: Given a list of calendar database objects, search and determine if a plan
+     *               exists for a given date. If it does, display the plan and update related UI components
+     * */
     private fun updatePlanText(view: View, calendars: List<com.example.cooksmart.database.Calendar>?) {
         if (calendars != null) {
             if(calendars.isNotEmpty()){
@@ -129,7 +147,11 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun initAddPlan(view: View, sharedPreferences: SharedPreferences?) {
+    /** "initPlanButton"
+     *  Description: Initializes the add/update plan button. On click, navigate to the
+     *               calendar add/update page
+     * */
+    private fun initPlanButton(view: View, sharedPreferences: SharedPreferences?) {
         val btnAddPlan : Button = view.findViewById(R.id.btnAddPlan)
         btnAddPlan.setOnClickListener{
             findNavController().navigate(R.id.action_navigation_calendar_to_navigation_calendar_add)
@@ -141,6 +163,9 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    /** "initCalendar"
+     *  Description: Initializes the calendar to the current date
+     * */
     private fun initCalendar(view : View, calendarViewModel: CalendarViewModel) {
         val calendar : CalendarView = view.findViewById(R.id.calendar)
         calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
@@ -150,6 +175,9 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    /** "initDate"
+     *  Description: Initializes the date text view to the current date
+     * */
     private fun initDate(view : View, calendarViewModel : CalendarViewModel) {
         val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
         val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
@@ -163,27 +191,16 @@ class CalendarFragment : Fragment() {
         _binding = null
     }
 
-    fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
-        val expiryDate
-        = convertLongtoDate(expiryDateLong)
-        val currentDate = convertLongtoDate(selectedDate)
-        return ChronoUnit.DAYS.between(currentDate, expiryDate)
-    }
-
-    fun convertLongtoDate(dateMilli : Long): LocalDate {
-        val date = Instant.ofEpochMilli(dateMilli)
-        return date.atZone(ZoneId.systemDefault()).toLocalDate()
-    }
-
-    fun convertLocalDatetoLong(date : LocalDate) : Long{
-        val dateStart = date.atStartOfDay(ZoneOffset.UTC)
-        return dateStart.toInstant().toEpochMilli()
-    }
-
+    /** "convertCalendartoLong"
+     *  Description: Converts a java.io Calendar object into a Long
+     * */
     fun convertCalendartoLong(calendar : Calendar): Long {
         return calendar.timeInMillis
     }
 
+    /** "setDate"
+     *  Description: Using the given parameters, update the date text
+     * */
     private fun setDate(root : View, year: Int, month: Int, dayOfMonth: Int) {
         selectedDate.set(year, month, dayOfMonth)
         val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())

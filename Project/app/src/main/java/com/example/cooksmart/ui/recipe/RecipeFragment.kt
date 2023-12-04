@@ -23,6 +23,7 @@ import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
 import com.example.cooksmart.ui.base.RecipeBaseFragment
+import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
 import com.example.cooksmart.utils.DebouncedOnClickListener
 import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
@@ -86,7 +87,16 @@ class RecipeFragment : RecipeBaseFragment() {
         }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
+            val dialog = RecipeGenerationDialog()
+            dialog.show(requireActivity().supportFragmentManager, RecipeGenerationDialog.TAG)
+            dialog.isCancelable = false
             recipebaseViewModel.process(binding.buttonOption1.text.toString().replace(GENERATE_BUTTON_PREFIX,""))
+            recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+                val progressInt = it.toInt()
+                if(progressInt == 100){
+                    dialog.dismiss()
+                }
+            }
         }
 
         binding.buttonVision.setOnClickListener { changeIngrePhoto() }

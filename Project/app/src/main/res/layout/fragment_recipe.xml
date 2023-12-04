@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.recipe.RecipeFragment">
+
     <LinearLayout
         android:id="@+id/topButtonLayout"
         android:layout_width="match_parent"
@@ -23,27 +24,25 @@
             android:max="100"
             android:minHeight="20dp"
             android:minWidth="100dp"
-            android:progress="1"/>
+            android:progress="1" />
         <TextView
             android:id="@+id/progressBarValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0%"
             android:textSize="18sp"
-            android:fontFamily="@font/cabin"
-            />
-        <Button
+            android:layout_margin="8dp"
+            android:fontFamily="@font/cabin" />
+        <ImageButton
             android:id="@+id/buttonVision"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Camera"
-            android:textSize="10sp"
+            android:src="@drawable/baseline_photo_camera_24"
             android:fontFamily="@font/raleway"
             android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
             android:padding="2dp"
-            />
-
+            android:layout_margin="8dp" />
         <Button
             android:id="@+id/buttonReset"
             android:layout_width="wrap_content"
@@ -52,8 +51,8 @@
             android:textSize="10sp"
             android:background="@drawable/button_background"
             android:textColor="#FFFFFF"
-        android:padding="2dp"
-        android:visibility="gone" />
+            android:padding="2dp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

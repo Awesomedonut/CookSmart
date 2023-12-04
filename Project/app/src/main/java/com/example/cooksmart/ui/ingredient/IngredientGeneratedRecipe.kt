@@ -13,7 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.cooksmart.databinding.FragmentIngredientGeneratedRecipeBinding
 import com.example.cooksmart.ui.base.RecipeBaseFragment
-import androidx.navigation.fragment.findNavController
+import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
 
 class IngredientGeneratedRecipe : RecipeBaseFragment() {
     private val args by navArgs<IngredientGeneratedRecipeArgs>()
@@ -44,11 +44,17 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
 
     override fun setupObservers() {
         super.setupObservers()
+        val dialog = RecipeGenerationDialog()
+        dialog.show(requireActivity().supportFragmentManager, RecipeGenerationDialog.TAG)
+        dialog.isCancelable = false
         recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
             val formattedValue = String.format("%.0f", it)
             binding.progressPercentage.text = "$formattedValue %"
             val progressInt = it.toInt()
             progressBar.progress = progressInt
+            if(progressInt == 100){
+                dialog.dismiss()
+            }
         }
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text

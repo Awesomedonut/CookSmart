@@ -35,8 +35,6 @@ class RecipeFragment : RecipeBaseFragment() {
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var ingredientsImgUri: Uri
     private lateinit var progressBar: ProgressBar
-
-    private var genStart = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -89,8 +87,16 @@ class RecipeFragment : RecipeBaseFragment() {
         }
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
+            val dialog = RecipeGenerationDialog()
+            dialog.show(requireActivity().supportFragmentManager, RecipeGenerationDialog.TAG)
+            dialog.isCancelable = false
             recipebaseViewModel.process(binding.buttonOption1.text.toString().replace(GENERATE_BUTTON_PREFIX,""))
-            genStart = true
+            recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+                val progressInt = it.toInt()
+                if(progressInt == 100){
+                    dialog.dismiss()
+                }
+            }
         }
 
         binding.buttonVision.setOnClickListener { changeIngrePhoto() }

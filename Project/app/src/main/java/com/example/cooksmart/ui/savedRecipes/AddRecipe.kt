@@ -61,7 +61,7 @@ class AddRecipe : Fragment() {
         "ul.structured-ingredients__list li p" // Simply Recipes & Serious Eats
     )
     private val instructionsSelectors = listOf(
-        "ul.wprm-recipe-instructions li", // Default popular
+        "ul.wprm-recipe-instructions li", // Default
         "div.tasty-recipes-instructions ol li", // Sally's Baking Addiction
         "#mntl-sc-block_2-0 li p", // Allrecipes
         "ol.InstructionGroupWrapper-bqiIwp.ccobUj li p", // Epicurious
@@ -69,10 +69,11 @@ class AddRecipe : Fragment() {
         "ol.css-19p7hma.et3p2gv0 li", // Delish (doesn't work)
         "ol.recipe-directions__list li", // Taste of Home
         "ul.direction-list li", // Food.com
-        "ol#mntl-sc-block_3-0 li" // Simply Recipes & Serious Eats
+        "ol#mntl-sc-block_3-0 li", // Simply Recipes & Serious Eats
+        "ol.mntl-sc-block-group--OL li" // Food & Wine
     )
     private val imageSelectors = listOf(
-        "div.wprm-recipe-image img", // Default popular
+        "div.wprm-recipe-image img", // Default
         "img[class*=wp-image-]", // Sally's Baking Addiction
         "div.img-placeholder img", // Allrecipes
         "img.ResponsiveImageContainer-eybHBd", // Epicurious (doesn't work)
@@ -280,7 +281,6 @@ class AddRecipe : Fragment() {
             withContext(Main) {
                 savedRecipeViewModel.setProgress(15.2)
             }
-
             for (selector in ingredientsSelectors) {
                 withContext(Main) {
                     savedRecipeViewModel.setProgress(savedRecipeViewModel.progressBarValue.value!! + 1.7)
@@ -303,6 +303,7 @@ class AddRecipe : Fragment() {
                     break
                 }
             }
+            println("instructions before: $instructions")
             // Get recipe image if available
             recipeImgSrc = ""
             for (selector in imageSelectors) {
@@ -311,7 +312,6 @@ class AddRecipe : Fragment() {
                     withContext(Main) {
                         savedRecipeViewModel.setProgress(savedRecipeViewModel.progressBarValue.value!! + 1.7)
                     }
-                    instructions = doc.select(selector).map { it.text() }
                     recipeImgSrc = imgElement.attr("src")
                     if (recipeImgSrc.isNotEmpty()) {
                         withContext(Main) {
@@ -330,6 +330,8 @@ class AddRecipe : Fragment() {
             val formattedInstructions = instructions.joinToString("\n") { instruction ->
                 "${step++}. $instruction\n"
             }
+
+            println("instructions after: $formattedInstructions")
             withContext(Main) {
                 savedRecipeViewModel.setProgress(97.3)
             }

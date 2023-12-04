@@ -2,6 +2,8 @@ package com.example.cooksmart.ui.savedRecipes
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.Menu
@@ -27,6 +29,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 
 class AddRecipe : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
@@ -41,6 +44,41 @@ class AddRecipe : Fragment() {
     private var isFavorite : Boolean = false
     private var recipeLink: String = ""
     private var recipeImgSrc: String = ""
+    private lateinit var doc: Document
+    private val ingredientsSelectors = listOf(
+        "ul.wprm-recipe-ingredients li", // Default
+        "div.tasty-recipes-ingredients ul li", // Sally's Baking Addiction
+        "ul.mntl-structured-ingredients__list li p", // Allrecipes
+        "div.List-iSNGTT div.BaseText-ewhhUZ", // Epicurious
+        "ul.list-unstyled li.ingredient", // Tasty
+        "ul.ingredient-lists li", // Delish
+        "ul.recipe-ingredients__list li", // Taste of Home
+        "ul.ingredient-list li", // Food.com
+        "ul.structured-ingredients__list li p" // Simply Recipes & Serious Eats
+    )
+    private val instructionsSelectors = listOf(
+        "ul.wprm-recipe-instructions li", // Default popular
+        "div.tasty-recipes-instructions ol li", // Sally's Baking Addiction
+        "#mntl-sc-block_2-0 li p", // Allrecipes
+        "ol.InstructionGroupWrapper-bqiIwp.ccobUj li p", // Epicurious
+        "ol.prep-steps li", // Tasty
+        "ol.css-19p7hma.et3p2gv0 li", // Delish (doesn't work)
+        "ol.recipe-directions__list li", // Taste of Home
+        "ul.direction-list li", // Food.com
+        "ol#mntl-sc-block_3-0 li" // Simply Recipes & Serious Eats
+    )
+    private val imageSelectors = listOf(
+        "div.wprm-recipe-image img", // Default popular
+        "img[class*=wp-image-]", // Sally's Baking Addiction
+        "div.img-placeholder img", // Allrecipes
+        "img.ResponsiveImageContainer-eybHBd", // Epicurious (doesn't work)
+        "div.non-video picture img", // Tasty (when no video)
+        "div.css-p7qblm img", // Delish
+        "div.featured-container img.-image", // Taste of Home (when no video)
+        "div.primary-image img", // Food.com
+        "img.primary-image__image" // Simply Recipes & Serious Eats
+    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -189,32 +227,56 @@ class AddRecipe : Fragment() {
     }
 
     /**
-     * Uses jsoup to scrape webpage and parse recipe related information
+     * parseURL
+     * Description: Uses jsoup to scrape webpage and parse recipe related information
      */
     private fun parseURL(url: String) {
         CoroutineScope(IO).launch {
             // Use jsoup to scrape website from user URL
-            val doc = Jsoup.connect(url).get()
+            // Return if access error encountered
+            try {
+                doc = Jsoup.connect(url).get()
+            } catch (e: Exception) {
+                Handler(Looper.getMainLooper()).post{
+                    Toast.makeText(context, "Error retrieving recipe! Error: 403 - Access forbidden.", Toast.LENGTH_SHORT).show()
+                }
+                return@launch
+            }
+
             // Get the title of the recipe
             val title = doc.select("h1").text()
-            // Look for ingredient unordered lists
-            var ingredients = doc.select("ul.wprm-recipe-ingredients li").map { it.text()}
-            println(ingredients)
-            if (ingredients.isEmpty()) {
-                ingredients = doc.select("div.tasty-recipe-ingredients ul li, div.tasty-recipes-ingredients ul li").map { it.text() }
+
+            // Look for ingredients with the selectors
+            var ingredients: List<String> = emptyList()
+            for (selector in ingredientsSelectors) {
+                ingredients = doc.select(selector).map { it.text() }
+                if (ingredients.isNotEmpty()) {
+                    break
+                }
             }
-            // Look for instruction unordered and ordered lists
-            var instructions = doc.select("ul.wprm-recipe-instructions li").map { it.text()}
-            if (instructions.isEmpty()) {
-                instructions = doc.select("div.tasty-recipe-instructions ol li, div.tasty-recipes-instructions div.tasty-recipes-instructions-body ol li").map { it.text() }
+
+            // Look for instructions unordered and ordered lists from various recipe sites
+            // Check all the selectors for a match
+            var instructions: List<String> = emptyList()
+            for (selector in instructionsSelectors) {
+                instructions = doc.select(selector).map { it.text() }
+                if (instructions.isNotEmpty()) {
+                    break
+                }
             }
             // Get recipe image if available
             recipeImgSrc = ""
-            recipeImgSrc = doc.select("div.wprm-recipe-image img").attr("src")
-            if (recipeImgSrc.isEmpty()) {
-                recipeImgSrc = doc.select("div.tasty-recipes-image img").attr("src")
+            for (selector in imageSelectors) {
+                val imgElement = doc.select(selector).firstOrNull()
+                if (imgElement != null) {
+                    recipeImgSrc = imgElement.attr("src")
+                    if (recipeImgSrc.isNotEmpty()) {
+                        break
+                    }
+                }
             }
-//            println("IMAGE: $recipeImgSrc")
+
+            // Format the instructions to have step numbers and each step on a new line
             var step = 1
             val formattedInstructions = instructions.joinToString("\n") { instruction ->
                 "${step++}. $instruction\n"

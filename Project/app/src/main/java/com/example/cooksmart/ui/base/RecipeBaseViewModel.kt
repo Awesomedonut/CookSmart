@@ -156,7 +156,6 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
         if (_response?.value != null) {
             val image = _imageUrl.value ?: ""
-            Log.d("saveRecipe", image)
             val currentDate = System.currentTimeMillis()
             val formattedDate = ConvertUtils.longToDateString(currentDate)
             var title = "AutoGen$formattedDate"

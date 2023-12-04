@@ -11,22 +11,27 @@ import android.widget.ListView
 import com.example.cooksmart.R
 
 /**
- * Used when ingredients are added to the add recipes fragment
+ * Used when ingredients are added to the add/update recipe fragment
  * Updates the listview so users can see and edit previously added ingredients when
- * they're adding a custom recipe
+ * they're adding/updating a recipe
  */
 class RecipeIngredientAdapter(context: Context, private val ingredientsList: ArrayList<String>):
     ArrayAdapter<String>(context, R.layout.ingredient_listview_item, ingredientsList) {
     private var onDeleteClickListener: ((Int) -> Unit)? = null
 
+    /**
+     * Initiates the view for each row
+     */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val row = inflater.inflate(R.layout.ingredient_listview_item, parent, false)
 
         val rowEditText = row.findViewById<EditText>(R.id.editTextIngredient)
         val deleteButton = row.findViewById<Button>(R.id.deleteIngredient)
+        // Populate the row corresponding to the position of the ingredientsList item that matches
         rowEditText.setText(ingredientsList[position])
 
+        // Set the delete button listener for the row
         deleteButton.setOnClickListener {
             onDeleteClickListener?.invoke(position)
         }
@@ -47,6 +52,9 @@ class RecipeIngredientAdapter(context: Context, private val ingredientsList: Arr
         notifyDataSetChanged()
     }
 
+    /**
+     * Initiates the onClickListener
+     */
     fun setOnDeleteClickListener(listener: (Int) -> Unit) {
         onDeleteClickListener = listener
     }

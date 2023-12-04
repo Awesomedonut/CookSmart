@@ -1,8 +1,6 @@
 package com.example.cooksmart.ui.savedRecipes
 
-import android.net.Uri
 import android.os.Bundle
-import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
@@ -11,12 +9,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -27,10 +22,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.cooksmart.R
-import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.utils.ConvertUtils
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 
@@ -60,6 +53,7 @@ class ViewRecipe : Fragment() {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.update_delete_menu, menu)
 
+                // Set the heart icon to the correct state
                 favIcon = menu.findItem(R.id.fav_menu)
                 isFavorite = args.currentRecipe.isFavorite
 
@@ -82,13 +76,17 @@ class ViewRecipe : Fragment() {
                     // Delete dialog if user clicks delete button on menu toolbar
                     R.id.delete_menu -> deleteRecipe()
 
+                    // If user clicks on heart icon on menu bar
                     R.id.fav_menu -> {
+                        // Inverse the current state of the favorite boolean
                         isFavorite = !isFavorite
+                        // Set the respective heart icon (filled/unfilled)
                         if (isFavorite) {
                             favIcon.setIcon(R.drawable.favorite_icon)
                         } else {
                             favIcon.setIcon(R.drawable.favorite_icon_border)
                         }
+                        // Update the favorite bool in the database
                         updateFavorite()
                     }
 
@@ -107,47 +105,32 @@ class ViewRecipe : Fragment() {
         val ingredientsList = ConvertUtils.stringToArrayList(args.currentRecipe.ingredients)
         view.findViewById<TextView>(R.id.viewRecipeInstructions).text = args.currentRecipe.instructions
         val formattedIngredients = StringBuilder()
+        // Add dashes and a space for every item to display
         for (ingredient in ingredientsList) {
             formattedIngredients.append("- $ingredient\n")
         }
         view.findViewById<TextView>(R.id.viewRecipeIngredients).text = formattedIngredients.toString()
-//        view.findViewById<ImageView>(R.id.responseImage).setImageURI(args.currentRecipe.image)
 
+        // Display the recipe image if it has one
         Glide.with(this /* context */)
             .load(args.currentRecipe.image)
             .override(250, 250) // replace with desired dimensions
             .into(view.findViewById(R.id.responseImage))
-//        Glide.with(this).load(imageUrl).into(binding.responseImage)
-
-//        favoriteIcon = view.findViewById(R.id.viewRecipeFavoriteIcon)
-//
-//        // Set the favorite icon to filled or unfilled depending on currentRecipe isFavorite
-//        isFavorite = args.currentRecipe.isFavorite
-//        if (isFavorite) {
-//            favoriteIcon.setImageResource(R.drawable.favorite_icon)
-//        } else {
-//            favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
-//        }
-
-//        // Listen for clicks on the heart icon and if pressed, make isFavorite the opposite of current isFavorite state and update to database
-//        favoriteIcon.setOnClickListener {
-//            isFavorite = !isFavorite
-//            if (isFavorite) {
-//                favoriteIcon.setImageResource(R.drawable.favorite_icon)
-//            } else {
-//                favoriteIcon.setImageResource(R.drawable.favorite_icon_border)
-//            }
-//            updateFavorite()
-//        }
 
         return view
     }
 
+    /**
+     * Updates the current recipe's favorite status
+     */
     private fun updateFavorite() {
         // Check all fields have input and then save into database as Recipe entity
         recipeViewModel.updateIsFavorite(args.currentRecipe.id, isFavorite)
     }
 
+    /**
+     * Deletes the recipe from the data base if user clicks yes on dialog
+     */
     private fun deleteRecipe() {
         // Show alert dialog to confirm deletion or not
         val builder = AlertDialog.Builder(requireContext())
@@ -157,6 +140,7 @@ class ViewRecipe : Fragment() {
             // After deleting, go back to saved recipes fragment
             findNavController().navigate(R.id.action_navigation_view_recipe_to_navigation_saved_recipes)
         }
+        // Don't delete if they say no
         builder.setNegativeButton("No") { _, _ -> }
         builder.setTitle("Delete recipe?")
         builder.setMessage("Are you sure you want to remove ${args.currentRecipe.name} from your saved recipes?")

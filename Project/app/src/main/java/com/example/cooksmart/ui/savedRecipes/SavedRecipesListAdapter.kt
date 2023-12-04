@@ -6,13 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
-import com.example.cooksmart.utils.ConvertUtils
 
 /**
  * Shows each row in the recipe database in a RecyclerView
@@ -33,27 +31,27 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
         val currentRecipe = recipeList[position]
         // Display the row info
         holder.itemView.findViewById<TextView>(R.id.list_name).text = currentRecipe.name
-//        val date = currentRecipe.dateAdded
-//        val formattedDate = ConvertUtils.longToDateString(date)
-//        holder.itemView.findViewById<TextView>(R.id.list_date_added).text = formattedDate
+
+        // Set the recipe image in the row
         Glide.with(holder.itemView /* context */)
             .load(currentRecipe.image)
             .override(80, 80) // replace with desired dimensions
-            .into(holder.itemView.findViewById<ImageView>(R.id.responseImageRecipe))
+            .into(holder.itemView.findViewById(R.id.responseImageRecipe))
 
-        var favoriteIcon = holder.itemView.findViewById<ImageView>(R.id.list_isFavorite)
-        var borderFavIcon = holder.itemView.findViewById<ImageView>(R.id.list_isNotFavorite)
+        val favoriteIcon = holder.itemView.findViewById<ImageView>(R.id.list_isFavorite)
+        val borderFavIcon = holder.itemView.findViewById<ImageView>(R.id.list_isNotFavorite)
 
         if (currentRecipe.isFavorite) {
-            // Show the favorite icon
+            // Show the favorite icon if it's favorited
             borderFavIcon.visibility = View.GONE
             favoriteIcon.visibility = View.VISIBLE
         } else {
-            // Hide the favorite icon
+            // Hide the favorite icon if not favorited
             favoriteIcon.visibility = View.GONE
             borderFavIcon.visibility = View.GONE
         }
 
+        // Navigate to the respective recipe if recipe row clicked
         holder.itemView.findViewById<LinearLayout>(R.id.recipeRowLayout).setOnClickListener {
             val action = SavedRecipesFragmentDirections.actionNavigationSavedRecipesToNavigationViewRecipe(currentRecipe)
             holder.itemView.findNavController().navigate(action)

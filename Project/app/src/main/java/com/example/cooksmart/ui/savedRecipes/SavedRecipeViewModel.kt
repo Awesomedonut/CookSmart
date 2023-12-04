@@ -10,6 +10,9 @@ import com.example.cooksmart.database.RecipeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for coroutines to Recipe table in database
+ */
 class SavedRecipeViewModel(application: Application): AndroidViewModel(application) {
     val readAllRecipes: LiveData<List<Recipe>>
     private val repository: RecipeRepository

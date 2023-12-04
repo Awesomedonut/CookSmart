@@ -22,13 +22,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-
+/**
+ * Shows the SavedRecipesFragment, with the RecyclerView of recipes
+ */
 class SavedRecipesFragment : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
     private lateinit var adapter: SavedRecipesListAdapter
     private lateinit var searchView: SearchView
     private lateinit var recipeSpinner: Spinner
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,14 +44,16 @@ class SavedRecipesFragment : Fragment() {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.search_menu, menu)
                 searchView = menu.findItem(R.id.search_bar)?.actionView as SearchView
+                // Check if search button on menu is clicked
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    // Search for the query when submit is pressed
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         if (query != null) {
                             searchQuery(query)
                         }
                         return true
                     }
-
+                    // Search for the query while typing
                     override fun onQueryTextChange(newText: String?): Boolean {
                         if (newText != null) {
                             searchQuery(newText)
@@ -59,7 +62,6 @@ class SavedRecipesFragment : Fragment() {
                     }
                 })
             }
-
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // For handling other menu options (but we only have one)
                 return true
@@ -72,9 +74,10 @@ class SavedRecipesFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        // SavedRecipeViewModel init
         savedRecipeViewModel = ViewModelProvider(this)[SavedRecipeViewModel::class.java]
 
-        // Spinner
+        // Saved Recipe sort spinner
         val spinnerLists = resources.getStringArray(R.array.recipeSpinner)
         recipeSpinner = view.findViewById(R.id.spinner)
 
@@ -99,6 +102,7 @@ class SavedRecipesFragment : Fragment() {
                     savedRecipeViewModel.readAllRecipes.removeObservers(viewLifecycleOwner)
                     savedRecipeViewModel.getAllFavoriteRecipes().removeObservers(viewLifecycleOwner)
 
+                    // Perform different SQL queries to filter/sort the list
                     when (position) {
                         0 -> showAllRecipes()
                         1 -> showSavedRecipesSortedByDate()
@@ -108,7 +112,6 @@ class SavedRecipesFragment : Fragment() {
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    TODO("Not yet implemented")
                 }
             }
 
@@ -120,6 +123,9 @@ class SavedRecipesFragment : Fragment() {
         return view
     }
 
+    /**
+     * Searches the given string and sets the adapter to the matching recipe names
+     */
     private fun searchQuery(query: String) {
         // Search for the query with any surrounding letters
         val searchQuery = "%$query%"
@@ -130,11 +136,19 @@ class SavedRecipesFragment : Fragment() {
         }
     }
 
+    /**
+     * Show all the recipes in the adapter list
+     */
     private fun showAllRecipes(){
         savedRecipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
             adapter.setData(recipe)
         }
     }
+
+
+    /**
+     * Sort the recipes in the adapter list by name (A-Z)
+     */
     private fun showSavedRecipesSortedByName() {
         savedRecipeViewModel.getRecipesSortedByName().observe(viewLifecycleOwner) { list ->
             list?.let {
@@ -143,6 +157,9 @@ class SavedRecipesFragment : Fragment() {
         }
     }
 
+    /**
+     * Sort the recipes in the adapter list by date
+     */
     private fun showSavedRecipesSortedByDate() {
         savedRecipeViewModel.getRecipesSortedByDate().observe(viewLifecycleOwner) { list ->
             list?.let {
@@ -151,6 +168,9 @@ class SavedRecipesFragment : Fragment() {
         }
     }
 
+    /**
+     * Filter the recipes in the adapter list by if it's a favorite
+     */
     private fun showAllFavoriteRecipes() {
         savedRecipeViewModel.getAllFavoriteRecipes().observe(viewLifecycleOwner) { list ->
             list?.let {
@@ -158,5 +178,4 @@ class SavedRecipesFragment : Fragment() {
             }
         }
     }
-
 }

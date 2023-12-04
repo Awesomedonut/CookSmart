@@ -10,18 +10,24 @@ import android.content.Intent
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.util.Log
-import android.widget.ProgressBar
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import com.bumptech.glide.Glide
 import com.example.cooksmart.Constants.GENERATE_BUTTON_PREFIX
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
+import com.example.cooksmart.R
 import com.example.cooksmart.ui.base.RecipeBaseFragment
 import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
 import com.example.cooksmart.utils.DebouncedOnClickListener
@@ -34,14 +40,12 @@ class RecipeFragment : RecipeBaseFragment() {
     private val binding get() = _binding!!
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var ingredientsImgUri: Uri
-    private lateinit var progressBar: ProgressBar
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
-        progressBar = _binding!!.generationProgressBar
         cameraHandler.checkCameraPermission()
         val selectedIngredients = requireArguments().getString(SELECTED_INGREDIENTS)
         if (selectedIngredients != null) {
@@ -49,6 +53,24 @@ class RecipeFragment : RecipeBaseFragment() {
         }else{
             Log.d("RecipeFra-ingredientNamesString","nulnul")
         }
+
+        // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
+        val menuHost = requireActivity() as MenuHost
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.camera_menu, menu)
+            }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    // Perform camera operations
+                    R.id.camera_menu -> {
+                        changeIngrePhoto()
+                    }
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         initView()
         setupActivityResultLaunchers()
         setupOnClickListeners()
@@ -61,16 +83,15 @@ class RecipeFragment : RecipeBaseFragment() {
     }
 
     private fun setupActivityResultLaunchers() {
-        speechResultLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-                    result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                        ?.firstOrNull()?.let { spokenText ->
-                        Log.d("Recipe....", spokenText)
-                        recipebaseViewModel.appendInputValue(spokenText)
-                    }
+        speechResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    ?.firstOrNull()?.let { spokenText ->
+                    Log.d("Recipe....", spokenText)
+                    recipebaseViewModel.appendInputValue(spokenText)
                 }
             }
+        }
     }
 
     private fun setIngreImgUri() {
@@ -92,14 +113,13 @@ class RecipeFragment : RecipeBaseFragment() {
             dialog.isCancelable = false
             recipebaseViewModel.process(binding.buttonOption1.text.toString().replace(GENERATE_BUTTON_PREFIX,""))
             recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+                dialog.updateProgress(it)
                 val progressInt = it.toInt()
                 if(progressInt == 100){
                     dialog.dismiss()
                 }
             }
         }
-
-        binding.buttonVision.setOnClickListener { changeIngrePhoto() }
 
         binding.micImageView.setOnClickListener {
             mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
@@ -121,19 +141,11 @@ class RecipeFragment : RecipeBaseFragment() {
 
     override fun setupObservers() {
         super.setupObservers()
-
-        recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
-            val formattedValue = String.format("%.0f", it)
-            binding.progressBarValue.text = "$formattedValue %"
-            val progressInt = it.toInt()
-            progressBar.progress = progressInt
-        }
-
         recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 binding.buttonOption1.text = GENERATE_BUTTON_PREFIX + it
             } else
-                binding.buttonOption1.text = "$GENERATE_BUTTON_PREFIX Beef, Sweet Potatoes, eggs"
+                binding.buttonOption1.text = "$GENERATE_BUTTON_PREFIX Cheese, Ham, Eggs"
         }
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
@@ -164,8 +176,8 @@ class RecipeFragment : RecipeBaseFragment() {
                 || recipebaseViewModel.response.value?.isEmpty() == true) {
                 if (it)
                     binding.responseTextView.text =
-                        "Click the ingredients to give it a try, " +
-                                "or click the speaker icon to tell me what ingredients do you have"
+                        "Input ingredients using your voice by tapping the microphone button, or take a picture of your ingredients by tapping the camera icon." +
+                                "\nOnce your desired ingredients are shown, tap the generate button above!"
                 else
                     binding.responseTextView.text = "Loading, please wait"
             }

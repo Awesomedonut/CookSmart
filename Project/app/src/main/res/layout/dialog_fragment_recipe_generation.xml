@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true">
@@ -17,10 +20,43 @@
         android:id="@+id/tvDialogRecipeGeneration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Generating recipe! Please don't touch your screen"
+        android:fontFamily="@font/cabin"
+        android:text="Generating recipe! \nPlease don't touch your screen."
         android:textSize="18sp"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/dialogProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:minWidth="100dp"
+        android:minHeight="20dp"
+        android:progress="1"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvDialogRecipeGeneration"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/dialogProgressPercentage"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/dialogProgressPercentage"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cabin"
+        android:text="0%"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/tvDialogRecipeGeneration"
+        app:layout_constraintStart_toEndOf="@+id/dialogProgressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
         android:layout_below="@+id/tvTitleDialogRecipeGeneration"
         android:layout_margin="16dp"
         android:fontFamily="@font/cabin" />
-
-</RelativeLayout>

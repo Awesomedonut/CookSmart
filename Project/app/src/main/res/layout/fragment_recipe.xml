@@ -12,90 +12,57 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="2dp"
-        android:paddingEnd="18dp"
-        android:gravity="right"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="parent">
-        <ProgressBar
-            android:id="@+id/generationProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminate="false"
-            android:max="100"
-            android:minHeight="20dp"
-            android:minWidth="100dp"
-            android:progress="1" />
-        <TextView
-            android:id="@+id/progressBarValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0%"
-            android:textSize="18sp"
-            android:layout_margin="8dp"
-            android:fontFamily="@font/cabin" />
-        <ImageButton
-            android:id="@+id/buttonVision"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_photo_camera_24"
-            android:fontFamily="@font/raleway"
-            android:background="@drawable/button_background"
-            android:textColor="#FFFFFF"
-            android:padding="2dp"
-            android:layout_margin="8dp" />
         <Button
             android:id="@+id/buttonReset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Restart"
+            android:text="Reset"
             android:textSize="10sp"
-            android:background="@drawable/button_background"
-            android:textColor="#FFFFFF"
             android:padding="2dp"
+            android:fontFamily="@font/raleway"
+            android:backgroundTint="@color/design_default_color_error"
+            android:textColor="#FFFFFF"
             android:visibility="gone" />
-
     </LinearLayout>
-
     <Button
         android:id="@+id/buttonOption1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Beef, sweet potatoes, eggs"
+        android:text="Cheese, ham, eggs"
         android:fontFamily="@font/raleway"
         android:textSize="14sp"
         android:background="@drawable/button_background"
         android:textColor="#FFFFFF"
         android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/topButtonLayout"
+        app:layout_constraintEnd_toStartOf="@+id/micImageView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5" />
-
+        app:layout_constraintTop_toBottomOf="@+id/topButtonLayout"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/micImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:src="@drawable/baseline_mic_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonOption1" />
-
+        app:layout_constraintStart_toEndOf="@+id/buttonOption1"
+        app:layout_constraintTop_toBottomOf="@+id/topButtonLayout" />
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="40dp"
         app:layout_constraintTop_toBottomOf="@+id/micImageView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingBottom="40dp"
             android:padding="10dp">
-
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
@@ -124,8 +91,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_marginBottom="20dp" />
-
         </LinearLayout>
-
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

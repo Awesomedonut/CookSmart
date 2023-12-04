@@ -23,6 +23,7 @@ import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
 import com.example.cooksmart.Constants.PACKAGE_NAME
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
 import com.example.cooksmart.ui.base.RecipeBaseFragment
+import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
 import com.example.cooksmart.utils.DebouncedOnClickListener
 import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
@@ -34,6 +35,8 @@ class RecipeFragment : RecipeBaseFragment() {
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var ingredientsImgUri: Uri
     private lateinit var progressBar: ProgressBar
+
+    private var genStart = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,6 +90,7 @@ class RecipeFragment : RecipeBaseFragment() {
 
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
             recipebaseViewModel.process(binding.buttonOption1.text.toString().replace(GENERATE_BUTTON_PREFIX,""))
+            genStart = true
         }
 
         binding.buttonVision.setOnClickListener { changeIngrePhoto() }

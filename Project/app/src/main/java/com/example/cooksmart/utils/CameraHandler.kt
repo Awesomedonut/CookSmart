@@ -16,6 +16,7 @@ import android.Manifest
 import android.app.Activity
 import android.graphics.Bitmap
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 
 class CameraHandler(private val fragment: Fragment) {
@@ -43,6 +44,8 @@ class CameraHandler(private val fragment: Fragment) {
     }
 
     fun openCamera() {
+        Toast.makeText(fragment.context, "Capturing the ingredients you currently have", Toast.LENGTH_SHORT)
+            .show()
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, ingredientsImgUri)
         takePhotoLauncher.launch(cameraIntent)
@@ -52,10 +55,15 @@ class CameraHandler(private val fragment: Fragment) {
         val takePhotoActivityResult = ActivityResultContracts.StartActivityForResult()
         takePhotoLauncher = fragment.registerForActivityResult(takePhotoActivityResult) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
+                Toast.makeText(fragment.context, "Got your photo, I am looking at it", Toast.LENGTH_SHORT)
+                    .show()
                 val bitmap = BitmapHelper.getBitmap(fragment.requireContext(), ingredientsImgUri)
                 if (bitmap != null && bitmap.width > 0 && bitmap.height > 0) {
                     onImageReady(bitmap)
                 }
+            }else{
+                Toast.makeText(fragment.context, "Please try again", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

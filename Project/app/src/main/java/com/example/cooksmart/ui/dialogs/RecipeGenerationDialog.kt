@@ -19,7 +19,6 @@ class RecipeGenerationDialog : DialogFragment() {
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.dialog_fragment_recipe_generation, null)
         val builder = AlertDialog.Builder(requireActivity())
-        builder.setTitle("Loading...")
         builder.setView(view)
 
         progressPercent = view.findViewById(R.id.dialogProgressPercentage)

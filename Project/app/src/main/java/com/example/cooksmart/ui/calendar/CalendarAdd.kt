@@ -1,3 +1,9 @@
+/** "CalendarAdd.kt"
+ *  Description: Allows users to add a plan or update a given plan
+ *               depending on the boolean value detected. Allows
+ *               users to input a plan for a given date.
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.ui.calendar
 
 import android.content.Context
@@ -22,18 +28,14 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+// Constants
 private const val COOKSMART = "COOKSMART"
 private const val DATE_KEY = "DATE KEY"
 private const val CALENDAR_PLAN_EXISTS_KEY = "CALENDAR_PLAN_EXISTS_KEY"
 
 class CalendarAdd: Fragment() {
     private lateinit var view: View
-
-    private lateinit var ingredientViewModel: IngredientViewModel
-    private lateinit var ingredientList : ArrayList<Ingredient>
-
     private lateinit var calendarViewModel : CalendarViewModel
-
     private lateinit var sharedPreferences: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +44,7 @@ class CalendarAdd: Fragment() {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_calendar_add, container, false)
 
+        // Initialize shared preference items
         sharedPreferences = requireActivity().getSharedPreferences(COOKSMART, Context.MODE_PRIVATE)
         val date = sharedPreferences.getLong(DATE_KEY, 0L)
         val planExists = sharedPreferences.getBoolean(CALENDAR_PLAN_EXISTS_KEY, false)
@@ -53,38 +56,33 @@ class CalendarAdd: Fragment() {
             Locale.getDefault())
         tvDate.text = formattedDate
 
-        // Initialize buttons
+        // Initialize calendarViewModel
         calendarViewModel = ViewModelProvider(this)[CalendarViewModel::class.java]
+
+        // Initialize buttons
         initButtons(view, formattedDate, calendarViewModel, planExists)
+
+        // If a plan exists, replace the necessary information
+        if(planExists){
+            val planText : EditText = view.findViewById(R.id.etCalendarPlan)
+            calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){calendars ->
+                if (calendars.isNotEmpty() && calendars != null){
+                    for(element in calendars){
+                        if(element.date == formattedDate){
+                            planText.setText(element.plan)
+                        }
+                    }
+                }
+            }
+
+        }
 
         return view
     }
 
-    private fun initDataFromCalendar(view : View, calendarViewModel: CalendarViewModel, formattedDate: String, sharedPreferences: SharedPreferences) {
-        calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){ calendars ->
-            if (calendars != null && calendars.isNotEmpty()) {
-                var found = false
-                val planText: EditText = view.findViewById(R.id.etCalendarPlan)
-                for (element in calendars) {
-                    if (element.date == formattedDate) {
-                        planText.setText(element.plan)
-                        found = true
-                    }
-                }
-                if (!found){
-                    planText.setHint(R.string.hint_plan)
-                }
-            }
-        }
-        // reset shared preference value
-        val editor = sharedPreferences.edit()
-        if (editor != null) {
-            editor.putBoolean(CALENDAR_PLAN_EXISTS_KEY, false)
-            editor.apply()
-        }
-
-    }
-
+    /** "initButtons"
+     *   Description: Initialize actions for buttons
+     * */
     private fun initButtons(view: View, date : String, calendarViewModel : CalendarViewModel, planExists : Boolean) {
         val btnCancel : Button = view.findViewById(R.id.btnAddPlanCancel)
         btnCancel.setOnClickListener{
@@ -94,21 +92,37 @@ class CalendarAdd: Fragment() {
         val btnSave : Button = view.findViewById(R.id.btnAddPlanSave)
         btnSave.setOnClickListener{
             if(planExists){
-                updateCalendarObject(calendarViewModel, date)
+                // If a plan exists, delete the current calendar object and replace it with the current object
+                deleteCalendarObject(calendarViewModel, date)
             }
+            // Find data and create a calendar object
             val etPlan: EditText = view.findViewById(R.id.etCalendarPlan)
             val planString = etPlan.text.toString()
             val newCal = com.example.cooksmart.database.Calendar(0, date, planString)
+
+            // Insert the calendar object and inform the user
             calendarViewModel.insertCalendar(newCal)
             if(!planExists){
                 Toast.makeText(requireContext(), "Calendar plan added!", Toast.LENGTH_SHORT).show()
+            } else{
+                Toast.makeText(requireContext(), "Calendar plan updated!", Toast.LENGTH_SHORT).show()
             }
+
+            // Reset the boolean value
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(CALENDAR_PLAN_EXISTS_KEY, false)
+            editor.apply()
+
+            // Navigate back to the calendar page
             findNavController().navigate(R.id.action_navigation_calendar_add_to_navigation_calendar)
         }
 
     }
 
-    private fun updateCalendarObject(calendarViewModel: CalendarViewModel, date: String){
+    /** "deleteCalendarObject"
+     *  Description: Deletes a calendar object by matching to its date string in the database
+     * */
+    private fun deleteCalendarObject(calendarViewModel: CalendarViewModel, date: String){
         calendarViewModel.readAllCalendar.observe(viewLifecycleOwner){calendars ->
             if (calendars.isNotEmpty() && calendars != null){
                 for(element in calendars){
@@ -118,10 +132,5 @@ class CalendarAdd: Fragment() {
                 }
             }
         }
-        Toast.makeText(requireContext(), "Calendar plan updated!", Toast.LENGTH_SHORT).show()
-    }
-
-    fun convertCalendartoLong(calendar : Calendar): Long {
-        return calendar.timeInMillis
     }
 }

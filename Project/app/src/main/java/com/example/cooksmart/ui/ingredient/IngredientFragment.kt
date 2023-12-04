@@ -1,7 +1,5 @@
 package com.example.cooksmart.ui.ingredient
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,12 +25,8 @@ import com.example.cooksmart.R
 import com.example.cooksmart.databinding.FragmentIngredientBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
-import com.example.cooksmart.Constants
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
-import com.example.cooksmart.utils.PermissionCheck
 
 class IngredientFragment : Fragment() {
 
@@ -195,6 +189,4 @@ class IngredientFragment : Fragment() {
             }
         }
     }
-
-
 }

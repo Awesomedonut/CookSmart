@@ -82,7 +82,7 @@ class UpdateRecipe : Fragment() {
         val isFavorite = args.currentRecipe.isFavorite
         val ingredients = ingredientsList.toString()
         val instructions = view.findViewById<EditText>(R.id.recipe_instructions_update).text.toString()
-        val currentDate = System.currentTimeMillis()
+        val currentDate = args.currentRecipe.dateAdded
         // Check all fields have input and then save into database as Recipe entity
         if (!isNotValidInput(title, ingredientsList, instructions)) {
             val recipe = Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite)

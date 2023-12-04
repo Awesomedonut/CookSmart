@@ -132,7 +132,7 @@ class IngredientUpdate : Fragment() {
         val name = view.findViewById<EditText>(R.id.update_name_ingredient).text.toString()
         val quantity = view.findViewById<EditText>(R.id.update_quantity).text.toString()
         val quantityType = view.findViewById<Spinner>(R.id.update_quantityType).selectedItem.toString()
-        val currentDate = System.currentTimeMillis()
+        val currentDate = args.currentIngredient.dateAdded
         val bestBefore = selectedDate.timeInMillis
         var notifID = args.currentIngredient.notifId
         // Schedule a notification for the day before expected expiry

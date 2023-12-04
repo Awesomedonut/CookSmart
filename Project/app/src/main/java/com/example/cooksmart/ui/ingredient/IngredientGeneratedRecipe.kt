@@ -18,7 +18,6 @@ import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
 class IngredientGeneratedRecipe : RecipeBaseFragment() {
     private val args by navArgs<IngredientGeneratedRecipeArgs>()
     private var _binding: FragmentIngredientGeneratedRecipeBinding? = null
-    private lateinit var progressBar: ProgressBar
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +29,6 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         val ingredientNamesString = ingredientNames?.joinToString(", ")
 
         _binding = FragmentIngredientGeneratedRecipeBinding.inflate(inflater, container, false)
-        progressBar = _binding!!.generationProgressBar
 
         initView()
         setupObservers()
@@ -48,10 +46,8 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         dialog.show(requireActivity().supportFragmentManager, RecipeGenerationDialog.TAG)
         dialog.isCancelable = false
         recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
-            val formattedValue = String.format("%.0f", it)
-            binding.progressPercentage.text = "$formattedValue %"
+            dialog.updateProgress(it)
             val progressInt = it.toInt()
-            progressBar.progress = progressInt
             if(progressInt == 100){
                 dialog.dismiss()
             }

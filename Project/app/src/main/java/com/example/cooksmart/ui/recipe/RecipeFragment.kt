@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -23,7 +22,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.cooksmart.Constants.GENERATE_BUTTON_PREFIX
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
@@ -32,12 +30,8 @@ import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
 import com.example.cooksmart.R
 import com.example.cooksmart.ui.base.RecipeBaseFragment
 import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
-import com.example.cooksmart.ui.savedRecipes.ViewRecipeDirections
 import com.example.cooksmart.utils.DebouncedOnClickListener
 import com.example.cooksmart.utils.SpeechIntentHelper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 
 class RecipeFragment : RecipeBaseFragment() {
@@ -46,14 +40,12 @@ class RecipeFragment : RecipeBaseFragment() {
     private val binding get() = _binding!!
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var ingredientsImgUri: Uri
-    private lateinit var progressBar: ProgressBar
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
-        progressBar = _binding!!.generationProgressBar
         cameraHandler.checkCameraPermission()
         val selectedIngredients = requireArguments().getString(SELECTED_INGREDIENTS)
         if (selectedIngredients != null) {
@@ -121,6 +113,7 @@ class RecipeFragment : RecipeBaseFragment() {
             dialog.isCancelable = false
             recipebaseViewModel.process(binding.buttonOption1.text.toString().replace(GENERATE_BUTTON_PREFIX,""))
             recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
+                dialog.updateProgress(it)
                 val progressInt = it.toInt()
                 if(progressInt == 100){
                     dialog.dismiss()
@@ -148,14 +141,6 @@ class RecipeFragment : RecipeBaseFragment() {
 
     override fun setupObservers() {
         super.setupObservers()
-
-        recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
-            val formattedValue = String.format("%.0f", it)
-            binding.progressBarValue.text = "$formattedValue %"
-            val progressInt = it.toInt()
-            progressBar.progress = progressInt
-        }
-
         recipebaseViewModel.input.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 binding.buttonOption1.text = GENERATE_BUTTON_PREFIX + it

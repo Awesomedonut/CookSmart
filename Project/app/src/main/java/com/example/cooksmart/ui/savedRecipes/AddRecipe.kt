@@ -53,7 +53,7 @@ class AddRecipe : Fragment() {
         "ul.wprm-recipe-ingredients li", // Default
         "div.tasty-recipes-ingredients ul li", // Sally's Baking Addiction
         "ul.mntl-structured-ingredients__list li p", // Allrecipes
-        "div.List-iSNGTT div.BaseText-ewhhUZ", // Epicurious
+        "div.List-iSNGTT > *", // Bon Appetit & Epicurious
         "ul.list-unstyled li.ingredient", // Tasty
         "ul.ingredient-lists li", // Delish
         "ul.recipe-ingredients__list li", // Taste of Home
@@ -287,6 +287,7 @@ class AddRecipe : Fragment() {
                 }
                 ingredients = doc.select(selector).map { it.text() }
                 if (ingredients.isNotEmpty()) {
+                    println("ingredients selector: $selector")
                     break
                 }
             }
@@ -300,10 +301,11 @@ class AddRecipe : Fragment() {
                 }
                 instructions = doc.select(selector).map { it.text() }
                 if (instructions.isNotEmpty()) {
+                    println("instructions selector: $selector")
                     break
                 }
             }
-            println("instructions before: $instructions")
+
             // Get recipe image if available
             recipeImgSrc = ""
             for (selector in imageSelectors) {
@@ -331,7 +333,6 @@ class AddRecipe : Fragment() {
                 "${step++}. $instruction\n"
             }
 
-            println("instructions after: $formattedInstructions")
             withContext(Main) {
                 savedRecipeViewModel.setProgress(97.3)
             }

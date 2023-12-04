@@ -9,10 +9,9 @@ Hello, we are group 15 in SFU CMPT 362 2023 Fall and we developed an application
 5. Efficient Recipe Search and Sorting: Our app provides a user-friendly interface for searching and sorting recipes, enhancing the overall user experience
 
 # MVVM diagram
-ADD PICTURE LATER
-
+![image](https://github.com/Awesomedonut/CookSmart/assets/79778466/dfdd2fe3-c2a7-41f7-93c5-bc147d2a070b)
 # Thread diagram
-ADD PICTURE LATER
+![image](https://github.com/Awesomedonut/CookSmart/assets/79778466/9006966b-4729-443d-8dea-74da48026c5e)
 
 # What we did in Show_and_Tell_1
 1. Established three main fragments: ingredients, recipes, and calendar

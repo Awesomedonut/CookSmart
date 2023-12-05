@@ -1,9 +1,9 @@
 # CookSmart
-Hello, we are group 15 in SFU CMPT 362 2023 Fall and we developed an application called CookSmart. This innovative app is designed to assist users in tracking and creating recipes based on their existing ingredients. 
+Hello, we are group 15 of **SFU CMPT 362 Fall 2023** and we developed an application called CookSmart. This innovative app is designed to assist users in tracking and creating recipes based on their existing ingredients. 
 
 # Features overview
-1. Calendar Functionality: Our app boasts a comprehensive calendar with advanced features such as expiry day checking, notification scheduling, and free-planning components.
-2. AI Recipe Generation: CookSmart incorporates cutting-edge AI technology for recipe generation. Users can input ingredients via selection, voice commands, or even images, making recipe creation a breeze 
+1. AI Recipe Generation: CookSmart incorporates cutting-edge AI technology for recipe generation. Users can input ingredients via selection, voice commands, or even images, making recipe creation a breeze 
+2. Calendar Functionality: Our app boasts a comprehensive calendar with advanced features such as expiry day checking, notification scheduling, and free-planning components.
 3. Intuitive UI Design: We prioritized an easy-to-understand and clear user interface, ensuring a seamless and enjoyable experience for our users 
 4. Personal Recipe Management: Users can add their own recipes and mark favorites for quick access. The app also allows for easy updating of recipe information
 5. Efficient Recipe Search and Sorting: Our app provides a user-friendly interface for searching and sorting recipes, enhancing the overall user experience
@@ -35,7 +35,7 @@ Hello, we are group 15 in SFU CMPT 362 2023 Fall and we developed an application
 9. Audio stream integration for an enhanced user experience.
 10. Optimization of image generation.
 
-# What we did in the final
+# What we did for the final project
 1. Enhanced user interface for improved clarity and aesthetics.
 2. Improved quantity management by separating it into distinct fields for quantity and unit.
 3. Added permission settings for voice-inputted recipe fragments.
@@ -45,7 +45,7 @@ Hello, we are group 15 in SFU CMPT 362 2023 Fall and we developed an application
 7. Implemented notification feature for the calendar fragment.
 
 
-###  Contributor
+###  Contributors
 1. Sarah Li
 2. Amanada Ngo
 3. Haruka Mibuchi

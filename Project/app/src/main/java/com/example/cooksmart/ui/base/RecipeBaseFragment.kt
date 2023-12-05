@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
 import com.example.cooksmart.utils.AudioPlaybackCallback
@@ -19,7 +20,6 @@ open class RecipeBaseFragment() : Fragment() {
 
     protected fun initView(){
         initializeRecipeViewModel()
-        cameraHandler.checkCameraPermission()
         cameraHandler.setUpPhotoLauncher {
             recipebaseViewModel.analyzeImage(it)
         }
@@ -47,6 +47,8 @@ open class RecipeBaseFragment() : Fragment() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 cameraHandler.openCamera()
             }
+        } else {
+            Toast.makeText(requireContext(), "Please enable camera permissions!", Toast.LENGTH_SHORT).show()
         }
     }
 

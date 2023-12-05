@@ -1,3 +1,8 @@
+/** "IngredientAdd.kt"
+ *  Description: Allows users to create an ingredient and insert it into
+ *               the ingredient table in the database.
+ *  Last Modified: November 30, 2023
+ * */
 package com.example.cooksmart.ui.ingredient
 
 import android.app.DatePickerDialog
@@ -7,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.SpinnerAdapter
@@ -29,6 +35,7 @@ import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class IngredientAdd : Fragment() {
@@ -39,6 +46,7 @@ class IngredientAdd : Fragment() {
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var view: View
     private lateinit var selectedDate: Calendar
+    private lateinit var wantNotif : CheckBox
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +56,7 @@ class IngredientAdd : Fragment() {
         view = inflater.inflate(R.layout.fragment_ingredient_insert, container, false)
         val confirmButton = view.findViewById<Button>(R.id.button_confirm)
         val editDate = view.findViewById<Button>(R.id.best_before_date_picker)
+        wantNotif = view.findViewById<CheckBox>(R.id.notificationCheckbox)
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
 
@@ -77,6 +86,8 @@ class IngredientAdd : Fragment() {
             datePickerDialog()
         }
 
+
+        // Set up the confirmation button
         confirmButton.setOnClickListener {
             insertIngredient()
         }
@@ -107,17 +118,22 @@ class IngredientAdd : Fragment() {
         val quantityType = view.findViewById<Spinner>(R.id.quantityType).selectedItem.toString()
         val currentDate = System.currentTimeMillis()
         val bestBefore = selectedDate.timeInMillis
-
-        // Add notification to the queue
-        var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
-        if(daysToExpiry < 0){
-            daysToExpiry = 0
+        var notifID : UUID? = null
+        // If the user would like a notification, schedule a notification to be sent
+        // a day before the expiry date
+        if(wantNotif.isChecked) {
+            // Add notification to the queue
+            var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
+            // If the ingredient is already expired, immediately send a notification
+            if (daysToExpiry < 0) {
+                daysToExpiry = 0
+            }
+            val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
+                .setInitialDelay(daysToExpiry, TimeUnit.DAYS)
+                .build()
+            WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
+            notifID = notificationWorkReq.id
         }
-        val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
-            .setInitialDelay(daysToExpiry, TimeUnit.DAYS)
-            .build()
-        WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
-        val notifID = notificationWorkReq.id
 
         if (!isNotValidInput(name, quantity)) {
             val ingredient = Ingredient(0, name, category, quantity, quantityType, currentDate, bestBefore, notifID)

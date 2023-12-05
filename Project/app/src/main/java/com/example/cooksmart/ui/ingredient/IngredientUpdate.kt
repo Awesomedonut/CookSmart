@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.SpinnerAdapter
@@ -37,6 +38,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class IngredientUpdate : Fragment() {
@@ -47,6 +49,7 @@ class IngredientUpdate : Fragment() {
     private lateinit var view: View
     private lateinit var selectedDate: Calendar
     private lateinit var ingredientViewModel: IngredientViewModel
+    private lateinit var wantNotif : CheckBox
     private val args by navArgs<IngredientUpdateArgs>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +60,7 @@ class IngredientUpdate : Fragment() {
 
         val confirmButton = view.findViewById<Button>(R.id.update_button_confirm)
         val editDate = view.findViewById<Button>(R.id.update_best_before_date_picker)
+        wantNotif = view.findViewById(R.id.notificationCheckboxUpdate)
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
         // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
@@ -120,6 +124,10 @@ class IngredientUpdate : Fragment() {
         val date = args.currentIngredient.bestBefore
         val formattedDate = ConvertUtils.longToDateString(date)
         view.findViewById<TextView>(R.id.update_date_input_current).text = formattedDate
+        val notifId = args.currentIngredient.notifId
+        if(notifId != null){
+            wantNotif.isChecked = true
+        }
 
         return view
     }
@@ -134,20 +142,32 @@ class IngredientUpdate : Fragment() {
         val quantityType = view.findViewById<Spinner>(R.id.update_quantityType).selectedItem.toString()
         val currentDate = args.currentIngredient.dateAdded
         val bestBefore = selectedDate.timeInMillis
-        var notifID = args.currentIngredient.notifId
+        var notifID : UUID? = args.currentIngredient.notifId
         // Schedule a notification for the day before expected expiry
-        var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
-        if(daysToExpiry < 0){
-            daysToExpiry = 0
+        if(wantNotif.isChecked) {
+            var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
+            if (daysToExpiry < 0) {
+                daysToExpiry = 0
+            }
+            val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
+                .setInitialDelay(0, TimeUnit.DAYS)
+                .build()
+            // If a notification exists,
+            // cancel the previous notification and queue a new one, replacing
+            // the field in the ingredient
+            if (notifID != null) {
+                WorkManager.getInstance(requireContext()).cancelWorkById(notifID)
+            }
+            WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
+            notifID = notificationWorkReq.id
         }
-        val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
-            .setInitialDelay(daysToExpiry, TimeUnit.DAYS)
-            .build()
-        // Cancel the previous notification and queue a new one, replacing
-        // the field in the ingredient
-        WorkManager.getInstance(requireContext()).cancelWorkById(notifID)
-        WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
-        notifID = notificationWorkReq.id
+        // If the user no longer wants a notification, cancel the notification
+        else if(!wantNotif.isChecked){
+            if (notifID != null) {
+                WorkManager.getInstance(requireContext()).cancelWorkById(notifID)
+                notifID = null
+            }
+        }
         // Checks if the fields are filled, if not, don't do anything, otherwise, update the ingredient in the database
         if (!isNotValidInput(name, quantity)) {
             val updatedIngredient = Ingredient(args.currentIngredient.id, name, category, quantity, quantityType, currentDate, bestBefore, notifID)

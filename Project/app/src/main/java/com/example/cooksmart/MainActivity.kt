@@ -57,37 +57,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
         // Check and request microphone permission in IngredientFragment
-        checkAndRequestPermission()
-
-    }
-
-    // Function to check and request microphone and notification permission
-    private fun checkAndRequestPermission(): Boolean {
-        var allowed = false
-        val recordAudioPermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.RECORD_AUDIO
-        )
-
-        val notificationPermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.POST_NOTIFICATIONS
-        )
-        if (recordAudioPermission + notificationPermission != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.POST_NOTIFICATIONS),
-                Constants.PERMISSION_REQUEST_CODE  // Corrected: Changed from CAMERA to RECORD_AUDIO
-            )
-        } else {
-            allowed = true
-        }
-        return allowed
         PermissionCheck.checkPermissions(this)
 
     }
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         return navController.navigateUp() || super.onSupportNavigateUp()

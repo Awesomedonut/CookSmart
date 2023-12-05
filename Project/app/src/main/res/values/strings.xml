@@ -69,5 +69,6 @@
     <string name="update_recipe">Update Recipe</string>
     <string name="generate_recipe">Generate Recipe</string>
     <string name="add_recipe">Add Recipe</string>
+    <string name="notif_opt">Send me a notification when my ingredient is near expiry</string>
 
 </resources>

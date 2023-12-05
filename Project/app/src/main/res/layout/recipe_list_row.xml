@@ -14,7 +14,8 @@
         android:layout_height="80dp"
         android:layout_marginRight="20dp"
         android:adjustViewBounds="true"
-        android:contentDescription="Recipe image" />
+        android:contentDescription="Recipe image"
+        android:src="@drawable/default_image"/>
 
     <TextView
         android:id="@+id/list_name"

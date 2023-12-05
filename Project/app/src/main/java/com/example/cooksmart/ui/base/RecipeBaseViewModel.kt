@@ -120,6 +120,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     }
 
     private fun fetchImageUrl(question: String, promptId: Int) {
+        Log.d("BaseViewModel", question)
         if (promptId != _promptId.value!!)
             return
         val openAI = OpenAIProvider.instance
@@ -139,6 +140,11 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     }
 
     private fun loadImage(url: String?, promptId: Int) {
+        if (url != null) {
+            Log.d("BaseViewModel:loadImage", url)
+        }else{
+            Log.d("BaseViewModel:loadImage", "null")
+        }
         CoroutineScope(Dispatchers.Main).launch {
             if (promptId == _promptId.value!!) {
                 _imageUrl.value = url ?: ""

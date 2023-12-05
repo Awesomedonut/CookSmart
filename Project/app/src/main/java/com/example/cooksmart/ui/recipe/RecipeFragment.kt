@@ -229,6 +229,7 @@ class RecipeFragment : RecipeBaseFragment() {
 
 
     private fun animateButton(button: Button) {
+        Log.d("ReciFragment", "animate...")
         ObjectAnimator.ofInt(button, "backgroundColor",
             Color.WHITE, Color.YELLOW, Color.WHITE).apply {
             duration = 500 // duration of the flash effect

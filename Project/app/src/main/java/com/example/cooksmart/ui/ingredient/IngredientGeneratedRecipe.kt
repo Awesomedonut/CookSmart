@@ -79,6 +79,7 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
 
         // Creates an image for the generated recipe
         recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
+            Log.d("GeneratedRecipe", imageUrl)
             if (imageUrl.isEmpty()) {
                 binding.responseImage.isVisible = false
             } else {

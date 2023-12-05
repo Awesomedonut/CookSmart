@@ -14,7 +14,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Ingredient::class, Recipe::class, Calendar::class], version = 1)
+@Database(entities = [Ingredient::class, Recipe::class, Calendar::class], version = 2)
 abstract class CookSmartDatabase : RoomDatabase() {
     abstract fun ingredientDao(): IngredientDao
     abstract fun recipeDao(): RecipeDao

@@ -56,6 +56,8 @@ class IngredientAdd : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_ingredient_insert, container, false)
+
+        // Locate UI components
         val confirmButton = view.findViewById<Button>(R.id.button_confirm)
         val editDate = view.findViewById<Button>(R.id.best_before_date_picker)
         wantNotif = view.findViewById<CheckBox>(R.id.notificationCheckbox)
@@ -148,6 +150,7 @@ class IngredientAdd : Fragment() {
             val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
                 .setInitialDelay(daysToExpiry, TimeUnit.DAYS)
                 .build()
+            // Built from: https://developer.android.com/guide/background/persistent/getting-started/define-work
             WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
             notifID = notificationWorkReq.id
         }

@@ -28,8 +28,11 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import com.bumptech.glide.Glide
+import com.example.cooksmart.Constants.DEFAULT_INSTRUCTION
 import com.example.cooksmart.Constants.GENERATE_BUTTON_PREFIX
+import com.example.cooksmart.Constants.GREETINGS
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
+import com.example.cooksmart.Constants.LOADING
 import com.example.cooksmart.Constants.PACKAGE_NAME
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
 import com.example.cooksmart.R
@@ -154,7 +157,8 @@ class RecipeFragment : RecipeBaseFragment() {
         observeInfo()
         observeImageUrl()
         observePlayerLoaded()
-        recipebaseViewModel.initAudioUrl("hello how may I help you?")
+        val randomGreeting = GREETINGS.random()
+        recipebaseViewModel.initAudioUrl(randomGreeting)
     }
 
     private fun observeInput() {

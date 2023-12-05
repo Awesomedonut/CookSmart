@@ -1,3 +1,7 @@
+/** "Constants.kt"
+ *  Description: An object which holds constants used by the project
+ *  Last Modified: December 5, 2023
+ * */
 package com.example.cooksmart
 
 object Constants {

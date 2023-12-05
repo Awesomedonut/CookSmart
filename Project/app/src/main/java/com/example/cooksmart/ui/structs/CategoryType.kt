@@ -1,3 +1,8 @@
+/** "CategoryType.kt"
+ *  Description: An enum object used for the ingredient type
+ *               Spinner in the ingredient insert/update fragments.
+ *  Last Modified: November 27, 2023
+ * */
 package com.example.cooksmart.ui.structs
 
 enum class CategoryType (val asInt:Int, val asString:String){

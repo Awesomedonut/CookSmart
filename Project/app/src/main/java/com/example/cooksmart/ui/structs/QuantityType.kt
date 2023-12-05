@@ -1,3 +1,8 @@
+/** "QuantityType.kt"
+ *  Description: An enum object used for the quantity
+ *               Spinner in the ingredient insert/update fragments.
+ *  Last Modified: November 30, 2023
+ * */
 package com.example.cooksmart.ui.structs
 
 enum class QuantityType (val asInt:Int, val asString:String){

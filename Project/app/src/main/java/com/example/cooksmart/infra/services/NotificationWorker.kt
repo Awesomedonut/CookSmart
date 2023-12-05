@@ -1,3 +1,8 @@
+/** "NotificationWorker.kt"
+ *  Description: A worker class which builds a notification with the notification
+ *               helper class
+ *  ast Modified: November 29, 2023L
+ * */
 package com.example.cooksmart.infra.services
 
 import android.content.Context

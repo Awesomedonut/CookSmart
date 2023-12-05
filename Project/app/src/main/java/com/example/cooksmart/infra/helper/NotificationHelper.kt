@@ -1,3 +1,8 @@
+ /** "NotificationHelper.kt"
+ *   Description: Helper class which retrieves the notification manager and builds
+ *                a notification
+ *   Last Modified: November 29, 2023
+ * */
 package com.example.cooksmart.infra.services.helper
 
 import android.app.NotificationChannel

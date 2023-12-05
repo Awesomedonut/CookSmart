@@ -8,6 +8,9 @@ package com.example.cooksmart.ui.ingredient
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -18,7 +21,10 @@ import android.widget.Spinner
 import android.widget.SpinnerAdapter
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.work.OneTimeWorkRequestBuilder
@@ -48,7 +54,8 @@ class IngredientAdd : Fragment() {
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var view: View
     private lateinit var selectedDate: Calendar
-    private lateinit var wantNotif : CheckBox
+    private lateinit var notifyIcon : MenuItem
+    private var isNotified = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +67,38 @@ class IngredientAdd : Fragment() {
         // Locate UI components
         val confirmButton = view.findViewById<Button>(R.id.button_confirm)
         val editDate = view.findViewById<Button>(R.id.best_before_date_picker)
-        wantNotif = view.findViewById<CheckBox>(R.id.notificationCheckbox)
+
+        // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
+        val menuHost = requireActivity() as MenuHost
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.notification_menu, menu)
+                // Set the notification icon to the correct state
+                notifyIcon = menu.findItem(R.id.notification_menu)
+            }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.notification_menu -> {
+                        // Inverse the current state of the isNotified boolean
+                        isNotified = !isNotified
+                        // Check that a user gave notification permission if they want notifications
+                        if(isNotified && !PermissionCheck.checkNotificationPermission(requireActivity())){
+                            Toast.makeText(requireContext(), "Please give CookSmart notification permissions to use this feature!", Toast.LENGTH_SHORT).show()
+                            isNotified = false
+                        }
+                        // Set the respective bell icon (filled/unfilled)
+                        if (isNotified) {
+                            notifyIcon.setIcon(R.drawable.baseline_notifications_active_24)
+                        } else {
+                            notifyIcon.setIcon(R.drawable.baseline_notifications_none_24)
+                        }
+                    }
+                    // Go back to previous page if user clicks back button on menu toolbar
+                    android.R.id.home -> findNavController().navigateUp()
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
 
@@ -93,15 +131,6 @@ class IngredientAdd : Fragment() {
         // Set up the confirmation button
         confirmButton.setOnClickListener {
             insertIngredient()
-        }
-
-        // Check that a user has notifications enabled, if they want notifications
-        // Prompt users to enable notifications if otherwise
-        wantNotif.setOnClickListener {
-            if(wantNotif.isChecked && !PermissionCheck.checkNotificationPermission(requireActivity())){
-                Toast.makeText(requireContext(), "Please enable notifications to use this feature!", Toast.LENGTH_SHORT).show()
-                wantNotif.isChecked = false
-            }
         }
 
         return view
@@ -140,7 +169,7 @@ class IngredientAdd : Fragment() {
         var notifID : UUID? = null
         // If the user would like a notification, schedule a notification to be sent
         // a day before the expiry date
-        if(wantNotif.isChecked) {
+        if(isNotified) {
             // Add notification to the queue
             var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
             // If the ingredient is already expired, immediately send a notification

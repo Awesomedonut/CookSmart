@@ -56,8 +56,10 @@ class IngredientUpdate : Fragment() {
     private lateinit var view: View
     private lateinit var selectedDate: Calendar
     private lateinit var ingredientViewModel: IngredientViewModel
-    private lateinit var wantNotif : CheckBox
     private val args by navArgs<IngredientUpdateArgs>()
+    private lateinit var notifyIcon : MenuItem
+    private var isNotified = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,7 +70,6 @@ class IngredientUpdate : Fragment() {
         // Locate UI components
         val confirmButton = view.findViewById<Button>(R.id.update_button_confirm)
         val editDate = view.findViewById<Button>(R.id.update_best_before_date_picker)
-        wantNotif = view.findViewById(R.id.notificationCheckboxUpdate)
 
         ingredientViewModel = ViewModelProvider(this)[IngredientViewModel::class.java]
         // Setting up menu option from https://stackoverflow.com/questions/74858799/how-to-inflate-menu-inside-a-fragment
@@ -76,9 +77,39 @@ class IngredientUpdate : Fragment() {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.delete_menu, menu)
+                // Set the notification icon to the correct state
+                notifyIcon = menu.findItem(R.id.notification_menu)
+
+                // Check that a user has notifications enabled, if they want notifications
+                val notifyId = args.currentIngredient.notifId
+                if(notifyId != null){
+                    isNotified = true
+                }
+
+                if (isNotified) {
+                    notifyIcon.setIcon(R.drawable.baseline_notifications_active_24)
+                } else {
+                    notifyIcon.setIcon(R.drawable.baseline_notifications_none_24)
+                }
             }
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
+                    R.id.notification_menu -> {
+                        // Inverse the current state of the isNotified boolean
+                        isNotified = !isNotified
+                        // Check that a user gave notification permission if they want notifications
+                        if(isNotified && !PermissionCheck.checkNotificationPermission(requireActivity())){
+                            Toast.makeText(requireContext(), "Please give CookSmart notification permissions to use this feature!", Toast.LENGTH_SHORT).show()
+                            isNotified = false
+                        }
+                        // Set the respective bell icon (filled/unfilled)
+                        if (isNotified) {
+                            notifyIcon.setIcon(R.drawable.baseline_notifications_active_24)
+                        } else {
+                            notifyIcon.setIcon(R.drawable.baseline_notifications_none_24)
+                        }
+                    }
+
                     // Delete dialog if user clicks delete button on menu toolbar
                     R.id.delete_menu -> deleteIngredient()
                     // Go back to previous page if user clicks back button on menu toolbar
@@ -132,19 +163,6 @@ class IngredientUpdate : Fragment() {
         val date = args.currentIngredient.bestBefore
         val formattedDate = ConvertUtils.longToDateString(date)
         view.findViewById<TextView>(R.id.update_date_input_current).text = formattedDate
-        val notifId = args.currentIngredient.notifId
-        if(notifId != null){
-            wantNotif.isChecked = true
-        }
-
-        // Check that a user has notifications enabled, if they want notifications
-        wantNotif.setOnClickListener {
-            if(wantNotif.isChecked && !PermissionCheck.checkNotificationPermission(requireActivity())){
-                Toast.makeText(requireContext(), "Please enable notifications to use this feature!", Toast.LENGTH_SHORT).show()
-                wantNotif.isChecked = false
-            }
-        }
-
 
         return view
     }
@@ -161,7 +179,7 @@ class IngredientUpdate : Fragment() {
         val bestBefore = selectedDate.timeInMillis
         var notifID : UUID? = args.currentIngredient.notifId
         // Schedule a notification for the day before expected expiry
-        if(wantNotif.isChecked) {
+        if(isNotified) {
             var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
             if (daysToExpiry < 0) {
                 daysToExpiry = 0
@@ -180,7 +198,7 @@ class IngredientUpdate : Fragment() {
             notifID = notificationWorkReq.id
         }
         // If the user no longer wants a notification, cancel the notification
-        else if(!wantNotif.isChecked){
+        else {
             if (notifID != null) {
                 WorkManager.getInstance(requireContext()).cancelWorkById(notifID)
                 notifID = null

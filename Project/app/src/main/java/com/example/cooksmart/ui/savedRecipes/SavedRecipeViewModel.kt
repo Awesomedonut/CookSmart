@@ -60,7 +60,7 @@ class SavedRecipeViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
-    fun deleteAllIngredients() {
+    fun deleteAllRecipes() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllRecipes()
         }

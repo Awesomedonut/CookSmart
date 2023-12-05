@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -63,7 +65,12 @@ class SavedRecipesFragment : Fragment() {
                 })
             }
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // For handling other menu options (but we only have one)
+                when (menuItem.itemId) {
+                    // Perform camera operations
+                    R.id.delete_menu -> {
+                        deleteAllRecipes()
+                    }
+                }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
@@ -177,5 +184,22 @@ class SavedRecipesFragment : Fragment() {
                 adapter.setData(it)
             }
         }
+    }
+
+    /**
+     * Deletes all recipe from the data base if user clicks yes on dialog
+     */
+    private fun deleteAllRecipes() {
+        // Show alert dialog to confirm deletion or not
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes") { _, _ ->
+            savedRecipeViewModel.deleteAllRecipes()
+            Toast.makeText(requireContext(), "All recipes have been removed!", Toast.LENGTH_SHORT).show()
+        }
+        // Don't delete if they say no
+        builder.setNegativeButton("No") { _, _ -> }
+        builder.setTitle("Delete all recipes?")
+        builder.setMessage("Are you sure you want to remove all of your saved recipes?")
+        builder.create().show()
     }
 }

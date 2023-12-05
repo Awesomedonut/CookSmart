@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import android.content.pm.PackageManager
 import android.util.Log
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.cooksmart.BuildConfig
 import com.example.cooksmart.Constants.CAMERA_PERMISSION_REQUEST_CODE
@@ -75,12 +74,5 @@ open class RecipeBaseFragment() : Fragment() {
         super.onDestroyView()
         mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
         recipebaseViewModel.cleanup()
-    }
-
-    protected fun resetRecipeViewModel(){
-        mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
-        recipebaseViewModel.resetAll()
-        recipebaseViewModel.cleanup()
-        recipebaseViewModel.initAudioUrl("Reset, please tell me what do you have")
     }
 }

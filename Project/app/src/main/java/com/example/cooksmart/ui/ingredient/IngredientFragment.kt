@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -65,9 +66,13 @@ class IngredientFragment : Fragment() {
                     }
                 })
             }
-
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // For handling other menu options (but we only have one)
+                when (menuItem.itemId) {
+                    // Perform camera operations
+                    R.id.delete_menu -> {
+                        deleteAllIngredients()
+                    }
+                }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
@@ -188,5 +193,19 @@ class IngredientFragment : Fragment() {
                 adapter.setData(it)
             }
         }
+    }
+
+    private fun deleteAllIngredients() {
+        // Show alert dialog to confirm deletion or not
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes") { _, _ ->
+            ingredientViewModel.deleteAllIngredients()
+            Toast.makeText(requireContext(), "All ingredients have been removed!", Toast.LENGTH_SHORT).show()
+        }
+        // Don't delete if they say no
+        builder.setNegativeButton("No") { _, _ -> }
+        builder.setTitle("Delete all ingredients?")
+        builder.setMessage("Are you sure you want to remove all of your saved ingredients?")
+        builder.create().show()
     }
 }

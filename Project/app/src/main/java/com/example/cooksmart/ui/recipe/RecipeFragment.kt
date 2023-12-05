@@ -1,3 +1,11 @@
+/** "RecipeFragment.kt"
+ *  Description: Fragment for recipe generation. Allows users
+ *               to use image recognition or speech-to-text to
+ *               input ingredients, and generate recipes when satisfied
+ *               with the detected ingredients. Prompts users with audio and
+ *               visual cues (TextView, Toast messages)
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.ui.recipe
 
 import android.animation.ArgbEvaluator
@@ -43,7 +51,7 @@ import com.example.cooksmart.utils.SpeechIntentHelper
 import java.io.File
 
 class RecipeFragment : RecipeBaseFragment() {
-
+    // Declare class variables
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() = _binding!!
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
@@ -54,7 +62,7 @@ class RecipeFragment : RecipeBaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
-        cameraHandler.checkCameraPermission()
+        // Retrieve the selected ingredients
         val selectedIngredients = requireArguments().getString(SELECTED_INGREDIENTS)
         if (selectedIngredients != null) {
             Log.d("RecipeFra-ingredientNamesString",selectedIngredients)
@@ -90,6 +98,10 @@ class RecipeFragment : RecipeBaseFragment() {
         return binding.root
     }
 
+    /** "setupActivityResultLaunchers"
+     *  Description: If the data is not null amd the result code is okay, add input
+     *               to the recipebaseViewModel
+     * */
     private fun setupActivityResultLaunchers() {
         speechResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK && result.data != null) {
@@ -102,12 +114,19 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "setIngreImgUri"
+     *  Description: Sets up the image URI
+     * */
     private fun setIngreImgUri() {
         val tempImgFile = File(requireContext().getExternalFilesDir(null), INGRE_IMG_FILE_NAME)
         ingredientsImgUri = FileProvider.getUriForFile(requireContext(), PACKAGE_NAME, tempImgFile)
     }
 
+    /** "setupOnClickListeners"
+     *  Description: Sets onClick behaviour for buttons on RecipeFragment UI
+     * */
     private fun setupOnClickListeners() {
+        // Set up the reset button
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonReset, 500) {
             mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
             recipebaseViewModel.resetAll()
@@ -115,11 +134,14 @@ class RecipeFragment : RecipeBaseFragment() {
             recipebaseViewModel.initAudioUrl("Reset, please tell me what ingredients you have")
         }
 
+        // Setup the recipe generation button
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
+            // Display a dialog during recipe generation
             val dialog = RecipeGenerationDialog()
             dialog.show(requireActivity().supportFragmentManager, RecipeGenerationDialog.TAG)
             dialog.isCancelable = false
             recipebaseViewModel.process(binding.buttonOption1.text.toString().replace(GENERATE_BUTTON_PREFIX,""))
+            // Observe the progress bar value and update the dialog; dismiss when progress bar value = 100
             recipebaseViewModel.progressBarValue.observe(viewLifecycleOwner) {
                 dialog.updateProgress(it)
                 val progressInt = it.toInt()
@@ -129,6 +151,7 @@ class RecipeFragment : RecipeBaseFragment() {
             }
         }
 
+        // Setup voice to text button
         binding.micImageView.setOnClickListener {
             mediaHandler.stopAndRelease { recipebaseViewModel.audioCompleted() }
             val speechIntent = SpeechIntentHelper.createSpeechIntent()
@@ -141,7 +164,11 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "changeIngrePhoto"
+     *  Description: Helper function for opening the camera
+     * */
     private fun changeIngrePhoto() {
+        // Checks if users have camera permissions enabled; prompts users to do so otherwise
         if (cameraHandler.checkCameraPermission()) {
             cameraHandler.openCamera()
         } else {
@@ -149,6 +176,11 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "setupObservers"
+     *  Description: Calls class observers and greets the user through
+     *               text-to-speech with a random prompt from the greetings
+     *               bag
+     * */
     override fun setupObservers() {
         super.setupObservers()
         observeInput()
@@ -161,6 +193,11 @@ class RecipeFragment : RecipeBaseFragment() {
         recipebaseViewModel.initAudioUrl(randomGreeting)
     }
 
+    /** "observeInput"
+     *  Description: Sets generation button text to the input values.
+     *               Sets default text if no input is detected. Also animates
+     *               the button.
+     * */
     private fun observeInput() {
         recipebaseViewModel.input.observe(viewLifecycleOwner) { inputText ->
             val buttonText = if (inputText.isNotEmpty()) {
@@ -173,6 +210,10 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "observeResponse"
+     *  Description: As the response is being generated, continually
+     *               move UI to follow the recipe.
+     * */
     private fun observeResponse() {
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
@@ -180,6 +221,11 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "observeCreationStatus"
+     *  Description: Changes visibility of default text views and
+     *               buttons based on the creation status of
+     *               recipe generation
+     * */
     private fun observeCreationStatus() {
         recipebaseViewModel.isCreating.observe(viewLifecycleOwner) { isCreating ->
             binding.buttonOption1.isVisible = !isCreating
@@ -188,6 +234,9 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "observeInfo"
+     *  Description: Creates a Toast of input data
+     * */
     private fun observeInfo() {
         recipebaseViewModel.info.observe(viewLifecycleOwner) { info ->
             info?.let {
@@ -196,6 +245,10 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "observeImageUrl"
+     *  Description: Upon image generation, load the image into
+     *               the ImageView and scroll to bottom of the screen
+     * */
     private fun observeImageUrl() {
         recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             binding.responseImage.isVisible = imageUrl.isNotEmpty()
@@ -206,6 +259,9 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "observePlayerLoaded"
+     *  Description: Calls an update function for the instruction text view if audio has finished loading
+     * */
     private fun observePlayerLoaded() {
         recipebaseViewModel.playerLoaded.observe(viewLifecycleOwner) { isLoaded ->
             binding.progressBar.isVisible = !isLoaded
@@ -213,10 +269,16 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
+    /** "scrolltoBottom"
+     *  Description: Scrolls to bottom of scroll view
+     * */
     private fun scrollToBottom() {
         binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
     }
 
+    /** "updateResponseTextViewOnPlayerLoaded"
+     *  Description: Updates text view if the audio player is loaded
+     * */
     private fun updateResponseTextViewOnPlayerLoaded(isLoaded: Boolean) {
         if (recipebaseViewModel.response.value.isNullOrEmpty()) {
             binding.responseTextView.text = if (isLoaded) {
@@ -227,7 +289,9 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
-
+    /** "animateButton"
+     *  Description: Animates a short flash for a button object
+     * */
     private fun animateButton(button: Button) {
         Log.d("ReciFragment", "animate...")
         ObjectAnimator.ofInt(button, "backgroundColor",

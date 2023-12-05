@@ -15,4 +15,8 @@ object Constants {
             "#, *, I need to read it, start with here is: "
     const val IMAGE_PROMPT = "Generate a beautiful dish with these details:"
     const val AVAILABLE_INGREDIENTS = "These ingredients are available:"
+    const val DEFAULT_INSTRUCTION =
+        "Input ingredients using your voice by tapping the microphone button, or take a picture of your ingredients by tapping the camera icon." +
+                "\nOnce your desired ingredients are shown, tap the generate button above!"
+    const val LOADING = "Loading, please wait"
 }

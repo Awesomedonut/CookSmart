@@ -1,5 +1,8 @@
 package com.example.cooksmart.ui.recipe
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,12 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.cooksmart.databinding.FragmentRecipeBinding
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -23,8 +28,10 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import com.bumptech.glide.Glide
+import com.example.cooksmart.Constants.DEFAULT_INSTRUCTION
 import com.example.cooksmart.Constants.GENERATE_BUTTON_PREFIX
 import com.example.cooksmart.Constants.INGRE_IMG_FILE_NAME
+import com.example.cooksmart.Constants.LOADING
 import com.example.cooksmart.Constants.PACKAGE_NAME
 import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
 import com.example.cooksmart.R
@@ -143,52 +150,92 @@ class RecipeFragment : RecipeBaseFragment() {
 
     override fun setupObservers() {
         super.setupObservers()
-        recipebaseViewModel.input.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                binding.buttonOption1.text = GENERATE_BUTTON_PREFIX + it
-            } else
-                binding.buttonOption1.text = "$GENERATE_BUTTON_PREFIX Cheese, Ham, Eggs"
-        }
-        recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
-            binding.responseTextView.text = text
-            binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
-        }
-        recipebaseViewModel.isCreating.observe(viewLifecycleOwner) {
-            binding.buttonOption1.isVisible = !it
-            binding.micImageView.isVisible = !it
-            binding.buttonReset.isVisible = it
-        }
-        recipebaseViewModel.info.observe(viewLifecycleOwner) {
-            if(!it.isNullOrEmpty())
-                Toast.makeText(this@RecipeFragment.context, it, Toast.LENGTH_LONG).show()
-        }
-        recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
-            if (imageUrl.isEmpty()) {
-                binding.responseImage.isVisible = false
-            } else {
-                binding.responseImage.isVisible = true
-                Glide.with(this).load(imageUrl).into(binding.responseImage)
-                binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
-            }
-        }
-
-        recipebaseViewModel.playerLoaded.observe(viewLifecycleOwner) {
-            binding.progressBar.isVisible = !it
-            if (recipebaseViewModel.response.value == null
-                || recipebaseViewModel.response.value?.isEmpty() == true) {
-                if (it)
-                    binding.responseTextView.text =
-                        "Input ingredients using your voice by tapping the microphone button, or take a picture of your ingredients by tapping the camera icon." +
-                                "\nOnce your desired ingredients are shown, tap the generate button above!"
-                else
-                    binding.responseTextView.text = "Loading, please wait"
-            }
-        }
-
+        observeInput()
+        observeResponse()
+        observeCreationStatus()
+        observeInfo()
+        observeImageUrl()
+        observePlayerLoaded()
         recipebaseViewModel.initAudioUrl("hello how may I help you?")
     }
 
+    private fun observeInput() {
+        recipebaseViewModel.input.observe(viewLifecycleOwner) { inputText ->
+            val buttonText = if (inputText.isNotEmpty()) {
+                GENERATE_BUTTON_PREFIX + inputText
+            } else {
+                "$GENERATE_BUTTON_PREFIX Cheese, Ham, Eggs"
+            }
+            binding.buttonOption1.text = buttonText
+            if (inputText.isNotEmpty()) animateButton(binding.buttonOption1)
+        }
+    }
 
+    private fun observeResponse() {
+        recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
+            binding.responseTextView.text = text
+            scrollToBottom()
+        }
+    }
+
+    private fun observeCreationStatus() {
+        recipebaseViewModel.isCreating.observe(viewLifecycleOwner) { isCreating ->
+            binding.buttonOption1.isVisible = !isCreating
+            binding.micImageView.isVisible = !isCreating
+            binding.buttonReset.isVisible = isCreating
+        }
+    }
+
+    private fun observeInfo() {
+        recipebaseViewModel.info.observe(viewLifecycleOwner) { info ->
+            info?.let {
+                if (it.isNotEmpty()) Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun observeImageUrl() {
+        recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
+            binding.responseImage.isVisible = imageUrl.isNotEmpty()
+            if (imageUrl.isNotEmpty()) {
+                Glide.with(this).load(imageUrl).into(binding.responseImage)
+                scrollToBottom()
+            }
+        }
+    }
+
+    private fun observePlayerLoaded() {
+        recipebaseViewModel.playerLoaded.observe(viewLifecycleOwner) { isLoaded ->
+            binding.progressBar.isVisible = !isLoaded
+            updateResponseTextViewOnPlayerLoaded(isLoaded)
+        }
+    }
+
+    private fun scrollToBottom() {
+        binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+    }
+
+    private fun updateResponseTextViewOnPlayerLoaded(isLoaded: Boolean) {
+        if (recipebaseViewModel.response.value.isNullOrEmpty()) {
+            binding.responseTextView.text = if (isLoaded) {
+                DEFAULT_INSTRUCTION
+            } else {
+                LOADING
+            }
+        }
+    }
+
+
+    private fun animateButton(button: Button) {
+        ObjectAnimator.ofInt(button, "backgroundColor",
+            Color.WHITE, Color.YELLOW, Color.WHITE).apply {
+            duration = 500 // duration of the flash effect
+            setEvaluator(ArgbEvaluator())
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = 1 // number of times to repeat
+            start()
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -74,5 +74,6 @@
     <string name="camera">Camera</string>
     <string name="import_from_url">Import from URL</string>
     <string name="notif_opt">Send me a notification when my ingredient is near expiry</string>
+    <string name="buttonOption1Text">Cheese, ham, eggs</string>
 
 </resources>

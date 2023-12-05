@@ -1,3 +1,8 @@
+/** "IngredientUpdate.kt"
+ *  Description: Allows users to update the data fields of an existing
+ *               Ingredient entity in the database
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.ui.ingredient
 
 import android.app.DatePickerDialog

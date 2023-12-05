@@ -1,7 +1,7 @@
 /** "IngredientAdd.kt"
  *  Description: Allows users to create an ingredient and insert it into
  *               the ingredient table in the database.
- *  Last Modified: November 30, 2023
+ *  Last Modified: December 4, 2023
  * */
 package com.example.cooksmart.ui.ingredient
 
@@ -88,13 +88,13 @@ class IngredientAdd : Fragment() {
             datePickerDialog()
         }
 
-
         // Set up the confirmation button
         confirmButton.setOnClickListener {
             insertIngredient()
         }
 
         // Check that a user has notifications enabled, if they want notifications
+        // Prompt users to enable notifications if otherwise
         wantNotif.setOnClickListener {
             if(wantNotif.isChecked && !PermissionCheck.checkNotificationPermission(requireActivity())){
                 Toast.makeText(requireContext(), "Please enable notifications to use this feature!", Toast.LENGTH_SHORT).show()
@@ -105,6 +105,9 @@ class IngredientAdd : Fragment() {
         return view
     }
 
+    /** "datePickerDialog"
+     *  Description: Create a datepicker dialog
+     * */
     private fun datePickerDialog() {
         val datePicker = DatePickerDialog(
             requireContext(),
@@ -121,6 +124,10 @@ class IngredientAdd : Fragment() {
         datePicker.show()
     }
 
+    /** "insertIngredient"
+     *  Description: Retrieve data from user fields and insert a new ingredient into
+     *               the database
+     * */
     private fun insertIngredient() {
         val category = view.findViewById<Spinner>(R.id.category).selectedItem.toString()
         val name = view.findViewById<EditText>(R.id.name_ingredient).text.toString()
@@ -144,7 +151,7 @@ class IngredientAdd : Fragment() {
             WorkManager.getInstance(requireContext()).enqueue(notificationWorkReq)
             notifID = notificationWorkReq.id
         }
-
+        // Check that user input is valid
         if (!isNotValidInput(name, quantity)) {
             val ingredient = Ingredient(0, name, category, quantity, quantityType, currentDate, bestBefore, notifID)
             ingredientViewModel.insertIngredient(ingredient)
@@ -155,20 +162,26 @@ class IngredientAdd : Fragment() {
         }
     }
 
-    /**
-     * Checks if name or quantity fields are empty
+    /** "isNotValidInput"
+     * Description: Checks if name or quantity fields are empty
      */
     private fun isNotValidInput(name: String, quantity: String): Boolean {
         // Returns true if fields are empty
         return (name == "" || quantity == "")
     }
 
+    /** "updateBestBeforeText"
+     *  Description: Updates the best before text to the user selection
+     * */
     private fun updateBestBeforeText() {
         val bestBeforeText = view.findViewById<TextView>(R.id.date_input_current)
         val formattedDate = ConvertUtils.longToDateString(selectedDate.timeInMillis)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
     }
 
+    /** "daysExpiry"
+     *  Description: Calculates the number of days until ingredient expiry
+     * */
     fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
         val expiryDate
                 = convertLongtoDate(expiryDateLong)
@@ -176,6 +189,9 @@ class IngredientAdd : Fragment() {
         return ChronoUnit.DAYS.between(currentDate, expiryDate)
     }
 
+    /** "convertLongtoDate"
+     *  Description: Converts a long into a local date object
+     * */
     fun convertLongtoDate(dateMilli : Long): LocalDate {
         val date = Instant.ofEpochMilli(dateMilli)
         return date.atZone(ZoneId.systemDefault()).toLocalDate()

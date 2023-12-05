@@ -24,6 +24,7 @@ import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.databinding.FragmentCalendarBinding
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
+import com.example.cooksmart.utils.ConvertUtils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -51,9 +52,7 @@ class CalendarAdd: Fragment() {
 
         // Initialize date
         val tvDate : TextView = view.findViewById(R.id.tvCalendarDateSelected)
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(date).uppercase(
-            Locale.getDefault())
+        val formattedDate = ConvertUtils.longToDateString(date)
         tvDate.text = formattedDate
 
         // Initialize calendarViewModel

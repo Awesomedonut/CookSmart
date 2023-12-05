@@ -69,11 +69,11 @@ class IngredientViewModel(application: Application): AndroidViewModel(applicatio
         return repository.searchIngredient(searchQuery)
     }
 
-    /** "getIngredientSortedByCategory"
+    /** "getIngredientSortedByAlphabet"
      *  Description: Returns a sorted ingredient list, sorted alphabetically
      * */
-    fun getIngredientSortedByCategory(): LiveData<List<Ingredient>> {
-        return repository.getIngredientSortedByCategory()
+    fun getIngredientSortedByAlphabet(): LiveData<List<Ingredient>> {
+        return repository.getIngredientSortedByAlphabet()
     }
 
     /** "showBestDayOldest"

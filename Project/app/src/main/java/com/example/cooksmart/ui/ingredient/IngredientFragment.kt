@@ -169,7 +169,7 @@ class IngredientFragment : Fragment() {
      *  Description: Retrieves an alphabetically sorted list of ingredients
      * */
     private fun showNameAlphabetically() {
-        ingredientViewModel.getIngredientSortedByCategory().observe(viewLifecycleOwner) { list ->
+        ingredientViewModel.getIngredientSortedByAlphabet().observe(viewLifecycleOwner) { list ->
             list?.let {
                 adapter.setData(it)
             }

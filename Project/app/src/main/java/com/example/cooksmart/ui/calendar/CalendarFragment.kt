@@ -24,6 +24,7 @@ import com.example.cooksmart.R
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
+import com.example.cooksmart.utils.ConvertUtils
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -117,8 +118,8 @@ class CalendarFragment : Fragment() {
     private fun updatePlanText(view: View, calendars: List<com.example.cooksmart.database.Calendar>?) {
         if (calendars != null) {
             if(calendars.isNotEmpty()){
-                val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-                val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
+                val calendarAsLong = convertCalendartoLong(selectedDate)
+                val formattedDate = ConvertUtils.longToDateString(calendarAsLong)
                 val tvPlan : TextView = view.findViewById(R.id.tvPlanPlaceholder)
                 var found = false
                 val button : Button = view.findViewById(R.id.btnAddPlan)
@@ -179,8 +180,8 @@ class CalendarFragment : Fragment() {
      *  Description: Initializes the date text view to the current date
      * */
     private fun initDate(view : View, calendarViewModel : CalendarViewModel) {
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
+        val calendarAsLong = convertCalendartoLong(selectedDate)
+        val formattedDate = ConvertUtils.longToDateString(calendarAsLong)
         val tvDate : TextView = view.findViewById(R.id.tvDateSelected)
         tvDate.text = formattedDate
         calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
@@ -203,8 +204,8 @@ class CalendarFragment : Fragment() {
      * */
     private fun setDate(root : View, year: Int, month: Int, dayOfMonth: Int) {
         selectedDate.set(year, month, dayOfMonth)
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(convertCalendartoLong(selectedDate)).uppercase(Locale.getDefault())
+        val calendarAsLong = convertCalendartoLong(selectedDate)
+        val formattedDate = ConvertUtils.longToDateString(calendarAsLong)
         val tvDate : TextView = root.findViewById(R.id.tvDateSelected)
         tvDate.text = formattedDate
     }

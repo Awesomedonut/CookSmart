@@ -28,8 +28,8 @@ interface IngredientDao {
     @Query("SELECT * FROM ingredient_table WHERE ingredient_name LIKE :searchQuery OR ingredient_category LIKE :searchQuery")
     fun searchIngredientsDatabase(searchQuery: String): LiveData<List<Ingredient>>
 
-    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_category)")
-    fun getIngredientSortedByCategory(): LiveData<List<Ingredient>>
+    @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_name)")
+    fun getIngredientSortedByAlphabet(): LiveData<List<Ingredient>>
 
     @Query("SELECT * FROM ingredient_table ORDER BY LOWER(ingredient_bestBefore)")
     fun showBestDayOldest(): LiveData<List<Ingredient>>

@@ -54,13 +54,13 @@
                 android:importantForAutofill="no"
                 android:inputType="numberDecimal|textNoSuggestions"
                 android:fontFamily="@font/cabin"
-                android:hint="Number" />
+                android:hint="@string/number" />
             <Space
                 android:layout_width="15dp"
                 android:layout_height="wrap_content"/>
             <Spinner
                 android:layout_width="125dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:id="@+id/quantityType" />
         </LinearLayout>
         <TextView
@@ -92,28 +92,18 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <CheckBox
-                android:id="@+id/notificationCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/notif_opt" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:paddingBottom="90dp">
             <Button
                 android:id="@+id/button_confirm"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="100dp"
-                android:layout_gravity="center"
                 android:text="@string/add"
+                android:layout_gravity="bottom"
                 android:fontFamily="@font/raleway"
                 android:textStyle="bold" />
-
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

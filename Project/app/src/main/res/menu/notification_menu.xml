@@ -6,9 +6,4 @@
         android:icon="@drawable/baseline_notifications_none_24"
         app:iconTint="@android:color/white"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/delete_menu"
-        android:title="@string/delete"
-        android:icon="@drawable/baseline_delete_24"
-        app:iconTint="@android:color/white"
-        app:showAsAction="ifRoom"/>
 </menu>

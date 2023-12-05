@@ -33,7 +33,6 @@ import kotlinx.coroutines.launch
 class ViewRecipe : Fragment() {
     private val args by navArgs<ViewRecipeArgs>()
     private lateinit var recipeViewModel: SavedRecipeViewModel
-    private lateinit var favoriteIcon: ImageView
     private var isFavorite = false
     private lateinit var favIcon : MenuItem
 

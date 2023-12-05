@@ -33,6 +33,7 @@ import java.util.Locale
 import com.example.cooksmart.ui.structs.CategoryType
 import com.example.cooksmart.ui.structs.QuantityType
 import com.example.cooksmart.utils.ConvertUtils
+import com.example.cooksmart.utils.PermissionCheck
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -129,6 +130,15 @@ class IngredientUpdate : Fragment() {
             wantNotif.isChecked = true
         }
 
+        // Check that a user has notifications enabled, if they want notifications
+        wantNotif.setOnClickListener {
+            if(wantNotif.isChecked && !PermissionCheck.checkNotificationPermission(requireActivity())){
+                Toast.makeText(requireContext(), "Please enable notifications to use this feature!", Toast.LENGTH_SHORT).show()
+                wantNotif.isChecked = false
+            }
+        }
+
+
         return view
     }
 
@@ -150,7 +160,7 @@ class IngredientUpdate : Fragment() {
                 daysToExpiry = 0
             }
             val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
-                .setInitialDelay(0, TimeUnit.DAYS)
+                .setInitialDelay(daysToExpiry, TimeUnit.DAYS)
                 .build()
             // If a notification exists,
             // cancel the previous notification and queue a new one, replacing

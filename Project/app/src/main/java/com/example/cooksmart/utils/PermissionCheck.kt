@@ -27,4 +27,11 @@ object PermissionCheck {
                     Manifest.permission.RECORD_AUDIO), reqCode)
         }
     }
+
+    fun checkNotificationPermission(activity : Activity?) : Boolean{
+        if(ContextCompat.checkSelfPermission(activity!!, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
+            return false
+        }
+        return true
+    }
 }

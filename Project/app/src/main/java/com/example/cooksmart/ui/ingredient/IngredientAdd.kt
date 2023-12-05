@@ -29,6 +29,8 @@ import com.example.cooksmart.infra.services.NotificationWorker
 import com.example.cooksmart.ui.structs.CategoryType
 import com.example.cooksmart.ui.structs.QuantityType
 import com.example.cooksmart.utils.ConvertUtils
+import com.example.cooksmart.utils.PermissionCheck
+import java.security.acl.Permission
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -90,6 +92,14 @@ class IngredientAdd : Fragment() {
         // Set up the confirmation button
         confirmButton.setOnClickListener {
             insertIngredient()
+        }
+
+        // Check that a user has notifications enabled, if they want notifications
+        wantNotif.setOnClickListener {
+            if(wantNotif.isChecked && !PermissionCheck.checkNotificationPermission(requireActivity())){
+                Toast.makeText(requireContext(), "Please enable notifications to use this feature!", Toast.LENGTH_SHORT).show()
+                wantNotif.isChecked = false
+            }
         }
 
         return view

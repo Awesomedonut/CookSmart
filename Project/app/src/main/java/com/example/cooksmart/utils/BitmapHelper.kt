@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.util.Base64
+import android.util.Log
 import java.io.ByteArrayOutputStream
 
 object BitmapHelper {
@@ -33,24 +34,30 @@ object BitmapHelper {
         }
 
     fun bitmapToBase64(bitmap: Bitmap, quality: Int=50, scale: Float=0.3f): String {
-        ByteArrayOutputStream().apply {
-            // Scale down bitmap if scale is less than 1
-            val scaledBitmap = if (scale < 1) {
-                val width = (bitmap.width * scale).toInt()
-                val height = (bitmap.height * scale).toInt()
-                Bitmap.createScaledBitmap(bitmap, width, height, true)
-            } else {
-                bitmap
+        var currentQuality = quality
+        var currentScale = scale
+        var byteArray: ByteArray
+        val scaleStep = 0.1f
+        do {
+            ByteArrayOutputStream().apply {
+                val scaledBitmap = if (currentScale < 1) {
+                    val width = (bitmap.width * currentScale).toInt()
+                    val height = (bitmap.height * currentScale).toInt()
+                    Bitmap.createScaledBitmap(bitmap, width, height, true)
+                } else {
+                    bitmap
+                }
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, currentQuality, this)
+                byteArray = this.toByteArray()
+
+                // Decrease quality and scale for the next iteration if size is too large
+                if (byteArray.size > 150_000) {
+                    currentQuality -= 10
+                    currentScale -= scaleStep
+                }
             }
-
-            // Compress Bitmap to ByteArrayOutputStream with specified quality
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, quality, this)
-
-            // Convert ByteArrayOutputStream to ByteArray
-            val byteArray = this.toByteArray()
-            // Convert ByteArray to Base64 String and prepend data URI prefix
+        } while (byteArray.size > 150_000 && currentQuality > 0 && currentScale > 0)
+            Log.d("BitmapHelper", byteArray.size.toString())
             return "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.DEFAULT)
         }
-    }
-
 }

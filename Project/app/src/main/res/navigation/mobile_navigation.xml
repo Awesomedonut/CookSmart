@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/navigation_recipe"
         android:name="com.example.cooksmart.ui.recipe.RecipeFragment"
-        android:label="@string/title_recipe"
+        android:label="@string/recipe_generator"
         tools:layout="@layout/fragment_recipe">
         <argument
             android:name="selectedIngredients"

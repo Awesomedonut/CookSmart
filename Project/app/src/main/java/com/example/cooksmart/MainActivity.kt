@@ -60,6 +60,11 @@ class MainActivity : AppCompatActivity() {
         PermissionCheck.checkPermissions(this)
 
     }
+
+    /**
+     * onSupportNavigateUp
+     * Description: Makes the back button navigate to the previously navigated fragment
+     */
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         return navController.navigateUp() || super.onSupportNavigateUp()

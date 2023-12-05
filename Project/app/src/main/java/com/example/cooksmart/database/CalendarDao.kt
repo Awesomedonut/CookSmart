@@ -1,3 +1,8 @@
+/** "CalendarDao.kt"
+ *  Description: Calendar Dao for the Calendar entity class. Allows users
+ *               to use SQL functions on the Calendar table
+ *  Last Modified: November 25, 2023
+ * */
 package com.example.cooksmart.database
 
 import androidx.lifecycle.LiveData

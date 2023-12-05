@@ -73,5 +73,6 @@
     <string name="favorite">Favorite</string>
     <string name="camera">Camera</string>
     <string name="import_from_url">Import from URL</string>
+    <string name="notif_opt">Send me a notification when my ingredient is near expiry</string>
 
 </resources>

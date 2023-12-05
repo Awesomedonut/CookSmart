@@ -136,6 +136,8 @@ class RecipeFragment : RecipeBaseFragment() {
     private fun changeIngrePhoto() {
         if (cameraHandler.checkCameraPermission()) {
             cameraHandler.openCamera()
+        } else {
+            Toast.makeText(requireContext(), "Please enable camera permissions!", Toast.LENGTH_SHORT).show()
         }
     }
 

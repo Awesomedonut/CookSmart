@@ -1,3 +1,10 @@
+/** "CookSmartDatabase.kt"
+ *  Description: Singleton database which allows users to access
+ *               the different database tables for this application.
+ *               Accesses the ingredient, recipe, and calendar daos to
+ *               access individual tables.
+ *  Last Modified: November 29, 2023
+ * */
 package com.example.cooksmart.database
 
 import android.content.Context

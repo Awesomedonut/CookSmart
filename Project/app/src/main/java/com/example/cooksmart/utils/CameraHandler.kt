@@ -27,28 +27,25 @@ class CameraHandler(private val fragment: Fragment) {
     }
     fun checkCameraPermission(): Boolean {
         var allowed = false
-        if (ContextCompat.checkSelfPermission(
-                fragment.requireContext(),
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                fragment.requireActivity(),
-                arrayOf(Manifest.permission.CAMERA),
-                CAMERA_PERMISSION_REQUEST_CODE
-            )
-        } else {
-            allowed = true
-        }
+        allowed = ContextCompat.checkSelfPermission(
+            fragment.requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
         return allowed
     }
 
     fun openCamera() {
-        Toast.makeText(fragment.context, "Capturing the ingredients you currently have", Toast.LENGTH_SHORT)
-            .show()
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, ingredientsImgUri)
-        takePhotoLauncher.launch(cameraIntent)
+        if(checkCameraPermission()) {
+            Toast.makeText(
+                fragment.context,
+                "Capturing the ingredients you currently have",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, ingredientsImgUri)
+            takePhotoLauncher.launch(cameraIntent)
+        }
     }
 
     fun setUpPhotoLauncher(onImageReady : (bitmap: Bitmap)->Unit) {

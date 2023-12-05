@@ -1,5 +1,6 @@
 /** "Calendar.kt"
  *  Description: Calendar entity class for the Calendar fragment
+ *  Last Modified: November 25, 2023
  * */
 package com.example.cooksmart.database
 

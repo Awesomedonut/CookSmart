@@ -92,6 +92,16 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/notificationCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/notif_opt" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:paddingBottom="90dp">
@@ -103,6 +113,7 @@
                 android:text="@string/add"
                 android:fontFamily="@font/raleway"
                 android:textStyle="bold" />
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

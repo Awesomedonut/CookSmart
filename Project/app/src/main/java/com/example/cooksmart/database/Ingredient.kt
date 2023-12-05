@@ -32,5 +32,5 @@ data class Ingredient (
     var bestBefore: Long,
 
     @ColumnInfo(name= "notification_id")
-    var notifId : UUID
+    var notifId : UUID?
 ): Parcelable

@@ -1,11 +1,19 @@
+/** "MediaHandler"
+ *  Description: Helper class whcih deals with media related items
+ *  Last Modified: December 2, 2023
+ * */
 package com.example.cooksmart.utils
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 
 class MediaHandler() {
-
+    // Declare media player
     private var mediaPlayer: MediaPlayer? = null
+
+    /** "playAudioFromUrl"
+     *  Description: Given an audioUrl, play the audio
+     * */
     fun playAudioFromUrl(audioUrl: String, callback: AudioPlaybackCallback) {
         mediaPlayer?.release()
         mediaPlayer = MediaPlayer().apply {
@@ -29,6 +37,9 @@ class MediaHandler() {
         }
     }
 
+    /** "stopAndRelease"
+     *  Description: Detects if the media player is done playing; if so, release
+     * */
     fun stopAndRelease(stopMediaPlayerAndRelease: ()->Unit) {
         stopMediaPlayerAndRelease()
         try {

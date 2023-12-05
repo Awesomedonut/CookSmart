@@ -1,3 +1,9 @@
+/** "DebouncedOnClickListener.kt"
+ *  Description: On click, sets a listener which periodically
+ *               triggers the on click action utilized. Used for
+ *               AI generation purposes
+ *  Last Modified: November 24, 2023
+ * */
 package com.example.cooksmart.utils
 
 import android.view.View

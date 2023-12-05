@@ -1,3 +1,7 @@
+/** "SpeechIntentHelper.kt"
+ *  Description: Creates a speech intent with necessary extras placed in the intent
+ *  Last Modified: November 27, 2023
+ * */
 package com.example.cooksmart.utils
 
 import android.content.Intent

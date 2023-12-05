@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/cabin"
-        android:text="Generating recipe! \nPlease don't touch your screen."
+        android:text="Generating recipe! \nPlease don't exit the app."
         android:textSize="18sp"
         android:paddingTop="16dp"
         app:layout_constraintHorizontal_bias="0.25"

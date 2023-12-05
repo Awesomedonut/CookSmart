@@ -32,7 +32,7 @@
         <EditText
             android:id="@+id/recipe_ingredients_edittext"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:maxLines="1"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences|textAutoCorrect"
@@ -65,15 +65,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:paddingBottom="90dp">
             <Button
                 android:id="@+id/button_confirm"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="100dp"
-                android:layout_gravity="center"
                 android:text="@string/add"
-                android:fontFamily="@font/raleway"/>
+                android:layout_gravity="bottom"
+                android:fontFamily="@font/raleway"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

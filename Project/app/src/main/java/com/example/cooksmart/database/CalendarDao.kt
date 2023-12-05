@@ -29,7 +29,4 @@ interface CalendarDao {
 
     @Query("DELETE FROM calendar_table")
     suspend fun deleteAllCalendar()
-
-    @Query("SELECT * FROM calendar_table WHERE calender_date = :date")
-    suspend fun getCalendarByDate(date : String): Calendar?
 }

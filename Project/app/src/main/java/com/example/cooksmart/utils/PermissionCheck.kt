@@ -1,3 +1,7 @@
+/** "PermissionCheck.kt"
+ *  Description: A utility class which checks for permissions upon application launch
+ *  Last Modified: December 4, 2023
+ */
 package com.example.cooksmart.utils
 
 import android.Manifest
@@ -9,6 +13,9 @@ import androidx.core.content.ContextCompat
 
 private const val reqCode : Int = 0
 object PermissionCheck {
+    /** "checkPermissions"
+     *  Description: Checks for user permissions utilized in the application
+     * */
     fun checkPermissions(activity: Activity?) {
         if (Build.VERSION.SDK_INT < 23) return
         if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
@@ -28,6 +35,11 @@ object PermissionCheck {
         }
     }
 
+    /** "checkNotificationPermission"
+     *  Description: Returns the result of checking for notification permissions. Used
+     *               so application knows when to use Toast messages to notify user about
+     *               missing permissions
+     * */
     fun checkNotificationPermission(activity : Activity?) : Boolean{
         if(ContextCompat.checkSelfPermission(activity!!, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
             return false

@@ -1,3 +1,8 @@
+/** "IngredientUpdate.kt"
+ *  Description: Allows users to update the data fields of an existing
+ *               Ingredient entity in the database
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.ui.ingredient
 
 import android.app.DatePickerDialog
@@ -43,6 +48,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class IngredientUpdate : Fragment() {
+    // Declare lateinit variables and fragment variables
     private lateinit var categoriesSpinner: Spinner
     private lateinit var categoriesAdapter: SpinnerAdapter
     private lateinit var quantityTypeSpinner : Spinner
@@ -61,6 +67,7 @@ class IngredientUpdate : Fragment() {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_ingredient_update, container, false)
 
+        // Locate UI components
         val confirmButton = view.findViewById<Button>(R.id.update_button_confirm)
         val editDate = view.findViewById<Button>(R.id.update_best_before_date_picker)
 
@@ -177,6 +184,7 @@ class IngredientUpdate : Fragment() {
             if (daysToExpiry < 0) {
                 daysToExpiry = 0
             }
+            // Built from: https://developer.android.com/guide/background/persistent/getting-started/define-work
             val notificationWorkReq = OneTimeWorkRequestBuilder<NotificationWorker>()
                 .setInitialDelay(daysToExpiry, TimeUnit.DAYS)
                 .build()
@@ -207,13 +215,17 @@ class IngredientUpdate : Fragment() {
         }
     }
 
-    /**
-     * Checks if name or quantity fields are empty
+    /** "isNotValidInput"
+     * Description: Checks if name or quantity fields are empty
      */
     private fun isNotValidInput(name: String, quantity: String): Boolean {
         // Returns true if fields are empty
         return (name == "" || quantity == "")
     }
+
+    /** "datePickerDialog"
+     *  Description: Create a datepicker dialog
+     * */
     private fun datePickerDialog() {
         // Set date object as previously set date and update if it is changed
         val datePicker = DatePickerDialog(
@@ -231,12 +243,19 @@ class IngredientUpdate : Fragment() {
         datePicker.show()
     }
 
+    /** "updateBestBeforeText"
+     *  Description: Updates the best before text to the user selection
+     * */
     private fun updateBestBeforeText() {
         val bestBeforeText = view.findViewById<TextView>(R.id.update_date_input_current)
         val formattedDate = ConvertUtils.longToDateString(selectedDate.timeInMillis)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
     }
 
+    /** "deleteIngredient"
+     *  Description: Confirms a user wants to delete an ingredient with an alert dialog
+     *               and begins delete database operations if they agree
+     * */
     private fun deleteIngredient() {
         // Show alert dialog to confirm deletion or not
         val builder = AlertDialog.Builder(requireContext())
@@ -251,16 +270,28 @@ class IngredientUpdate : Fragment() {
         builder.setMessage("Are you sure you want to remove ${args.currentIngredient.name} from your ingredients?")
         builder.create().show()
     }
+
+    /** "categoryStringToInt"
+     *  Description: Takes a string and converts it to its corresponding integer
+     *               type from the Category model
+     * */
     private fun categoryStringToInt(string: String): Int {
         val categoryEnum = CategoryType.fromString(string)
         return categoryEnum.asInt
     }
 
+    /** "quantityTypeStringToInt"
+     *  Description: Takes a string and converts it to its corresponding integer
+     *               type from the QuantityType model
+     * */
     private fun quantityTypeStringToInt(quantityType: String): Int {
         val quantityTypeEnum = QuantityType.fromString(quantityType)
         return quantityTypeEnum.asInt
     }
 
+    /** "daysExpiry"
+     *  Description: Calculates the number of days until ingredient expiry
+     * */
     fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
         val expiryDate
                 = convertLongtoDate(expiryDateLong)
@@ -268,6 +299,9 @@ class IngredientUpdate : Fragment() {
         return ChronoUnit.DAYS.between(currentDate, expiryDate)
     }
 
+    /** "convertLongtoDate"
+     *  Description: Converts a long into a local date object
+     * */
     fun convertLongtoDate(dateMilli : Long): LocalDate {
         val date = Instant.ofEpochMilli(dateMilli)
         return date.atZone(ZoneId.systemDefault()).toLocalDate()

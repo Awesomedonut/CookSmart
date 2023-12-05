@@ -1,3 +1,8 @@
+/** "IngredientGeneratedRecipe.kt"
+ *   Description: Utilizing a list of input ingredients, generate an
+ *                AI generated recipe
+ *   Last Modified: December 2, 2023
+ * */
 package com.example.cooksmart.ui.ingredient
 
 import android.graphics.Typeface
@@ -17,6 +22,7 @@ import com.example.cooksmart.ui.base.RecipeBaseFragment
 import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
 
 class IngredientGeneratedRecipe : RecipeBaseFragment() {
+    // Declare class wide variables
     private val args by navArgs<IngredientGeneratedRecipeArgs>()
     private var _binding: FragmentIngredientGeneratedRecipeBinding? = null
     private val binding get() = _binding!!
@@ -24,6 +30,7 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Retrieve and parse ingredients
         val selectedIngredients = args.selectedIngredients
         // Extract the names from the array of Ingredient objects
         val ingredientNames = selectedIngredients?.map { it.name }
@@ -41,8 +48,13 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
         return binding.root
     }
 
+    /** "setupObservers"
+     *  Description: Set up view model observers to their corresponding components
+     *
+     * */
     override fun setupObservers() {
         super.setupObservers()
+        // Creates a dialog which prevents users from interrupting recipe generation
         val dialog = RecipeGenerationDialog()
         dialog.show(requireActivity().supportFragmentManager, RecipeGenerationDialog.TAG)
         dialog.isCancelable = false
@@ -53,14 +65,19 @@ class IngredientGeneratedRecipe : RecipeBaseFragment() {
                 dialog.dismiss()
             }
         }
+        // Retrieves the generating text and updates the text view
         recipebaseViewModel.response.observe(viewLifecycleOwner) { text ->
             binding.responseTextView.text = text
             binding.scrollView.post { binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
         }
+
+        // Creates a Toast based on API status
         recipebaseViewModel.info.observe(viewLifecycleOwner) {
             if(!it.isNullOrEmpty())
                 Toast.makeText(this@IngredientGeneratedRecipe.context, it, Toast.LENGTH_LONG).show()
         }
+
+        // Creates an image for the generated recipe
         recipebaseViewModel.imageUrl.observe(viewLifecycleOwner) { imageUrl ->
             if (imageUrl.isEmpty()) {
                 binding.responseImage.isVisible = false

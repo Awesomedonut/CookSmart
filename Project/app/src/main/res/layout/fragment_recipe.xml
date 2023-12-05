@@ -30,7 +30,7 @@
         android:id="@+id/buttonOption1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cheese, ham, eggs"
+        android:text="@string/buttonOption1Text"
         android:fontFamily="@font/raleway"
         android:textSize="14sp"
         android:background="@drawable/button_background"

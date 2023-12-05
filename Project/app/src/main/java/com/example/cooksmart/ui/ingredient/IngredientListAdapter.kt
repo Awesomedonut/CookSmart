@@ -1,3 +1,7 @@
+/** "IngredientListAdapter"
+ *  Description: A RecyclerView adapter class to display an ingredient list
+ *  Last Modified: November 27, 2023
+ * */
 package com.example.cooksmart.ui.ingredient
 
 import android.graphics.Typeface
@@ -15,6 +19,7 @@ import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.utils.ConvertUtils
 
 class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHolder>(){
+    // Declare class variables
     private var ingredientList = emptyList<Ingredient>()
     private val checkedIngredients = mutableListOf<Ingredient>()
 
@@ -58,11 +63,17 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
         }
     }
 
+    /** "setData"
+     *  Description: Setts ingredient list data
+     * */
     fun setData(ingredient: List<Ingredient>) {
         this.ingredientList = ingredient
         notifyDataSetChanged()
     }
 
+    /** "getCheckedIngredients"
+     *  Description: Returns ingredients that are checkmarked
+     * */
     fun getCheckedIngredients(): List<Ingredient> {
         return checkedIngredients
     }

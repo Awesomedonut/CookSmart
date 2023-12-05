@@ -19,6 +19,7 @@ import androidx.navigation.Navigation.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.R.layout.adapter_calendar_list
 import com.example.cooksmart.database.Ingredient
+import com.example.cooksmart.utils.ConvertUtils
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -60,7 +61,7 @@ class CalendarListAdapter(private val context: Context,
             // Retrieve the expiryDate Long from the ingredient object
             val expiryDate = ingredient.bestBefore
             // Create the string for the text view and change the text
-            var ingredientString = ingredient.name + " — expires " + dateString(expiryDate)
+            var ingredientString = ingredient.name + " — expires " + ConvertUtils.longToDateString(expiryDate)
             tvExpiryDate.text = ingredientString
             tvExpiryDate.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
@@ -109,14 +110,6 @@ class CalendarListAdapter(private val context: Context,
     fun convertLongtoDate(dateMilli : Long): LocalDate {
         val date = Instant.ofEpochMilli(dateMilli)
         return date.atZone(ZoneId.systemDefault()).toLocalDate()
-    }
-
-    /** "dateString"
-     *  Description: Format and return a string based on a given Long date
-     * */
-    fun dateString (date : Long) : String{
-        val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
-        return dateFormat.format(date).uppercase(Locale.getDefault())
     }
 
 

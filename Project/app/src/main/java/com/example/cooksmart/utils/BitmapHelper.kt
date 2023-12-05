@@ -1,3 +1,7 @@
+/** "BitmapHelper"
+ *  Description: Helper class to deal with bitmap handling
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.utils
 
 import android.content.Context
@@ -10,6 +14,9 @@ import android.util.Log
 import java.io.ByteArrayOutputStream
 
 object BitmapHelper {
+    /** "getBitmap"
+     *  Description: Retrieves the bitmap from a given image URI and rotates the image
+     * */
     fun getBitmap(context: Context, imgUri: Uri): Bitmap {
         var bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(imgUri))
         val matrix = Matrix()
@@ -21,6 +28,10 @@ object BitmapHelper {
         return ret
     }
 
+    /** "bitmapToBase64"
+     *  Description: Takes a bitmap and its properties, applies any quality
+     *               or size translations, then encodes the bitmap as a String
+     * */
     fun bitmapToBase64(bitmap: Bitmap, quality: Int = 50, scale: Float = 0.3f): String {
         var currentQuality = quality
         var currentScale = scale

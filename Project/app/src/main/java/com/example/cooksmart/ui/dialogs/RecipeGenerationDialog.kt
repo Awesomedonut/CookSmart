@@ -1,3 +1,9 @@
+/** "RecipeGenerationDialog.kt"
+ *  Description: Creates a dialog which prevents users from modifying the app
+ *               during recipe generation. Displays a progress bar showing the progress
+ *               of recipe generation.
+ *  Last Modified: December 4, 2023
+ * */
 package com.example.cooksmart.ui.dialogs
 
 import android.app.AlertDialog
@@ -21,14 +27,15 @@ class RecipeGenerationDialog : DialogFragment() {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setView(view)
 
+        // Find UI text views
         progressPercent = view.findViewById(R.id.dialogProgressPercentage)
         progressBar = view.findViewById(R.id.dialogProgressBar)
 
         return builder.create()
     }
 
-    /**
-     * Update the progress bar and value
+    /** "updateProgress"
+     *  Description: Update the progress bar and value
      */
     fun updateProgress(progressDouble: Double) {
         if (this::progressBar.isInitialized && this::progressPercent.isInitialized) {

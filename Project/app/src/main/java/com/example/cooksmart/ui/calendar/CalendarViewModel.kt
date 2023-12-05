@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class CalendarViewModel(application: Application): AndroidViewModel(application) {
-    // Initialize calendar list and calendar database objects
+    // Declare calendar list and calendar database objects
     val readAllCalendar: LiveData<List<Calendar>>
     private val repository: CalendarRepository
     init {
@@ -40,32 +40,40 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
         return selectedDate
     }
 
-    /** Calendar database operations
-     *  Description: Allow users to perform the given
-     *               SQL operations from the application.
-     *               Utilizes coroutines.
-     *
-     */
+    /** "insertCalendar"
+     *  Description: Inserts a calendar object
+     * */
     fun insertCalendar(calendar: Calendar) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertCalendar(calendar)
         }
     }
 
+    /** "updateCalendar"
+     *  Description: Updates a calendar object
+     * */
     fun updateCalendar(calendar: Calendar) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateCalendar(calendar)
         }
     }
 
+    /** "deleteCalendar"
+     *  Description: Deletes a calendar object
+     * */
     fun deleteCalendar(calendar: Calendar) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteCalendar(calendar)
         }
     }
 
+    /** "deleteAllCalendar"
+     *  Description: Deletes all calendar objects
+     * */
     fun deleteAllCalendars() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllCalendar()
         }
-    }}
+    }
+}
+

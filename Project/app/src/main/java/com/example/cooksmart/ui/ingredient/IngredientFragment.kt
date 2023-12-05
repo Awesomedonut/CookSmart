@@ -1,3 +1,11 @@
+/** "IngredientFragment.kt"
+ *  Description: Fragment for the ingredient class. Displays the ingredients
+ *               currently added to the application, allows users to search
+ *               and sort through them, and allows users to select ingredients
+ *               for recipe generation
+ *  Last Modified: December 1, 2023
+ *
+ * */
 package com.example.cooksmart.ui.ingredient
 
 import android.os.Bundle
@@ -49,6 +57,7 @@ class IngredientFragment : Fragment() {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.search_menu, menu)
+                // Set up searching UI components
                 searchView = menu.findItem(R.id.search_bar)?.actionView as SearchView
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -69,6 +78,7 @@ class IngredientFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     // Perform camera operations
+                    // Set up delete all ingredients button
                     R.id.delete_menu -> {
                         deleteAllIngredients()
                     }
@@ -77,7 +87,7 @@ class IngredientFragment : Fragment() {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        // RecyclerView
+        // RecyclerView and unique adapter view
         adapter = IngredientListAdapter()
         val recyclerView = layout.findViewById<RecyclerView>(R.id.ingredients_list)
         recyclerView.adapter = adapter
@@ -104,7 +114,7 @@ class IngredientFragment : Fragment() {
             }
         }
 
-        // Spinner
+        // Spinner initialization
         val spinnerLists = resources.getStringArray(R.array.ingredientSpinner)
         ingredientSpinner = layout.findViewById(R.id.ingredient_sort)
 
@@ -114,6 +124,7 @@ class IngredientFragment : Fragment() {
         )
         ingredientSpinner.adapter = sprAdapter
 
+        // Set-up Ingredient list sorting
         ingredientSpinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -137,18 +148,26 @@ class IngredientFragment : Fragment() {
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
+                // Do not perform any operations if nothing is selected
             }
         }
 
 
         return layout
     }
+
+    /** "showAllIngredients"
+     *  Description: Retrieves all ingredients from the database
+     * */
     private fun showAllIngredients() {
         ingredientViewModel.readAllIngredients.observe(viewLifecycleOwner) { ingredients ->
             adapter.setData(ingredients)
         }
     }
+
+    /** "showNameAlphabetically"
+     *  Description: Retrieves an alphabetically sorted list of ingredients
+     * */
     private fun showNameAlphabetically() {
         ingredientViewModel.getIngredientSortedByCategory().observe(viewLifecycleOwner) { list ->
             list?.let {
@@ -157,6 +176,9 @@ class IngredientFragment : Fragment() {
         }
     }
 
+    /** "showBestDayOldest"
+     *  Description: Retrieves a list of ingredients, sorted by their best before date descending
+     * */
     private fun showBestDayOldest() {
         ingredientViewModel.showBestDayOldest().observe(viewLifecycleOwner) { list ->
             list?.let {
@@ -164,6 +186,10 @@ class IngredientFragment : Fragment() {
             }
         }
     }
+
+    /** "showBestDayNewest"
+     *  Description: Retrieves a list of ingredients, sorted by their best before date ascending
+     */
     private fun showBestDayNewest() {
         ingredientViewModel.showBestDayNewest().observe(viewLifecycleOwner) { list ->
             list?.let {
@@ -172,6 +198,9 @@ class IngredientFragment : Fragment() {
         }
     }
 
+    /** "showBestDayNewest"
+     *  Description: Retrieves a list of ingredients, sorted by insertion date
+     */
     private fun showAddedDayNewest() {
         ingredientViewModel.showAddedDayNewest().observe(viewLifecycleOwner) { list ->
             list?.let {
@@ -185,6 +214,11 @@ class IngredientFragment : Fragment() {
         _binding = null
     }
 
+    /** "searchQuery"
+     *  Description: Uses an input string to search for an ingredient with that
+     *               string in the database
+     * */
+
     private fun searchQuery(query: String) {
         // Search for the query with any surrounding letters
         val searchQuery = "%$query%"
@@ -195,6 +229,10 @@ class IngredientFragment : Fragment() {
         }
     }
 
+    /** "deleteAllIngredients"
+     *  Description: Confirms the users would liekt o delete all ingredients, then
+     *               performs the database operation if yes
+     * */
     private fun deleteAllIngredients() {
         // Show alert dialog to confirm deletion or not
         val builder = AlertDialog.Builder(requireContext())

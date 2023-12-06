@@ -53,13 +53,13 @@
         android:id="@+id/ingredient_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="65dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_add"
-        app:tint="@android:color/white"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/add_ingredient_button" />
+        android:contentDescription="@string/add_ingredient" />
 </androidx.constraintlayout.widget.ConstraintLayout>

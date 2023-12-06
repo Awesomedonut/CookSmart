@@ -86,7 +86,7 @@ class AddRecipe : Fragment() {
         "div.css-p7qblm img", // Delish
         "div.featured-container img.-image", // Taste of Home (when no video)
         "div.primary-image img", // Food.com
-        "img.primary-image__image" // Simply Recipes & Serious Eats
+        "img.primary-image__image", // Simply Recipes & Serious Eats
     )
 
     private lateinit var dialog: RecipeGenerationDialog
@@ -171,7 +171,8 @@ class AddRecipe : Fragment() {
     }
 
     /**
-     * Inserts the user inputted recipe into the database
+     * insertRecipe()
+     * Description: Inserts the user inputted recipe into the database
      */
     private fun insertRecipe() {
         // Get the current values in all the user input to put into Recipe entity
@@ -200,7 +201,8 @@ class AddRecipe : Fragment() {
     }
 
     /**
-     * Checks if name or quantity fields are empty
+     * isNotValidInput
+     * Description: Checks if name or quantity fields are empty
      */
     private fun isNotValidInput(title: String, ingredients: ArrayList<String>, instructions: String): Boolean {
         // Returns true if fields are empty
@@ -317,12 +319,12 @@ class AddRecipe : Fragment() {
                 val imgElement = doc.select(selector).firstOrNull()
                 if (imgElement != null) {
                     withContext(Main) {
-                        savedRecipeViewModel.setProgress(savedRecipeViewModel.progressBarValue.value!! + 1.7)
+                        savedRecipeViewModel.setProgress(savedRecipeViewModel.progressBarValue.value!! + 1.6)
                     }
                     recipeImgSrc = imgElement.attr("src")
                     if (recipeImgSrc.isNotEmpty()) {
                         withContext(Main) {
-                            savedRecipeViewModel.setProgress(79.3)
+                            savedRecipeViewModel.setProgress(81.3)
                         }
                         break
                     }

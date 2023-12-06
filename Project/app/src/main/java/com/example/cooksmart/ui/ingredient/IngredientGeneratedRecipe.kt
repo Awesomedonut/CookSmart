@@ -5,13 +5,11 @@
  * */
 package com.example.cooksmart.ui.ingredient
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.core.view.isVisible

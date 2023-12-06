@@ -75,4 +75,11 @@
     <string name="buttonOption1Text">Cheese, ham, eggs</string>
     <string name="number">Number</string>
     <string name="no_plan_added">No plan added</string>
+    <string name="loading">Loading…</string>
+    <string name="recipe_generation_warning">Generating recipe! \nPlease don\'t exit the app.</string>
+    <string name="_0">0%</string>
+    <string name="image_desc">Recipe image</string>
+    <string name="response_image">Response image</string>
+    <string name="text_placeholder">…</string>
+    <string name="reset">Reset</string>
 </resources>

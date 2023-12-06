@@ -100,7 +100,7 @@ class RecipeFragment : RecipeBaseFragment() {
 
     /** "setupActivityResultLaunchers"
      *  Description: If the data is not null amd the result code is okay, add input
-     *               to the recipebaseViewModel
+     *               to the RecipeBaseViewModel
      * */
     private fun setupActivityResultLaunchers() {
         speechResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -269,7 +269,7 @@ class RecipeFragment : RecipeBaseFragment() {
         }
     }
 
-    /** "scrolltoBottom"
+    /** "scrollToBottom"
      *  Description: Scrolls to bottom of scroll view
      * */
     private fun scrollToBottom() {

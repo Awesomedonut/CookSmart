@@ -25,14 +25,7 @@ import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.ui.ingredient.IngredientViewModel
 import com.example.cooksmart.databinding.FragmentCalendarBinding
 import com.example.cooksmart.utils.ConvertUtils
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
 import java.util.Calendar
-import java.util.Locale
 
 // Class constants
 private const val COOKSMART = "COOKSMART"
@@ -55,7 +48,7 @@ class CalendarFragment : Fragment() {
     private lateinit var sharedPreferences : SharedPreferences
 
     // Initialize date item
-    var selectedDate = Calendar.getInstance()
+    private var selectedDate = Calendar.getInstance()
 
     // Initialize 'Calendar' (database object) items
     private lateinit var calendarViewModel : CalendarViewModel
@@ -118,12 +111,12 @@ class CalendarFragment : Fragment() {
     private fun updatePlanText(view: View, calendars: List<com.example.cooksmart.database.Calendar>?) {
         if (calendars != null) {
             if(calendars.isNotEmpty()){
-                val calendarAsLong = convertCalendartoLong(selectedDate)
+                val calendarAsLong = convertCalendarToLong(selectedDate)
                 val formattedDate = ConvertUtils.longToDateString(calendarAsLong)
                 val tvPlan : TextView = view.findViewById(R.id.tvPlanPlaceholder)
                 var found = false
                 val button : Button = view.findViewById(R.id.btnAddPlan)
-                val editor = sharedPreferences?.edit()
+                val editor = sharedPreferences.edit()
 
                 for(element in calendars){
                     if(element.date == formattedDate){
@@ -158,7 +151,7 @@ class CalendarFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_calendar_to_navigation_calendar_add)
             val editor = sharedPreferences?.edit()
             if (editor != null) {
-                editor.putLong(DATE_KEY, convertCalendartoLong(selectedDate))
+                editor.putLong(DATE_KEY, convertCalendarToLong(selectedDate))
                 editor.apply()
             }
         }
@@ -171,7 +164,7 @@ class CalendarFragment : Fragment() {
         val calendar : CalendarView = view.findViewById(R.id.calendar)
         calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
             setDate(view, year, month, dayOfMonth)
-            calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
+            calendarViewModel.setSelectedDate(convertCalendarToLong(selectedDate))
             callUpdatePlanText(view, calendarViewModel)
         }
     }
@@ -180,11 +173,11 @@ class CalendarFragment : Fragment() {
      *  Description: Initializes the date text view to the current date
      * */
     private fun initDate(view : View, calendarViewModel : CalendarViewModel) {
-        val calendarAsLong = convertCalendartoLong(selectedDate)
+        val calendarAsLong = convertCalendarToLong(selectedDate)
         val formattedDate = ConvertUtils.longToDateString(calendarAsLong)
         val tvDate : TextView = view.findViewById(R.id.tvDateSelected)
         tvDate.text = formattedDate
-        calendarViewModel.setSelectedDate(convertCalendartoLong(selectedDate))
+        calendarViewModel.setSelectedDate(convertCalendarToLong(selectedDate))
     }
 
     override fun onDestroyView() {
@@ -192,10 +185,10 @@ class CalendarFragment : Fragment() {
         _binding = null
     }
 
-    /** "convertCalendartoLong"
+    /** "convertCalendarToLong"
      *  Description: Converts a java.io Calendar object into a Long
      * */
-    fun convertCalendartoLong(calendar : Calendar): Long {
+    private fun convertCalendarToLong(calendar : Calendar): Long {
         return calendar.timeInMillis
     }
 
@@ -204,7 +197,7 @@ class CalendarFragment : Fragment() {
      * */
     private fun setDate(root : View, year: Int, month: Int, dayOfMonth: Int) {
         selectedDate.set(year, month, dayOfMonth)
-        val calendarAsLong = convertCalendartoLong(selectedDate)
+        val calendarAsLong = convertCalendarToLong(selectedDate)
         val formattedDate = ConvertUtils.longToDateString(calendarAsLong)
         val tvDate : TextView = root.findViewById(R.id.tvDateSelected)
         tvDate.text = formattedDate

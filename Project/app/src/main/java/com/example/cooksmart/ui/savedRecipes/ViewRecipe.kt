@@ -1,15 +1,17 @@
+/** "ViewRecipe.kt"
+ *  Description: Shows the details of specific recipe the user clicked on
+ *  Last Modified: December 5, 2023
+ * */
+
 package com.example.cooksmart.ui.savedRecipes
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -27,9 +29,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 
-/**
- * Shows the details of specific recipe the user clicked on
- */
 class ViewRecipe : Fragment() {
     private val args by navArgs<ViewRecipeArgs>()
     private lateinit var recipeViewModel: SavedRecipeViewModel
@@ -55,7 +54,7 @@ class ViewRecipe : Fragment() {
                 // Set the heart icon to the correct state
                 favIcon = menu.findItem(R.id.fav_menu)
                 isFavorite = args.currentRecipe.isFavorite
-
+                // Set the icon to filled in or not depending on the boolean value
                 if (isFavorite) {
                     favIcon.setIcon(R.drawable.favorite_icon)
                 } else {
@@ -72,7 +71,7 @@ class ViewRecipe : Fragment() {
                             findNavController().navigate(action)
                         }
                     }
-                    // Delete dialog if user clicks delete button on menu toolbar
+                    // Show delete dialog if user clicks delete button on menu toolbar
                     R.id.delete_menu -> deleteRecipe()
 
                     // If user clicks on heart icon on menu bar
@@ -109,24 +108,25 @@ class ViewRecipe : Fragment() {
         view.findViewById<TextView>(R.id.viewRecipeIngredients).text = formattedIngredients.toString()
 
         // Display the recipe image if it has one
-        Glide.with(this /* context */)
-            .load(args.currentRecipe.image)
-            .override(250, 250) // replace with desired dimensions
-            .into(view.findViewById(R.id.responseImage))
-
+        if (args.currentRecipe.image.isNotEmpty()) {
+            Glide.with(this /* context */)
+                .load(args.currentRecipe.image)
+                .override(250, 250) // replace with desired dimensions
+                .into(view.findViewById(R.id.responseImage))
+        }
         return view
     }
 
-    /**
-     * Updates the current recipe's favorite status
+    /** "updateFavorite"
+     *  Description: Updates the current recipe's favorite status
      */
     private fun updateFavorite() {
         // Check all fields have input and then save into database as Recipe entity
         recipeViewModel.updateIsFavorite(args.currentRecipe.id, isFavorite)
     }
 
-    /**
-     * Deletes the recipe from the data base if user clicks yes on dialog
+    /** "deleteRecipe"
+     *  Description: Deletes the recipe from the data base if user clicks yes on dialog
      */
     private fun deleteRecipe() {
         // Show alert dialog to confirm deletion or not

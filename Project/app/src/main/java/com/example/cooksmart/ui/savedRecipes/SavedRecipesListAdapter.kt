@@ -1,3 +1,8 @@
+/** "SavedRecipesListAdapter.kt"
+ *  Description: Shows each row in the recipe database in a RecyclerView
+ *  Last Modified: December 5, 2023
+ * */
+
 package com.example.cooksmart.ui.savedRecipes
 
 import android.view.LayoutInflater
@@ -12,9 +17,6 @@ import com.bumptech.glide.Glide
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
 
-/**
- * Shows each row in the recipe database in a RecyclerView
- */
 class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyViewHolder>(){
     private var recipeList = emptyList<Recipe>()
 
@@ -32,11 +34,15 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
         // Display the row info
         holder.itemView.findViewById<TextView>(R.id.list_name).text = currentRecipe.name
 
-        // Set the recipe image in the row
-        Glide.with(holder.itemView /* context */)
-            .load(currentRecipe.image)
-            .override(80, 80) // replace with desired dimensions
-            .into(holder.itemView.findViewById(R.id.responseImageRecipe))
+        // If there's an available image, set the image in the row
+        // Otherwise, image stays as the default
+        if (currentRecipe.image.isNotEmpty()) {
+            // Set the recipe image in the row
+            Glide.with(holder.itemView /* context */)
+                .load(currentRecipe.image)
+                .override(80, 80) // replace with desired dimensions
+                .into(holder.itemView.findViewById(R.id.responseImageRecipe))
+        }
 
         val favoriteIcon = holder.itemView.findViewById<ImageView>(R.id.list_isFavorite)
         val borderFavIcon = holder.itemView.findViewById<ImageView>(R.id.list_isNotFavorite)
@@ -57,6 +63,10 @@ class SavedRecipesListAdapter: RecyclerView.Adapter<SavedRecipesListAdapter.MyVi
             holder.itemView.findNavController().navigate(action)
         }
     }
+
+    /** "setData"
+     *  Description: Set the recipeList with the given List<Recipe>
+     */
     fun setData(recipe: List<Recipe>) {
         this.recipeList = recipe
         notifyDataSetChanged()

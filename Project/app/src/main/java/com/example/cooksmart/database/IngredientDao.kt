@@ -1,5 +1,5 @@
 /** "IngredientDao.kt"
- *  Description: Dao class for ingredient entity. ALlows users
+ *  Description: Dao class for ingredient entity. Allows users
  *               to perform database operations on the ingredient table
  *  Last Modified: November 5, 2023
  * */

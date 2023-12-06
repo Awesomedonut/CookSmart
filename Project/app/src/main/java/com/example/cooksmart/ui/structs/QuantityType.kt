@@ -15,12 +15,10 @@ enum class QuantityType (val asInt:Int, val asString:String){
     Cups(6, "cup"),
     Pints(7, "pint"),
     Ounces(8,"oz"),
-    Fluid_Ounce(9,"fl oz"),
+    FluidOunce(9,"fl oz"),
     Other(10,"Other");
 
     companion object{
-        fun stringFromInt(int: Int) : String {return fromInt(int).asString}
-        fun fromInt(int: Int) = values().first() {it.asInt == int}
-        fun fromString(string: String) = values().first() { it.asString == string }
+        fun fromString(string: String) = values().first { it.asString == string }
     }
 }

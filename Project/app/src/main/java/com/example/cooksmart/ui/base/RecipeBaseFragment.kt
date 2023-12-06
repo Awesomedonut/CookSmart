@@ -16,7 +16,8 @@ import com.example.cooksmart.utils.CameraHandler
 import com.example.cooksmart.utils.DataFetcher
 import com.example.cooksmart.utils.MediaHandler
 
-open class RecipeBaseFragment() : Fragment() {
+@Suppress("DEPRECATION")
+open class RecipeBaseFragment : Fragment() {
     // Declare class variables
     protected lateinit var recipebaseViewModel: RecipeBaseViewModel
     protected val mediaHandler = MediaHandler()
@@ -57,6 +58,7 @@ open class RecipeBaseFragment() : Fragment() {
      *  Description: Checks if camera permissions are granted. If not,
      *               prompt user to enable camera permissions.
      * */
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -77,7 +79,7 @@ open class RecipeBaseFragment() : Fragment() {
      *               Let the view model know when the next audio needs to be played,
      *               or audio is completed
      * */
-    protected fun playAudio(audioUrl: String) {
+    private fun playAudio(audioUrl: String) {
         Log.d("RecipeFrag", "playAudio$audioUrl")
         mediaHandler.playAudioFromUrl(audioUrl, object : AudioPlaybackCallback {
             override fun onAudioCompleted() {

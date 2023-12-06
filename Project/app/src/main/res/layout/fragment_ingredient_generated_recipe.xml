@@ -25,7 +25,7 @@
                 android:id="@+id/responseTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="...."
+                android:text="@string/text_placeholder"
                 android:textSize="18sp"
                 /> <!-- Initially set to gone -->
             <ImageView
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:contentDescription="image_desc"
+                android:contentDescription="@string/response_image"
                 /> <!-- Initially set to gone -->
             <View
                 android:layout_width="match_parent"

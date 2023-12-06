@@ -1,3 +1,7 @@
+/** "UpdateRecipe.kt"
+ *  Description: For the user to modify the chosen recipe's information
+ *  Last Modified: December 5, 2023
+ * */
 package com.example.cooksmart.ui.savedRecipes
 
 import android.os.Bundle
@@ -17,7 +21,6 @@ import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.utils.ConvertUtils
 
 class UpdateRecipe : Fragment() {
-
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
     private lateinit var view: View
     private lateinit var ingredientEditText: EditText
@@ -77,10 +80,11 @@ class UpdateRecipe : Fragment() {
         return view
     }
 
-    /**
-     * Using the current input in textViews, update the current recipe ID with those values
+    /** "updateRecipe"
+     *  Description: Using the current input in textViews, update the current recipe ID with those values
      */
     private fun updateRecipe() {
+        // Get all the fields with what is currently filled in
         val title = view.findViewById<EditText>(R.id.title_recipe_update).text.toString()
         val isFavorite = args.currentRecipe.isFavorite
         val ingredients = ingredientsList.toString()
@@ -88,14 +92,16 @@ class UpdateRecipe : Fragment() {
         val currentDate = args.currentRecipe.dateAdded
         // Check all fields have input and then save into database as Recipe entity
         if (!isNotValidInput(title, ingredientsList, instructions)) {
-            // Check if the recipe has an image or not. If not, don't add the image field
-            recipe = if (args.currentRecipe.image.isNullOrEmpty()) {
+            // Check if the recipe has an image or not. If not, don't include the image field
+            recipe = if (args.currentRecipe.image.isEmpty()) {
                 Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite)
             } else {
                 Recipe(args.currentRecipe.id, title, ingredients, instructions, currentDate, isFavorite, args.currentRecipe.image)
             }
             savedRecipeViewModel.updateRecipe(recipe)
             Toast.makeText(requireContext(), "Recipe updated!", Toast.LENGTH_SHORT).show()
+
+            // Navigate back to the recipe view
             val action = UpdateRecipeDirections.actionNavigationUpdateRecipeToNavigationViewRecipe(recipe)
             findNavController().navigate(action)
         } else {
@@ -103,8 +109,8 @@ class UpdateRecipe : Fragment() {
         }
     }
 
-    /**
-     * Checks if name or quantity fields are empty
+    /** "isNotValidInput"
+     *  Description: Checks if name or quantity fields are empty
      */
     private fun isNotValidInput(title: String, ingredients: ArrayList<String>, instructions: String): Boolean {
         // Returns true if fields are empty

@@ -1,5 +1,5 @@
 /** "RecipeBaseViewModelFactory"
- *  Description: ViewModelFacotry for the RecipeBaseViewModel class.
+ *  Description: ViewModelFactory for the RecipeBaseViewModel class.
  *               Creates a view model with data fetcher and application parameters
  *  Last Modified: December 1, 2023
  * */

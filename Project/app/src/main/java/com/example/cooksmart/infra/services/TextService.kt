@@ -122,7 +122,7 @@ class TextService(private val openAI: OpenAI) {
         onTextUpdated(fullText, promptBag.promptId)
     }
 
-    /** "handleCopmletion"
+    /** "handleCompletion"
      *  Description: Call necessary completion functions to display the recipe
      *               and reset generation properties.
      * */

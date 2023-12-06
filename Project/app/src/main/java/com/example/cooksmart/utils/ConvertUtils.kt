@@ -6,6 +6,10 @@
 package com.example.cooksmart.utils
 
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 class ConvertUtils {
@@ -32,6 +36,23 @@ class ConvertUtils {
         fun longToDateString(long: Long): String {
             val dateFormat = SimpleDateFormat("MMM dd yyyy", Locale.getDefault())
             return dateFormat.format(long).uppercase(Locale.getDefault())
+        }
+
+        /** "convertLongToDate"
+         *  Description: Converts a long into a local date object
+         * */
+        fun convertLongToDate(dateMilli : Long): LocalDate {
+            val date = Instant.ofEpochMilli(dateMilli)
+            return date.atZone(ZoneId.systemDefault()).toLocalDate()
+        }
+
+        /** "daysExpiry"
+         *  Description: Determine the days until expiry between the current date and object date
+         * */
+        fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
+            val expiryDate = convertLongToDate(expiryDateLong)
+            val currentDate = convertLongToDate(selectedDate)
+            return ChronoUnit.DAYS.between(currentDate, expiryDate)
         }
     }
 }

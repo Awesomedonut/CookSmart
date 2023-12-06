@@ -7,27 +7,17 @@
 package com.example.cooksmart.ui.calendar
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation.findNavController
 import com.example.cooksmart.R
 import com.example.cooksmart.R.layout.adapter_calendar_list
 import com.example.cooksmart.database.Ingredient
 import com.example.cooksmart.utils.ConvertUtils
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
-import java.util.Calendar
-import java.util.Locale
+
 class CalendarListAdapter(private val context: Context,
                           private var ingredientList : List<Ingredient>,
                           private val calendarViewModel: CalendarViewModel,
@@ -38,11 +28,11 @@ class CalendarListAdapter(private val context: Context,
     }
 
     override fun getItem(position: Int): Ingredient {
-        return ingredientList.get(position)
+        return ingredientList[position]
     }
 
     override fun getItemId(position: Int): Long {
-        return ingredientList.get(position).id
+        return ingredientList[position].id
     }
 
     fun replace(newList : List<Ingredient>){
@@ -61,7 +51,7 @@ class CalendarListAdapter(private val context: Context,
             // Retrieve the expiryDate Long from the ingredient object
             val expiryDate = ingredient.bestBefore
             // Create the string for the text view and change the text
-            var ingredientString = ingredient.name + " — expires " + ConvertUtils.longToDateString(expiryDate)
+            val ingredientString = ingredient.name + " — expires " + ConvertUtils.longToDateString(expiryDate)
             tvExpiryDate.text = ingredientString
             tvExpiryDate.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
@@ -69,7 +59,7 @@ class CalendarListAdapter(private val context: Context,
                 // Change the background of the ingredient depending on its proximity
                 // to its expiry date
                 val selectedDate = it
-                val expiryDays = daysExpiry(expiryDate, selectedDate)
+                val expiryDays = ConvertUtils.daysExpiry(expiryDate, selectedDate)
                 if(expiryDays <= 0){
                     tvExpiryDate.setBackgroundResource(R.drawable.lv_red_circular)
                 }
@@ -83,7 +73,7 @@ class CalendarListAdapter(private val context: Context,
                 // Navigate to the IngredientUpdate page for the specified ingredient
                 tvExpiryDate.setOnClickListener{
                     val action = CalendarFragmentDirections.actionNavigationCalendarToNavigationIngredientUpdate(ingredient)
-                    view?.let {
+                    view.let {
                         findNavController(it).navigate(action)
                     }
                 }
@@ -93,24 +83,4 @@ class CalendarListAdapter(private val context: Context,
 
         return view
     }
-
-    /** "daysExpiry"
-     *  Description: Determine the days until expiry between the current date and object date
-     * */
-    fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
-        val expiryDate
-                = convertLongtoDate(expiryDateLong)
-        val currentDate = convertLongtoDate(selectedDate)
-        return ChronoUnit.DAYS.between(currentDate, expiryDate)
-    }
-
-    /** "convertLongtoDate"
-     *  Description: Convert a Long object into a LocalDate object
-     * */
-    fun convertLongtoDate(dateMilli : Long): LocalDate {
-        val date = Instant.ofEpochMilli(dateMilli)
-        return date.atZone(ZoneId.systemDefault()).toLocalDate()
-    }
-
-
 }

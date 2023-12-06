@@ -36,7 +36,8 @@
             android:maxLines="1"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences|textAutoCorrect"
-            android:hint="@string/enter_ingredient"/>
+            android:hint="@string/enter_ingredient"
+            android:importantForAutofill="no" />
         <Button
             android:id="@+id/add_ingredient_recipe"
             android:layout_width="match_parent"
@@ -61,7 +62,8 @@
             android:hint="@string/instruction_hint"
             android:layout_width="match_parent"
             android:inputType="textMultiLine|textCapSentences"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:importantForAutofill="no" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

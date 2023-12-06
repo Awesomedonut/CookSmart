@@ -8,7 +8,7 @@ package com.example.cooksmart.infra.services
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.example.cooksmart.infra.services.helper.NotificationHelper
+import com.example.cooksmart.infra.helper.NotificationHelper
 
 class NotificationWorker(context : Context, workerParams : WorkerParameters) :
     Worker(context, workerParams) {

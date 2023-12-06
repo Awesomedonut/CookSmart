@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:contentDescription="image_desc" />
+            android:contentDescription="@string/image_desc" />
         <TextView
             android:id="@+id/viewRecipeIngredientsLabel"
             android:layout_width="match_parent"

@@ -37,7 +37,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private val _response = MutableLiveData<String>()
     val response: LiveData<String> get() = _response
 
-    private val _progressBarValue = MutableLiveData<Double>(0.0)
+    private val _progressBarValue = MutableLiveData(0.0)
     val progressBarValue: LiveData<Double> get() = _progressBarValue
 
     private val _imageUrl = MutableLiveData<String>()
@@ -53,20 +53,20 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private val _playerLoaded = MutableLiveData<Boolean>().apply { value = false }
     val playerLoaded: LiveData<Boolean> = _playerLoaded
 
-    private val _input = MutableLiveData<String>("")
+    private val _input = MutableLiveData("")
     val input: LiveData<String> get() = _input
 
     private val _isCreating = MutableLiveData<Boolean>()
     val isCreating: LiveData<Boolean> = _isCreating
 
-    private val _info = MutableLiveData<String>("")
+    private val _info = MutableLiveData("")
     val info: LiveData<String> get() = _info
 
     private val _recipeRepository: RecipeRepository
     private var _streamPaused: Boolean = true
     private var _saved: Boolean = false
 
-    private val _promptId = MutableLiveData<Int>(0)
+    private val _promptId = MutableLiveData(0)
     private var lastFetchJob: Job? = null
 
     // Initialize recipe dao and repository
@@ -195,22 +195,22 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
 
         _progressBarValue.value = 100.0
 
-        if (_response?.value != null) {
+        if (_response.value != null) {
             val image = _imageUrl.value ?: ""
             val currentDate = System.currentTimeMillis()
             val formattedDate = ConvertUtils.longToDateString(currentDate)
             var title = "AutoGen$formattedDate"
-            if (!_input?.value.isNullOrEmpty()) {
-                title = _input!!.value!!
+            if (!_input.value.isNullOrEmpty()) {
+                title = _input.value!!
             }
             // Parse the entire text output from API into strings of Title, Ingredients and Instructions
-            val wholeRecipeOutput: String = _response!!.value!!.trimIndent()
+            val wholeRecipeOutput: String = _response.value!!.trimIndent()
             title = parseTitle(wholeRecipeOutput)
             val ingredients = parseIngredients(wholeRecipeOutput)
             val instructions = parseInstructions(wholeRecipeOutput)
             val recipe =
                 Recipe(0, title, ingredients,
-                    instructions!!, currentDate,
+                    instructions, currentDate,
                     false, image
                 )
 
@@ -250,8 +250,8 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             val currentDate = System.currentTimeMillis()
             val formattedDate = ConvertUtils.longToDateString(currentDate)
             recipeName = "AutoGen$formattedDate"
-            if (!_input?.value.isNullOrEmpty()) {
-                recipeName = _input!!.value!!
+            if (!_input.value.isNullOrEmpty()) {
+                recipeName = _input.value!!
             }
         }
 
@@ -313,7 +313,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             }
         }
         // Return whole string if errors
-        return if (instructions.isNullOrEmpty()) {
+        return if (instructions.isEmpty()) {
             input
         } else {
             instructions
@@ -481,7 +481,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     /** "Pause"
      *  Description: If the stream is paused, add to the promptID value
      * */
-    fun Pause() {
+    fun pause() {
         _streamPaused = true
         if (_promptId.value != null)
             _promptId.value = _promptId.value!! + 1

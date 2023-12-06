@@ -24,7 +24,7 @@ class SmartNetService(private val client: OkHttpClient) {
                  onResponse: (ResponseBody, Int) -> Unit) {
 
         val fullUrl = BuildConfig.AUDIO_URL + endpoint
-        Log.d("SmartNet.makecall", "fetch....$fullUrl")
+        Log.d("SmartNet.makeCall", "fetch....$fullUrl")
         val json = JSONObject().apply { put("question", promptBag.text) }
         val requestBody = json.toString()
             .toRequestBody("application/json; charset=utf-8".toMediaType())

@@ -27,12 +27,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.cooksmart.Constants
 import com.example.cooksmart.R
 import com.example.cooksmart.database.Recipe
 import com.example.cooksmart.ui.dialogs.RecipeGenerationDialog
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
@@ -88,9 +86,7 @@ class AddRecipe : Fragment() {
         "div.primary-image img", // Food.com
         "img.primary-image__image", // Simply Recipes & Serious Eats
     )
-
     private lateinit var dialog: RecipeGenerationDialog
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -170,9 +166,8 @@ class AddRecipe : Fragment() {
         return view
     }
 
-    /**
-     * insertRecipe()
-     * Description: Inserts the user inputted recipe into the database
+    /** "insertRecipe"
+     *  Description: Inserts the user inputted recipe into the database
      */
     private fun insertRecipe() {
         // Get the current values in all the user input to put into Recipe entity
@@ -201,8 +196,11 @@ class AddRecipe : Fragment() {
     }
 
     /**
-     * isNotValidInput
+     * "isNotValidInput"
      * Description: Checks if name or quantity fields are empty
+     * @param title
+     * @param ingredients
+     * @param instructions
      */
     private fun isNotValidInput(title: String, ingredients: ArrayList<String>, instructions: String): Boolean {
         // Returns true if fields are empty
@@ -210,8 +208,9 @@ class AddRecipe : Fragment() {
     }
 
     /**
-     * getUrl
-     * Description: Opens dialog to get user's URL for recipe. If it's a valid URL, scape the URL for recipe data
+     * "getUrl"
+     *  Description: Opens dialog to get user's URL for recipe.
+     *               If it's a valid URL, scape the URL for recipe data
      */
     private fun getUrl() {
         // Show alert dialog to get user input of recipe URL
@@ -253,14 +252,15 @@ class AddRecipe : Fragment() {
     }
 
     /**
-     * parseURL
+     * "parseURL"
      * Description: Uses jsoup to scrape webpage and parse recipe related information
-     *              Increments the progressBarValue while processing text
+     *              Increments the progressBarValue while processing text using withContext
+     * @param url the URL to parse
      */
     private fun parseURL(url: String) {
         CoroutineScope(IO).launch {
             // Use jsoup to scrape website from user URL
-            // Return if access error encountered
+            // Throw error if access error encountered
             withContext(Main) {
                 savedRecipeViewModel.setProgress(3.3)
             }

@@ -3,7 +3,7 @@
  *                a notification
  *   Last Modified: November 29, 2023
  * */
-package com.example.cooksmart.infra.services.helper
+package com.example.cooksmart.infra.helper
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

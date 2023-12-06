@@ -9,7 +9,6 @@
 package com.example.cooksmart.ui.ingredient
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -34,11 +33,8 @@ import com.example.cooksmart.R
 import com.example.cooksmart.databinding.FragmentIngredientBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.widget.SearchView
-import androidx.viewpager2.widget.ViewPager2
-import com.example.cooksmart.Constants.SELECTED_INGREDIENTS
 
 class IngredientFragment : Fragment() {
-
     private var _binding: FragmentIngredientBinding? = null
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var adapter: IngredientListAdapter
@@ -230,7 +226,7 @@ class IngredientFragment : Fragment() {
     }
 
     /** "deleteAllIngredients"
-     *  Description: Confirms the users would liekt o delete all ingredients, then
+     *  Description: Confirms the users would like to delete all ingredients, then
      *               performs the database operation if yes
      * */
     private fun deleteAllIngredients() {

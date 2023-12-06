@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.SpinnerAdapter
@@ -36,11 +35,6 @@ import com.example.cooksmart.ui.structs.CategoryType
 import com.example.cooksmart.ui.structs.QuantityType
 import com.example.cooksmart.utils.ConvertUtils
 import com.example.cooksmart.utils.PermissionCheck
-import java.security.acl.Permission
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
@@ -60,7 +54,7 @@ class IngredientAdd : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_ingredient_insert, container, false)
 
@@ -171,7 +165,7 @@ class IngredientAdd : Fragment() {
         // a day before the expiry date
         if(isNotified) {
             // Add notification to the queue
-            var daysToExpiry = daysExpiry(bestBefore, currentDate) - 1
+            var daysToExpiry = ConvertUtils.daysExpiry(bestBefore, currentDate) - 1
             // If the ingredient is already expired, immediately send a notification
             if (daysToExpiry < 0) {
                 daysToExpiry = 0
@@ -209,23 +203,5 @@ class IngredientAdd : Fragment() {
         val bestBeforeText = view.findViewById<TextView>(R.id.date_input_current)
         val formattedDate = ConvertUtils.longToDateString(selectedDate.timeInMillis)
         bestBeforeText.text = formattedDate.uppercase(Locale.getDefault())
-    }
-
-    /** "daysExpiry"
-     *  Description: Calculates the number of days until ingredient expiry
-     * */
-    fun daysExpiry(expiryDateLong : Long, selectedDate : Long): Long {
-        val expiryDate
-                = convertLongtoDate(expiryDateLong)
-        val currentDate = convertLongtoDate(selectedDate)
-        return ChronoUnit.DAYS.between(currentDate, expiryDate)
-    }
-
-    /** "convertLongtoDate"
-     *  Description: Converts a long into a local date object
-     * */
-    fun convertLongtoDate(dateMilli : Long): LocalDate {
-        val date = Instant.ofEpochMilli(dateMilli)
-        return date.atZone(ZoneId.systemDefault()).toLocalDate()
     }
 }

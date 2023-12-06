@@ -1,3 +1,8 @@
+/** "SavedRecipesFragment.kt"
+ *  Description: Shows the SavedRecipesFragment, with the RecyclerView of recipes
+ *               with search and delete all functionality
+ *  Last Modified: December 5, 2023
+ * */
 package com.example.cooksmart.ui.savedRecipes
 
 import android.os.Bundle
@@ -24,9 +29,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-/**
- * Shows the SavedRecipesFragment, with the RecyclerView of recipes
- */
 class SavedRecipesFragment : Fragment() {
     private lateinit var savedRecipeViewModel: SavedRecipeViewModel
     private lateinit var adapter: SavedRecipesListAdapter
@@ -130,8 +132,9 @@ class SavedRecipesFragment : Fragment() {
         return view
     }
 
-    /**
-     * Searches the given string and sets the adapter to the matching recipe names
+    /** "searchQuery"
+     *  Description: Searches the given string and sets the adapter to the matching recipe names
+     *  @param query String to search the database for
      */
     private fun searchQuery(query: String) {
         // Search for the query with any surrounding letters
@@ -143,8 +146,8 @@ class SavedRecipesFragment : Fragment() {
         }
     }
 
-    /**
-     * Show all the recipes in the adapter list
+    /** "showAllRecipes"
+     *  Description: Show all the recipes in the adapter list
      */
     private fun showAllRecipes(){
         savedRecipeViewModel.readAllRecipes.observe(viewLifecycleOwner) { recipe ->
@@ -152,9 +155,8 @@ class SavedRecipesFragment : Fragment() {
         }
     }
 
-
-    /**
-     * Sort the recipes in the adapter list by name (A-Z)
+    /** "showSavedRecipesSortedByName"
+     *  Description: Sort the recipes in the adapter list by name (A-Z)
      */
     private fun showSavedRecipesSortedByName() {
         savedRecipeViewModel.getRecipesSortedByName().observe(viewLifecycleOwner) { list ->
@@ -164,8 +166,8 @@ class SavedRecipesFragment : Fragment() {
         }
     }
 
-    /**
-     * Sort the recipes in the adapter list by date
+    /** "showSavedRecipesSortedByDate"
+     *  Description: Sort the recipes in the adapter list by date
      */
     private fun showSavedRecipesSortedByDate() {
         savedRecipeViewModel.getRecipesSortedByDate().observe(viewLifecycleOwner) { list ->
@@ -175,8 +177,8 @@ class SavedRecipesFragment : Fragment() {
         }
     }
 
-    /**
-     * Filter the recipes in the adapter list by if it's a favorite
+    /** "showAllFavoriteRecipes"
+     *  Description: Filter the recipes in the adapter list by if it's a favorite
      */
     private fun showAllFavoriteRecipes() {
         savedRecipeViewModel.getAllFavoriteRecipes().observe(viewLifecycleOwner) { list ->
@@ -186,8 +188,8 @@ class SavedRecipesFragment : Fragment() {
         }
     }
 
-    /**
-     * Deletes all recipe from the data base if user clicks yes on dialog
+    /** "deleteAllRecipes"
+     *  Description: Deletes all recipe from the data base if user clicks yes on dialog
      */
     private fun deleteAllRecipes() {
         // Show alert dialog to confirm deletion or not

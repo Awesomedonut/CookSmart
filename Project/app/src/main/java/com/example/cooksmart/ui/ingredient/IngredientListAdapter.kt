@@ -4,14 +4,12 @@
  * */
 package com.example.cooksmart.ui.ingredient
 
-import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooksmart.R
@@ -53,11 +51,11 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
         holder.itemView.findViewById<CheckBox>(R.id.list_checkbox).apply {
             setOnClickListener {
                 val isChecked = isChecked
-                val currentIngredient = ingredientList[position]
+                val newCurrentIngredient = ingredientList[position]
                 if (isChecked) {
-                    checkedIngredients.add(currentIngredient)
+                    checkedIngredients.add(newCurrentIngredient)
                 } else {
-                    checkedIngredients.remove(currentIngredient)
+                    checkedIngredients.remove(newCurrentIngredient)
                 }
             }
         }
@@ -72,7 +70,7 @@ class IngredientListAdapter: RecyclerView.Adapter<IngredientListAdapter.MyViewHo
     }
 
     /** "getCheckedIngredients"
-     *  Description: Returns ingredients that are checkmarked
+     *  Description: Returns ingredients that are checked
      * */
     fun getCheckedIngredients(): List<Ingredient> {
         return checkedIngredients

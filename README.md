@@ -1,10 +1,11 @@
 # CookSmart
 Hello, we are group 15 of **SFU CMPT 362 Fall 2023** and we developed an application called CookSmart. This innovative app is designed to assist users in tracking and creating recipes based on their existing ingredients. 
 
+See screenshots on our website!
 [Website](https://sites.google.com/view/cmpt362cooksmart/home)
 
 # Features overview
-1. AI Recipe Generation: CookSmart incorporates cutting-edge AI technology for recipe generation. Users can input ingredients via selection, voice commands, or even images, making recipe creation a breeze 
+1. AI Recipe Generation: CookSmart incorporates cutting-edge AI technology for recipe generation. Users can input ingredients via selection, voice commands, or even images, making recipe creation a breeze.
 2. Calendar Functionality: Our app boasts a comprehensive calendar with advanced features such as expiry day checking, notification scheduling, and free-planning components.
 3. Intuitive UI Design: We prioritized an easy-to-understand and clear user interface, ensuring a seamless and enjoyable experience for our users.
 4. Personal Recipe Management: Users can add their own recipes or import from URLs and mark favorites for quick access. The app also allows for easy updating of recipe information.

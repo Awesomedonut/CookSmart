@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/buttonOption1"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="0.5dp"
             android:layout_alignParentEnd="true"
             app:elevation="2dp"
             app:tint="@android:color/white"

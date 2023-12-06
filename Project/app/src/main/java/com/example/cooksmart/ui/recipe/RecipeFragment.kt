@@ -56,6 +56,8 @@ class RecipeFragment : RecipeBaseFragment() {
     private val binding get() = _binding!!
     private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var ingredientsImgUri: Uri
+    private lateinit var buttonAnimation: ObjectAnimator
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -136,6 +138,12 @@ class RecipeFragment : RecipeBaseFragment() {
 
         // Setup the recipe generation button
         DebouncedOnClickListener.setDebouncedOnClickListener(binding.buttonOption1, 500) {
+            // Stop the animation and reset alpha
+            if (::buttonAnimation.isInitialized) {
+                buttonAnimation.cancel()
+                binding.buttonOption1.alpha = 1f
+            }
+
             // Display a dialog during recipe generation
             val dialog = RecipeGenerationDialog()
             dialog.show(requireActivity().supportFragmentManager, RecipeGenerationDialog.TAG)
@@ -294,16 +302,14 @@ class RecipeFragment : RecipeBaseFragment() {
      * */
     private fun animateButton(button: Button) {
         Log.d("ReciFragment", "animate...")
-        ObjectAnimator.ofInt(button, "backgroundColor",
-            Color.WHITE, Color.YELLOW, Color.WHITE).apply {
-            duration = 500 // duration of the flash effect
-            setEvaluator(ArgbEvaluator())
+        buttonAnimation = ObjectAnimator.ofFloat(button, "alpha", 1f, 0f, 1f).apply {
+            duration = 2500 // Duration of fading in and out
+            repeatCount = ValueAnimator.INFINITE
             repeatMode = ValueAnimator.REVERSE
-            repeatCount = 1 // number of times to repeat
+            startDelay = 500 // Delay between each flash cycle
             start()
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

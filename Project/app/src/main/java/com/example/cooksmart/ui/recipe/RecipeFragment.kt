@@ -294,13 +294,17 @@ class RecipeFragment : RecipeBaseFragment() {
      * */
     private fun animateButton(button: Button) {
         Log.d("ReciFragment", "animate...")
-        ObjectAnimator.ofInt(button, "backgroundColor",
-            Color.WHITE, Color.YELLOW, Color.WHITE).apply {
-            duration = 500 // duration of the flash effect
-            setEvaluator(ArgbEvaluator())
+        val animation = ObjectAnimator.ofFloat(button, "alpha", 1f, 0f, 1f).apply {
+            duration = 2500 // Duration of fading in and out
+            repeatCount = ValueAnimator.INFINITE
             repeatMode = ValueAnimator.REVERSE
-            repeatCount = 1 // number of times to repeat
+            startDelay = 500 // Delay between each flash cycle
             start()
+        }
+
+        button.setOnClickListener {
+            animation.cancel() // Stop the animation when the button is clicked
+            button.alpha = 1f // Reset alpha to fully visible
         }
     }
 

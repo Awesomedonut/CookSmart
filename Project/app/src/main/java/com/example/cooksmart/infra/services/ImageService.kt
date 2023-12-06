@@ -1,3 +1,8 @@
+/** "ImageService.kt"
+ *  Description: Uses OpenAI to generate an image using a prompt.
+ *               If hte image is not null, callback the image URL
+ *  Last Modified: November 2, 2023
+ * */
 package com.example.cooksmart.infra.services
 
 import com.aallam.openai.api.image.ImageCreation

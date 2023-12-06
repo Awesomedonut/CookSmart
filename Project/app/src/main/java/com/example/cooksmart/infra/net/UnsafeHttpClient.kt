@@ -1,3 +1,9 @@
+/** "UnsafeHttpClient.kt"
+ *  Description: Uses OkHttpClient with basic authentication to create
+ *               an SSL socket factory with an all-trusting manager. Builds
+ *               an OkHttpClient object
+ *  Last Modified: November 14, 2023
+ * */
 package com.example.cooksmart.infra.net
 
 import okhttp3.OkHttpClient

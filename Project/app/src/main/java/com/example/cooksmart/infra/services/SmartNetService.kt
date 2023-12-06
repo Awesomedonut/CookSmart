@@ -1,3 +1,8 @@
+/** "SmartNetService.kt"
+ *  Description: Using the OkHTTPClient, create q client request
+ *               depending on the input parameters.
+ *  Last Modified: November 28, 2023
+ * */
 package com.example.cooksmart.infra.services
 
 import android.util.Log

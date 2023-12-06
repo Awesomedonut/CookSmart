@@ -1,3 +1,8 @@
+/** "OpenAIProvider"
+ *  Description: Creates an instance of the OpenAI provider
+ *               using the API token
+ *  Last Modified: November 15, 2023
+ * */
 package com.example.cooksmart.infra.services
 
 import com.aallam.openai.api.http.Timeout

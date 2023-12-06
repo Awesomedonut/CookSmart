@@ -1,3 +1,7 @@
+/** "TextService.kt"
+ *  Description: Create an OpenAI text stream using with the input parameters
+ *  Last Modified: November 2, 2023
+ * */
 package com.example.cooksmart.infra.services
 
 import com.aallam.openai.api.chat.ChatCompletionChunk
@@ -21,13 +25,18 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KSuspendFunction1
 
 class TextService(private val openAI: OpenAI) {
-
+    // Declare class variables
     private var fullText: String = ""
     private var audioText: String = ""
     private var startIndex: Int = 0
     private var tempIndex: Int = 0
     private var audioCount = 0
     private var summarySent = false
+
+    /** "startStream"
+     *  Description: Begins OpenAI prompt generation and returns information
+     *               on completion. Done using a coroutine.
+     * */
     fun startStream(
         coroutineScope: CoroutineScope,
         promptBag: PromptBag,
@@ -65,6 +74,9 @@ class TextService(private val openAI: OpenAI) {
         }
     }
 
+    /** "sendChatCompletionRequest"
+     *  Description: Returns an OpenAI chat completion request
+     * */
     private fun sendChatCompletionRequest(promptBag: PromptBag): Flow<ChatCompletionChunk> {
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId(MODEL_NAME),
@@ -78,6 +90,10 @@ class TextService(private val openAI: OpenAI) {
         return openAI.chatCompletions(chatCompletionRequest)
     }
 
+    /** "processResponse"
+     *  Description: Builds return variables as a response is being processed.
+     *               Calls necessary response functions upon completion.
+     * */
     private fun processResponse(
         response: ChatCompletionChunk,
         promptBag: PromptBag,
@@ -106,6 +122,10 @@ class TextService(private val openAI: OpenAI) {
         onTextUpdated(fullText, promptBag.promptId)
     }
 
+    /** "handleCopmletion"
+     *  Description: Call necessary completion functions to display the recipe
+     *               and reset generation properties.
+     * */
     private suspend fun handleCompletion(
         promptBag: PromptBag,
         onAudioTextReady: ((String, Int) -> Unit)?,
@@ -118,10 +138,16 @@ class TextService(private val openAI: OpenAI) {
         onCompletedSuspend?.invoke(promptBag.promptId)
     }
 
+    /** "handleError"
+     *  Description: Error handling function
+     * */
     private fun handleError(e: Exception, onError: ((String) -> Unit)?) {
         onError?.invoke(e.message.toString())
     }
 
+    /** "resetText"
+     *  Description: Resets class variables. Called upon generation completion.
+     * */
     private fun resetText() {
         fullText = ""
         audioText = ""

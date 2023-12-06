@@ -97,12 +97,13 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:paddingBottom="90dp">
+            android:paddingBottom="65dp">
             <Button
                 android:id="@+id/update_button_confirm"
-                android:layout_width="200dp"
-                android:layout_height="100dp"
-                android:text="@string/update"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:textColor="@color/white"
+                android:text="@string/save"
                 android:layout_gravity="bottom"
                 android:fontFamily="@font/raleway"
                 android:textStyle="bold" />

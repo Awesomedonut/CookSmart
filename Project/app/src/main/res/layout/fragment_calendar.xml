@@ -81,15 +81,16 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="8dp"
                 android:fontFamily="@font/cabin"
-                android:text="@string/no_plan_detected" />
+                android:text="@string/no_plan_added" />
 
             <Button
                 android:id="@+id/btnAddPlan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
                 android:layout_below="@+id/tvPlanPlaceholder"
                 android:layout_centerHorizontal="true"
                 android:text="@string/add_plan"
+                android:textColor="@color/white"
                 android:fontFamily="@font/raleway"/>
         </RelativeLayout>
     </ScrollView>

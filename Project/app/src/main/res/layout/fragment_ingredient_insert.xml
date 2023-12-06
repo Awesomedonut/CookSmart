@@ -86,6 +86,7 @@
                 android:id="@+id/best_before_date_picker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
                 android:backgroundTint="@android:color/darker_gray"
                 android:text="@string/change_date"
                 android:fontFamily="@font/raleway"/>
@@ -95,11 +96,12 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:paddingBottom="90dp">
+            android:paddingBottom="65dp">
             <Button
                 android:id="@+id/button_confirm"
-                android:layout_width="200dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:textColor="#FFFFFF"
                 android:text="@string/add"
                 android:layout_gravity="bottom"
                 android:fontFamily="@font/raleway"

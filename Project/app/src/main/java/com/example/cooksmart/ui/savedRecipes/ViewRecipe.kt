@@ -97,9 +97,7 @@ class ViewRecipe : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         // Set the fields from the currentRecipe
-        val spannableName = SpannableString(args.currentRecipe.name)
-        spannableName.setSpan(UnderlineSpan(), 0, spannableName.length, 0)
-        view.findViewById<TextView>(R.id.viewRecipeTitle).text = spannableName
+        view.findViewById<TextView>(R.id.viewRecipeTitle).text = args.currentRecipe.name
         // Convert ingredients string into array list and parse into newlines for each item
         val ingredientsList = ConvertUtils.stringToArrayList(args.currentRecipe.ingredients)
         view.findViewById<TextView>(R.id.viewRecipeInstructions).text = args.currentRecipe.instructions

@@ -44,7 +44,7 @@
             android:textColor="#FFFFFF"
             android:fontFamily="@font/raleway"
             android:layout_height="wrap_content"
-            android:hint="@string/add_ingredient"/>
+            android:text="@string/add_ingredient"/>
         <ListView
             android:id="@+id/recipe_ingredients_listview_update"
             android:layout_width="match_parent"
@@ -72,8 +72,8 @@
             <Button
                 android:id="@+id/button_confirm_update"
                 android:layout_width="150dp"
-                android:layout_height="70dp"
-                android:text="@string/update"
+                android:layout_height="60dp"
+                android:text="@string/save"
                 android:layout_gravity="bottom"
                 android:fontFamily="@font/raleway"
                 android:textColor="#FFFFFF"/>

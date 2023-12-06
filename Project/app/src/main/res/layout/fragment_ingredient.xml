@@ -40,7 +40,7 @@
     <Button
         android:id="@+id/generate_recipes_button"
         android:layout_width="150dp"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:text="@string/generate_recipes"
         android:textColor="#FFFFFF"
         android:fontFamily="@font/raleway"
@@ -53,7 +53,7 @@
         android:id="@+id/ingredient_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="65dp"
         android:clickable="true"
         android:focusable="true"

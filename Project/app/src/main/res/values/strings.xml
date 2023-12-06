@@ -52,20 +52,18 @@
     <string-array name="recipeSpinner">
         <item>Date added: oldest</item>
         <item>Date added: newest</item>
-        <item>Title: A to Z</item>
+        <item>Name: A to Z</item>
         <item>Favorites</item>
     </string-array>
 
     <string-array name="ingredientSpinner">
         <item>Date added: oldest</item>
-
         <item>Date added: newest</item>
         <item>Name: A to Z</item>
         <item>Best before date: oldest</item>
         <item>Best before date: newest</item>
-
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="update_recipe">Update Recipe</string>
     <string name="generate_recipe">Generate Recipe</string>
     <string name="add_recipe">Add Recipe</string>
@@ -77,5 +75,4 @@
     <string name="buttonOption1Text">Cheese, ham, eggs</string>
     <string name="number">Number</string>
     <string name="no_plan_added">No plan added</string>
-
 </resources>

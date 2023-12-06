@@ -30,22 +30,25 @@ Hello, we are group 15 of **SFU CMPT 362 Fall 2023** and we developed an applica
 2. Introduction of a "Favorite" feature for marking preferred recipes.
 3. Calendar UI enhancements for better expiring ingredients viewing.
 4. Implementation of a Calendar Add fragment for adding plans to the database.
-5. Refactoring of the database structure for efficiency.
-6. Improved recipe management with delete and update functionalities.
-7. UI improvements, including automatic scrolling during recipe generation.
-8. Navigation view and a customized menubar with a search feature.
-9. Audio stream integration for an enhanced user experience.
-10. Optimization of image generation.
+5. Refactoring of the database structure for efficiency
+6. Improved recipe management with delete and update functionalities
+7. Significant UI improvements, including automatic scrolling during recipe generation
+8. Navigation view and a customized menu bar with a search feature
+9. Audio stream integration for an enhanced user experience
+10. Optimization of image generation
 
 # What we did for the final project
 1. Enhanced user interface for improved clarity and aesthetics.
-2. Improved quantity management by separating it into distinct fields for quantity and unit.
-3. Added permission settings for voice-inputted recipe fragments.
-4. Inclusion of a progress bar during recipe generation for user feedback.
-5. Creation of a unique app icon for a personalized touch.
-6. Refined design for handling expiration dates.
-7. Implemented notification feature for the calendar fragment.
-
+2. Implemented notification feature for the calendar fragment and ingredients
+3. Now able to generate recipes by selecting available ingredients
+4. Can use camera to analyze ingredients in a photo to create recipes from
+5. Implemented import recipe from URL feature
+6. Improved quantity management by separating it into distinct fields for quantity and unit
+7. Set recipe images in the list view and when viewing recipes
+8. Added permission settings for voice-inputted recipe fragments
+9. Inclusion of a progress bar during recipe generation for user feedback.
+10. Creation of a unique app icon for a personalized touch
+11. Refined design for handling expiration dates
 
 ###  Contributors
 1. Sarah Li

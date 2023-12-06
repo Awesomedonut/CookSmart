@@ -1,3 +1,8 @@
+/** "AddRecipe.kt"
+ *  Description: Allows users to input details of a recipe or import from a URL to add a
+ *               Recipe entity into the database
+ *  Last Modified: December 5, 2023
+ * */
 package com.example.cooksmart.ui.savedRecipes
 
 import android.app.AlertDialog

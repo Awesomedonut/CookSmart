@@ -81,7 +81,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="8dp"
                 android:fontFamily="@font/cabin"
-                android:text="@string/no_plan_detected" />
+                android:text="@string/no_plan_added" />
 
             <Button
                 android:id="@+id/btnAddPlan"

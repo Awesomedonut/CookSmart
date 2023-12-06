@@ -76,5 +76,6 @@
     <string name="notif_opt">Send me a notification when my ingredient is near expiry</string>
     <string name="buttonOption1Text">Cheese, ham, eggs</string>
     <string name="number">Number</string>
+    <string name="no_plan_added">No plan added</string>
 
 </resources>

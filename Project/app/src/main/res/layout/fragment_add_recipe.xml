@@ -42,6 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/raleway"
+            android:textColor="#FFFFFF"
             android:hint="@string/add_ingredient"/>
         <ListView
             android:id="@+id/recipe_ingredients_listview"
@@ -61,18 +62,18 @@
             android:layout_width="match_parent"
             android:inputType="textMultiLine|textCapSentences"
             android:layout_height="wrap_content"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:paddingBottom="90dp">
+            android:paddingBottom="65dp">
             <Button
                 android:id="@+id/button_confirm"
-                android:layout_width="200dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="70dp"
                 android:text="@string/add"
+                android:textColor="#FFFFFF"
                 android:layout_gravity="bottom"
                 android:fontFamily="@font/raleway"
                 android:textStyle="bold" />

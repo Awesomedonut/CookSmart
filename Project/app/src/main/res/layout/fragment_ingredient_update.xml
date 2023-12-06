@@ -100,8 +100,9 @@
             android:paddingBottom="90dp">
             <Button
                 android:id="@+id/update_button_confirm"
-                android:layout_width="200dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="70dp"
+                android:textColor="#FFFFFF"
                 android:text="@string/update"
                 android:layout_gravity="bottom"
                 android:fontFamily="@font/raleway"

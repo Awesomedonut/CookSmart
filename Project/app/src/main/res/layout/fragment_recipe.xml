@@ -37,7 +37,7 @@
 
         <Button
             android:id="@+id/buttonOption1"
-            android:layout_width="300dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_background"
             android:layout_alignParentStart="true"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/buttonOption1"
-            android:layout_marginEnd="3dp"
+            android:layout_marginEnd="5dp"
             android:layout_alignParentEnd="true"
             app:elevation="2dp"
             app:tint="@android:color/white"

@@ -22,7 +22,7 @@
                 android:fontFamily="@font/raleway"/>
             <Spinner
                 android:id="@+id/ingredient_sort"
-                android:layout_width="wrap_content"
+                android:layout_width="250dp"
                 android:layout_height="48dp"/>
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView

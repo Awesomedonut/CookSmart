@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.savedRecipes.SavedRecipesFragment">
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -21,7 +20,7 @@
                 android:fontFamily="@font/raleway"/>
             <Spinner
                 android:id="@+id/spinner"
-                android:layout_width="wrap_content"
+                android:layout_width="250dp"
                 android:layout_height="48dp"/>
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView

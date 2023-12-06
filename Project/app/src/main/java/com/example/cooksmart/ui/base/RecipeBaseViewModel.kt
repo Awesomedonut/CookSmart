@@ -228,7 +228,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private fun parseTitle(input: String): String {
         // Possible words by the API before they say the recipe title, from more restrictive to less specific. We want to get the words after these strings
         val keywords = listOf("recipe for a comforting", "recipe for a simple", "recipe for a delicious", "simple recipe for a",
-            "delicious recipe for a", "comforting recipe for a", "simple recipe for", "delicious recipe for", "comforting recipe for", "recipe for a", "recipe for")
+            "delicious recipe for a", "comforting recipe for a", "simple recipe for", "delicious recipe for", "comforting recipe for", "recipe for a", "recipe for", "a simple")
         var recipeName = ""
 
         // Check each keyword and if it matches, get the text that occurs after it until the next line
@@ -263,8 +263,8 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
      *  Description: Helper function which helps parse ingredients in a generated recipe
      * */
     private fun parseIngredients(inputText: String): String {
-        val ingredientKeywords = listOf( "**Ingredients:**",  "**Ingredients**:", "Ingredients:")
-        val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "**Instructions:**", "**Instructions**:", "Instructions:")
+        val ingredientKeywords = listOf( "**Ingredients:**",  "**Ingredients**:", "Ingredients:", "Ingredients")
+        val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "**Instructions:**", "**Instructions**:", "Instructions:", "Instructions")
         var ingredientsStartIndex = -1
         var instructionsStartIndex = -1
 
@@ -304,7 +304,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
      *
      * */
     private fun parseInstructions(input: String): String {
-        val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "**Instructions:**", "**Instructions**:", "Instructions:")
+        val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "**Instructions:**", "**Instructions**:", "Instructions:", "Instructions")
         var instructions = ""
         for (keyword in instructionKeywords) {
             val index = input.indexOf(keyword)

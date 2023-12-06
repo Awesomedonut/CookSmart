@@ -102,6 +102,7 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
      *  Description: On audio completion, set audio playing to false
      * */
     fun audioCompleted() {
+        _playerLoaded.value = true
         isAudioPlaying = false
     }
 
@@ -473,7 +474,6 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         _streamPaused = false
         _saved = false
         _progressBarValue.value = 0.0
-        _playerLoaded.value = false
         _isCreating.value = true
         postQuestion(spokenText)
     }

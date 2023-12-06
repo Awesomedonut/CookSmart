@@ -15,7 +15,7 @@ Hello, we are group 15 of **SFU CMPT 362 Fall 2023** and we developed an applica
 # Threaded Design diagram
 ![image](https://github.com/Awesomedonut/CookSmart/assets/79778466/9006966b-4729-443d-8dea-74da48026c5e)
 
-# What we did in Show_and_Tell_1
+# What we did in Show and Tell 1
 1. Established three main fragments: ingredients, recipes, and calendar
 2. Created features that users can add and update ingredients
 3. Implemetend a recipe organization by categories like meat and vegetables
@@ -25,11 +25,11 @@ Hello, we are group 15 of **SFU CMPT 362 Fall 2023** and we developed an applica
 7. Enabled users to add/update/delete ingredient database functionality and prepared a sample to showcase its seamless operation
 8. Added a basic initial UI setup and the creation of the add ingredient data class/activity
 
-# What we did in Show_and_Tell_2
-1. Diverse ingredient sorting methods, including category and expiration date-based orders.
-2. Introduction of a "Favorite" feature for marking preferred recipes.
-3. Calendar UI enhancements for better expiring ingredients viewing.
-4. Implementation of a Calendar Add fragment for adding plans to the database.
+# What we did in Show and Tell 2
+1. Diverse ingredient sorting methods, including category and expiration date-based orders
+2. Introduction of a "Favorite" feature for marking preferred recipes
+3. Calendar UI enhancements for better expiring ingredients viewing
+4. Implementation of a Calendar Add fragment for adding plans to the database
 5. Refactoring of the database structure for efficiency
 6. Improved recipe management with delete and update functionalities
 7. Significant UI improvements, including automatic scrolling during recipe generation
@@ -38,7 +38,7 @@ Hello, we are group 15 of **SFU CMPT 362 Fall 2023** and we developed an applica
 10. Optimization of image generation
 
 # What we did for the final project
-1. Enhanced user interface for improved clarity and aesthetics.
+1. Enhanced user interface for improved clarity and aesthetics
 2. Implemented notification feature for the calendar fragment and ingredients
 3. Now able to generate recipes by selecting available ingredients
 4. Can use camera to analyze ingredients in a photo to create recipes from
@@ -46,7 +46,7 @@ Hello, we are group 15 of **SFU CMPT 362 Fall 2023** and we developed an applica
 6. Improved quantity management by separating it into distinct fields for quantity and unit
 7. Set recipe images in the list view and when viewing recipes
 8. Added permission settings for voice-inputted recipe fragments
-9. Inclusion of a progress bar during recipe generation for user feedback.
+9. Inclusion of a progress bar during recipe generation for user feedback
 10. Creation of a unique app icon for a personalized touch
 11. Refined design for handling expiration dates
 

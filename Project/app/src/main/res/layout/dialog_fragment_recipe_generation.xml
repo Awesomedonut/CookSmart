@@ -6,17 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerInParent="true">
+
     <TextView
         android:id="@+id/tvTitleDialogRecipeGeneration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/raleway"
         android:text="Loading..."
         android:textSize="20sp"
         android:textStyle="bold"
-        android:fontFamily="@font/raleway"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tvDialogRecipeGeneration"
         android:layout_width="wrap_content"
@@ -49,14 +53,13 @@
         android:id="@+id/dialogProgressPercentage"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:fontFamily="@font/cabin"
+        android:paddingBottom="16dp"
         android:text="0%"
         android:textSize="18sp"
-        android:paddingBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvDialogRecipeGeneration"
-        app:layout_constraintStart_toEndOf="@+id/dialogProgressBar"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintStart_toEndOf="@+id/dialogProgressBar"
+        app:layout_constraintTop_toTopOf="@+id/dialogProgressBar" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

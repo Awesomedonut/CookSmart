@@ -1,3 +1,8 @@
+/** "RecipeDao.kt"
+ *  Description: Dao class for the Recipe entities. Allows users
+ *               to perform database operations on the recipe table
+ *  Last Modified: November 27, 2023
+ * */
 package com.example.cooksmart.database
 
 import androidx.lifecycle.LiveData

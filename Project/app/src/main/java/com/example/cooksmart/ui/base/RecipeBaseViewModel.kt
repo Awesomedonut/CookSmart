@@ -1,3 +1,8 @@
+/** "RecipeBaseViewModel"
+ *  Description: ViewModel class for recipe generation.
+ *               Communicates with AI services and calls
+ *               database operations to the recipe repository.
+ * */
 package com.example.cooksmart.ui.base
 
 import android.app.Application
@@ -28,6 +33,7 @@ import java.util.Queue
 
 open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Application) :
     AndroidViewModel(application) {
+    // Declare class variables
     private val _response = MutableLiveData<String>()
     val response: LiveData<String> get() = _response
 
@@ -63,11 +69,17 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
     private val _promptId = MutableLiveData<Int>(0)
     private var lastFetchJob: Job? = null
 
+    // Initialize recipe dao and repository
     init {
         val recipeDao = CookSmartDatabase.getCookSmartDatabase(application).recipeDao()
         _recipeRepository = RecipeRepository(recipeDao)
     }
 
+    /** "enqueueAudioUrl"
+     *  Description: Adds an audioURL to the audio queue and
+     *               replaces the existing audio queue with a new
+     *               queue.
+     * */
     private fun enqueueAudioUrl(audioUrl: String, promptId: Int) {
         viewModelScope.launch(Dispatchers.Main) {
             if (promptId == _promptId.value!!) {
@@ -78,15 +90,25 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "onCleared"
+     *  Description: Performs super function and calls cleanup function
+     * */
     override fun onCleared() {
         super.onCleared()
         cleanup()
     }
 
+    /** "audioCompleted"
+     *  Description: On audio completion, set audio playing to false
+     * */
     fun audioCompleted() {
         isAudioPlaying = false
     }
 
+    /** "playNextUadio"
+     *  Description: Checks if audio is currently playing. If not,
+     *               play the next audio URL in the audio queue
+     * */
     fun playNextAudio() {
         viewModelScope.launch(Dispatchers.Main) {
             if (isAudioPlaying) {
@@ -105,6 +127,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "cleanup"
+     *  Description: Reset class variables and increments the promptID value
+     * */
     fun cleanup() {
         viewModelScope.launch(Dispatchers.Main) {
             _audioQueue.value?.clear()
@@ -119,6 +144,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "fetchImageUrl"
+     *  Description: Retrieves and image from the image service using inputprompts
+     * */
     private fun fetchImageUrl(question: String, promptId: Int) {
         Log.d("BaseViewModel", question)
         if (promptId != _promptId.value!!)
@@ -139,6 +167,10 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "loadImage"
+     *  Description: Sets the imageURL to the input parameters
+     *               to be sent to the UI
+     * */
     private fun loadImage(url: String?, promptId: Int) {
         if (url != null) {
             Log.d("BaseViewModel:loadImage", url)
@@ -152,6 +184,11 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "saveRecipe"
+     *  Description: Utilizes class variables to take UI generated
+     *               data and save in a recipe object. Writes
+     *               to the recipe repository
+     * */
     private suspend fun saveRecipe(promptId: Int) {
         if (promptId != _promptId.value!!)
             return
@@ -183,6 +220,10 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             }
         }
     }
+
+    /** "parseTitle"
+     *  Description: Helper function which helps parse recipe title from recipe input
+     * */
     private fun parseTitle(input: String): String {
         // Possible words by the API before they say the recipe title, from more restrictive to less specific. We want to get the words after these strings
         val keywords = listOf("recipe for a comforting", "recipe for a simple", "recipe for a delicious", "simple recipe for a",
@@ -217,6 +258,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         return recipeName
     }
 
+    /** "parseIngredients"
+     *  Description: Helper function which helps parse ingredients in a generated recipe
+     * */
     private fun parseIngredients(inputText: String): String {
         val ingredientKeywords = listOf( "**Ingredients:**",  "**Ingredients**:", "Ingredients:")
         val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "**Instructions:**", "**Instructions**:", "Instructions:")
@@ -254,7 +298,10 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         return inputText
     }
 
-
+    /** "parseInstructions"
+     *  Description: Helper function which helps parse generated recipe instructions
+     *
+     * */
     private fun parseInstructions(input: String): String {
         val instructionKeywords = listOf("**Cooking Instructions:**", "**Cooking Instructions**:", "Cooking Instructions:", "**Instructions:**", "**Instructions**:", "Instructions:")
         var instructions = ""
@@ -273,16 +320,27 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "appendInputValue"
+     *  Description: Add generated text to the input text value
+     * */
     fun appendInputValue(text: String) {
         viewModelScope.launch {
             _input.value += text
         }
     }
+
+    /** "updateInputValue"
+     *  Description: Update the input value to the given text
+     * */
     fun updateInputValue(text: String) {
         viewModelScope.launch {
             _input.value = text
         }
     }
+
+    /** "resetAll"
+     *  Description: resets class variables
+     * */
     fun resetAll() {
         viewModelScope.launch {
             _input.value = ""
@@ -293,6 +351,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "postQuestion"
+     *  Description: Sends a question to the text service
+     * */
     private fun postQuestion(question: String) {
 
         val openAI = OpenAIProvider.instance
@@ -315,6 +376,10 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "updateIngredients"
+     *  Description: Replaces the ingredient with an empty string if it
+     *               already exists in the input
+     * */
     private fun updateIngredients(text: String, promptId: Int) {
         Log.d("RecipeVM.udpateIngre", text)
         //TODO: refactor
@@ -328,6 +393,10 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "analyzeImage"
+     *  Description: Uses DataFetcher class to analyize tan image
+     *               using generation data and a given bitmap
+     * */
     fun analyzeImage(bitmap: Bitmap) {
         val base64 = BitmapHelper.bitmapToBase64(bitmap)
         Log.d("RecipeVM.analyze${base64.length}", base64)
@@ -343,6 +412,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "updateText"
+     *  Description: Updates the response text and progress bar value
+     * */
     private fun updateText(text: String, promptId: Int) {
         if (promptId != _promptId.value!!)
             return
@@ -352,10 +424,17 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
             else 100.0 * text.length / 1300
     }
 
+    /** "onError"
+     *  Description: Sets the info value to the error value if an error occurs
+     * */
     private fun onError(text: String) {
         _info.value = text
     }
 
+    /** "fetchAudioUrl"
+     *  Description: Uses DataFetcher to fetch audio url and queue
+     *               audio to the audio queue
+     * */
     private fun fetchAudioUrl(text: String, promptId: Int) {
         if (promptId != _promptId.value!!)
             return
@@ -385,6 +464,9 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         }
     }
 
+    /** "process"
+     *  Description: If called, reset process variables and call postQuestion
+     * */
     fun process(spokenText: String) {
         if (_promptId.value != null)
             _promptId.value = _promptId.value!! + 1
@@ -396,12 +478,18 @@ open class RecipeBaseViewModel(private val fetcher: DataFetcher, application: Ap
         postQuestion(spokenText)
     }
 
+    /** "Pause"
+     *  Description: If the stream is paused, add to the promptID value
+     * */
     fun Pause() {
         _streamPaused = true
         if (_promptId.value != null)
             _promptId.value = _promptId.value!! + 1
     }
 
+    /** "initAudioUrl"
+     *  Description: Create a greeting audio prompt
+     * */
     fun initAudioUrl(helloText: String) {
         viewModelScope.launch(Dispatchers.Main) {
             if (_audioQueue.value.isNullOrEmpty()) {

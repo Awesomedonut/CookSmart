@@ -1,3 +1,7 @@
+/** "Recipe.kt"
+ *  Description: Entity class for recipe objects
+ *  Last Modified: November 27, 2023
+ * */
 package com.example.cooksmart.database
 
 import android.os.Parcelable

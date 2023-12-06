@@ -1,3 +1,8 @@
+/** "RecipeBaseViewModelFactory"
+ *  Description: ViewModelFacotry for the RecipeBaseViewModel class.
+ *               Creates a view model with data fetcher and application parameters
+ *  Last Modified: December 1, 2023
+ * */
 package com.example.cooksmart.ui.base
 
 import android.app.Application
